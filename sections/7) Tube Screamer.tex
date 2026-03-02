@@ -1,0 +1,422 @@
+\section{Tube Screamer}
+
+In this section, we'll analyse the different parts of the Tube Screamer below in order to model the output of this system.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Tube_Screamer_Full.png}
+    \caption{Complete scheme of the Tube Screamer.}
+\end{figure}
+
+We provide below the effect path only as we will deal with this part of the system. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Tube_Screamer_Effect_Path.png}
+    \caption{Decomposition in modules of the effect path.}
+\end{figure}
+
+\subsection{DC Analysis of Common Collector 1}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.65\linewidth}
+        In the DC analysis, capacitances are considered as open circuits. We have:
+        \[
+            I_B = \frac{4.5V - V_B}{R_2}
+        \]
+        We set as hypothesis:
+        \[
+            V_{BE} \approx 0.7V
+        \]
+        Thus, the emitter current is:
+        \[
+            I_E = (\beta + 1) I_B = \frac{V_E}{R_3}
+        \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.2\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Tube_Screamer_Common_Collector_1.png}
+        \caption{Common collector 1 of the tube screamer}
+        \label{fig:placeholder}
+    \end{minipage}
+\end{figure}
+Rearranging, we obtain:
+\[
+I_E = \frac{V_B - V_{BE}}{R_3} = \frac{V_B - 0.7V}{R_3}
+\quad \Rightarrow \quad V_B = 0.7V + R_3 I_E \quad \Rightarrow \quad V_B= 0.7V + R_3 (\beta+1) I_B
+\]
+Since:
+\[
+I_B = \frac{4.5V - V_B}{R_2}
+\]
+we can substitute:
+\begin{align*}
+    V_B = 0.7V + \frac{R_3}{R_2} (\beta+1)(4.5V - V_B) \quad \Rightarrow \quad &
+V_B \cdot \left( 1+ \frac{R_3}{R_2} (\beta+1)\right) = 0.7V + \frac{R_3}{R_2} (\beta+1)\cdot 4.5V \\
+\Rightarrow \quad 
+& V_B = \frac{0.7V + \frac{R_3}{R_2}(\beta+1)\cdot 4.5V}{1 + \frac{R_3}{R_2}(\beta+1)}
+\end{align*}
+
+We set here $\beta = 300$, and we have $\tfrac{R_3}{R_2} = \tfrac{10}{510} = \tfrac{1}{51}$, thus:
+\[
+V_B = 3.94 \approx 4V
+\]
+We now have:
+\[
+V_E = V_B - V_{BE} = 3.3V
+\]
+Since $I_C \approx I_E = \tfrac{V_E}{R_3}$, we get:
+\[
+I_C \approx 330 \,\mu A
+\]
+Since $i_C = \beta i_B$, we have:
+\[
+i_B = \frac{330\cdot10^{-6}}{300} = 1.1\,\mu A
+\]
+Moreover,
+\[
+g_m = \frac{I_C}{V_T} = \frac{330\cdot10^{-6}}{26\cdot10^{-3}} = 13.2\,mS, \quad r_\pi = \frac{V_T}{I_B} \approx 22\,k\Omega
+\]
+
+\subsection{Small Signal AC Analysis of Common Collector 1}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.7 \linewidth}
+        In such a scenario, fixed voltage supplies act like virtual ground. The equivalent electric scheme becomes:
+        \[
+        R_{IN} = \frac{v_{{in},cc}}{i_{IN}} = \frac{v_{BE} + v_E}{i_B} 
+        \quad \Rightarrow \quad 
+        R_{IN} = \frac{i_B \cdot r_\pi + i_E \cdot R_3}{i_B}
+        \]
+        Since $i_E = (\beta+1) i_B$, we obtain:
+        \[
+        R_{IN} = r_\pi + (\beta+1)R_3 = 22k\Omega + 301\cdot10k \quad \Rightarrow \quad  R_{IN} \approx 3M\Omega
+        \]
+        We also notice:
+        \[
+        v_{out,cc} = i_E \cdot R_3 \Rightarrow v_{out,cc} = (\beta+1)\cdot i_B \cdot R_3
+        \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.25\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Tube_Screamer_Common_Collector_1_equiv_scheme.png}
+    \caption{Equivalent scheme (in AC) of the Common Collector 1.}
+    \end{minipage}
+\end{figure}
+
+
+From the BJT laws: \[
+i_C = g_m v_{BE} = \beta i_B \quad \Rightarrow \quad i_B = \tfrac{g_m}{\beta} v_{BE}
+\]
+Thus:
+\[
+\textcolor{blue}{
+v_{out,cc} = (\beta+1)\cdot \frac{g_m}{\beta} \cdot v_{BE} \cdot R_3 \approx g_m \cdot v_{BE} \cdot R_3}
+\]
+Using KVL, we have:
+\[
+\textcolor{blue}{v_{in,cc} = v_{BE} + v_{out,cc}}
+\]
+From BJT laws, we know:
+\[
+i_C = g_m v_{BE} \quad \Rightarrow \quad v_{BE} = \frac{i_C}{g_m}
+\]
+Moreover, since $i_E \approx i_C$, we obtain:
+\[
+i_C = \frac{v_{out,cc}}{R_3}
+\]
+
+From the AC analysis of the common collector, we have:
+\[
+v_{BE} = \frac{v_{out,CC}}{g_m R_3} \quad \Rightarrow \quad v_{in,CC} = v_{out,CC}\left(1+\frac{1}{g_m R_3}\right)
+\]
+
+We obtain the output/input ratio:
+\[
+\textcolor{red}{
+\frac{v_{out,CC}}{v_{in,CC}} = \left(1+\frac{1}{g_m R_3}\right)^{-1} = \frac{g_m R_3}{1+g_m R_3} \approx 1
+}
+\]
+
+The AC analysis tells us that the common collector has unitary gain, but different impedance:
+\[
+R_{out} = r_\pi + \frac{R_1}{\beta} \approx 0
+\]
+We remind that $R_{IN} \to \infty$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{Tube_Screamer_Common_Collector_1_filter.png}
+    \caption{Transfer function of the AC coupling.}
+\end{figure}
+
+\subsection{Distortion Block (neglecting the diodes)}
+
+The overall block is an inverting configuration.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Tube_Screamer_Distorsion_Block_Full.png}
+    \caption{Distortion block of the Tube Screamer.}
+\end{figure}
+
+\subsubsection{Linear behaviour (no diodes):}
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.7 \linewidth}
+        We set
+        \[
+        Z_F = Z_{C4} // \big( \underbrace{Z_{R6}+Z_{P1}}_{R_{POT}}\big) = \frac{1}{sC_4} \cdot \frac{R_{POT}}{\tfrac{1}{sC_4}+R_{POT}} 
+        \quad \Rightarrow \quad 
+        Z_F = \frac{R_{POT}}{1+sC_4 R_{POT}}
+        \]
+        We set
+        \[
+        Z_G = Z_{R4}+Z_{C3} = R_4 + \frac{1}{sC_3} \Rightarrow Z_G = \frac{1+sC_3 R_4}{sC_3}
+        \]
+        The transfer function (ignoring diodes) is:
+        \begin{align*}
+            & \frac{v_{out,DIST}}{v_{out,CC}} = 1+\frac{Z_F}{Z_G} = 1+\frac{\tfrac{R_{POT}}{1+sC_4 R_{POT}}}{\tfrac{1+sC_3 R_4}{sC_3}} \\
+            \Rightarrow \quad  
+        & \frac{v_{out,DIST}}{v_{out,CC}}= 1+\frac{R_{POT}}{(1+sC_4 R_{POT})(1+sC_3 R_4)} \cdot sC_3        \end{align*}
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.25\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Tube_Screamer_Distorsion_Block.png}
+    \caption{Generalized scheme of the distortion block.}
+    \end{minipage}
+\end{figure}
+Thus, we obtain: 
+\[\textcolor{red}{
+\frac{v_{out,DIST}}{v_{out,CC}}= 1+\frac{R_{POT}}{(1+sC_4 R_{POT})} \cdot \frac{sC_3}{1+sC_3 R_4} 
+}
+\]
+ now consider an approximation of the transfer function (\textbf{don't do at exams, only serves as an example}):
+\[
+\frac{v_{out,DIST}}{v_{out,CC}} \approx \frac{R_{POT}}{(1+sC_4 R_{POT})} \cdot \frac{sC_3}{1+sC_3 R_4} 
+\]
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.6 \linewidth}
+        \textbf{Poles and zeros:}
+This transfer function has 1 zero and 2 poles, with cutoff frequencies:
+\begin{align*}
+    & f_{p1} = \frac{1}{2\pi R_4 C_3} = 720 \, Hz, \text{ since } C_3 = 0.047 \ \mu F, \ R_4 = 4.7 \ k\Omega \\
+    & f_{p2} = \frac{1}{2\pi R_{POT} C_4},\\
+    & f_{p2} \in \ \bigl[5.7\,kHz \text{ for } R_{POT}^{max}=551k, \quad 61 \,kHz \text{ for } R_{POT}^{min}=51k \bigr]
+\end{align*}
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Distorsion_Block_Transfer_Function.png}
+    \caption{Transfer function of the distorsion block.}
+    \end{minipage}
+\end{figure}
+
+\textbf{Gain in mid-band:}
+For $f \in [f_{p1}, f_{p2}]$, $C_3$ is a short-circuit, $C_4$ is an open circuit. Thus:
+\[
+G_{in,band} = \frac{R_{POT}}{R_4} \in [10.8,117.2] \equiv [20.7,41.4] \, dB
+\]
+
+\subsubsection{Accounting for the Diodes}
+
+We study the diodes’ influence on a sinusoidal input.  
+NB: $+1$ in input means $+10V$ in output without diodes. 
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.35 \linewidth}
+       The diode is \textbf{off} when:
+       \begin{align*}
+           & v_{out}-v^- < 0.7V \\
+       \Rightarrow \quad & \left(1+\frac{R_{POT}}{R_4}\right)v_{in} - v_{in} < 0.7 \ V \\
+       \Rightarrow \quad & \frac{R_{POT}}{R_4} v_{in} < 0.7 \ V
+       \end{align*}
+        i.e. the diode is off when :
+        \[
+        v_{in} < 0.7 \cdot \frac{R_4}{R_{POT}} \ V \quad \text{where} \quad \frac{R_4}{R_{POT}} = G_{in,band}^{-1}
+        \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.55\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Distortion_Block_Diodes.png}
+    \caption{Scheme of the distorsion block (left) and expected output (right).}
+    \end{minipage}
+\end{figure}
+
+The diode is \textbf{on} when $G_{in,band}=10$:
+\[
+v_{in} = \frac{0.7}{10} = 70 \, mV \quad \Rightarrow \quad v_{out} = 770 \, mV
+\]
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.55\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Soft_Hard_Clipping.png}
+    \caption{Illustration of the clipping's influence.}
+    \end{minipage} \hfill
+    \begin{minipage}[c]{0.4 \linewidth}
+       When the diode turns on, it behaves as a $0.7V$ generator. The output follows the input profile with unitary gain. This is called \textbf{soft clipping}.  
+       \vspace{1em}
+       
+       This behaviour is similar to tube amplifiers: more soft-clipping (from more gain) produces more “coloration” of the sound (variable high-cut).  
+
+       \begin{itemize}
+           \item $\text{Hard clipping: } G \to 0 \, \text{(abruptly)}$
+           \item  $\text{Soft clipping: } G \text{decreases gradually}$ 
+           \begin{itemize}
+               \item $\text{(justifying high-cut)} $
+           \end{itemize}
+       \end{itemize}
+       \vspace{1em}
+       We can interpret the “coloration” as a high-cut filtering of the harmonics generated by the saturation.
+    \end{minipage}
+\end{figure}
+
+\subsection{Tone Control}
+
+The potentiometer $P_2$ changes connection between $v^-$ (position 1) and $v^+$ (position 2).  
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.28\linewidth]{Tube_Screamer_Tone_Control.png}
+    \caption{Scheme of the Tone Control module.}
+\end{figure}
+
+\paragraph{Configuration 1:}  
+Here, $P_2$ connects directly to $v^-$.
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.4 \linewidth}
+       We set:
+    \[
+    Z_{C5} = \frac{1}{sC_5}, \quad v^+ = \frac{R_9 // Z_{C5}}{R_8 + R_9 // Z_{C5}} v_{IN}
+    \quad \Rightarrow \quad
+    v^+ = \frac{R_9}{R_8 + \tfrac{R_9}{1+sC_5 R_9}} v_{IN}
+    \]
+    Thus: 
+    \begin{align*}
+      & \frac{v^+}{v^-} = \frac{\tfrac{R_9 Z_{C_5}}{R_9 + Z_{C_5}}}{\tfrac{R_9 Z_{C_5}}{R_9 + Z_{C_5}}+ R_8}
+      \quad \Rightarrow \quad 
+      & \frac{v^+}{v^-}  = \frac{\tfrac{R_9}{1 + R_9/Z_{C_5}}}{\tfrac{R_9}{1 + R_9/Z_{C_5}}+ R_8} \\
+      \Rightarrow \quad & \frac{v^+}{v^-}  = \frac{R_9}{R_8 + R_9 + R_8 R_9 / Z_{C_5}}
+    \end{align*}
+
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Tube_Screamer_Tone_Control_Config_1.png}
+    \caption{Scheme of the 1st configuration of the module.}
+    \end{minipage}
+\end{figure}
+
+We now aim to rewrite this expression with a scaling term, we can use $R_9 / (R_8+R_9)$: 
+\[
+\frac{v^+}{v^-}  = \frac{R_9}{R_8 + R_9 + \tfrac{R_8 + R_9}{R_8 + R_9}\cdot R_8 R_9 / Z_{C_5}}
+\]
+We know that $ \frac{R_8 R_9}{R_8+R_9}=R_8//R_9$, thus : 
+\[
+\frac{v^+}{v^-}  = \frac{R_9}{R_8+R_9} \cdot \frac{1}{1 + \frac{R_8//R_9}{Z_{C_5}}}
+\quad \Rightarrow \quad
+\textcolor{red}{\frac{v^+}{v^-}  = \frac{R_9}{R_8+R_9} \cdot \frac{1}{1 + s C_5 ( R_8//R_9 )}}
+\]
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.4 \linewidth}
+    Now computing for $v_{OUT}$, we observe: 
+    \begin{align*}
+       &  \frac{v_{OUT}}{v^+} = 1 + \frac{R_{11}}{R_{10}+ Z_{C_6}}
+    \quad \Rightarrow \quad 
+    \frac{v_{OUT}}{v^+}  = \frac{R_{10} + R_{11} + Z_{C_6}}{R_{10} + Z_{C_6}} \\
+    \Rightarrow \quad 
+    & \frac{v_{OUT}}{v^+} = \frac{R_{10} + R_{11} + 1/sC_6}{R_{10} + 1/sC_6}
+    \Rightarrow \quad \textcolor{red}{ \frac{v_{OUT}}{v^+} =\frac{1 + sC_6(R_{10} + R_{11})}{1 + sC_6 R_{10}}}
+    \end{align*}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Tone_Control_Config_1_continued.png}
+    \caption{More abstract scheme for computing $v^+$.}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Tube_Screamer_Tone_Control_Graph.png}
+    \caption{Transfer function for the Tone Control module.}
+\end{figure}
+
+
+\subsubsection{Configuration 2: }
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.45 \linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Tube_Screamer_Tone_Control_Config_2.png}
+    \caption{Scheme for the 2nd configuration.}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.38\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Tube_Screamer_Tone_Control_Config_2_2.png}
+    \caption{Representation with $Z_{eq}$.}
+    \end{minipage}
+\end{figure}
+
+We introduce the equivalent impedance $Z_{eq}$ defined by:
+\[
+Z_{eq} = R_9 // Z_{C5} // (Z_{C6}+R_{10}) 
+= \frac{R_9 \cdot \tfrac{1}{sC_5}}{R_9+sC_5} // \left(R_{10}+\tfrac{1}{sC_6}\right)
+\]
+Expanding:
+\[
+Z_{eq} = \frac{\tfrac{R_9}{1+sC_5R_9}\left(R_{10}+\tfrac{1}{sC_6}\right)}{\tfrac{R_9}{1+sC_5R_9}+R_{10}+\tfrac{1}{sC_6}}
+= \frac{\tfrac{R_9}{1+sC_5R_9}\tfrac{1+sC_6 R_{10}}{sC_6}}{\tfrac{R_9}{1+sC_5R_9}+\tfrac{1+sC_6 R_{10}}{sC_6}}
+\]
+
+
+
+
+Thus, the ratio is:
+\[
+\frac{v^+}{v_{in}} = \frac{Z_{eq}}{Z_{eq}+R_8} \quad \Rightarrow \quad \frac{v^+}{v_{in}} = \frac{1+sT_2}{(1+sT_{p1})(1+sT_{p2})}
+\]
+
+The transfer function is located midway between configuration 1 and configuration 2.
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.4 \linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Tone_Control_2_Transfer_Function.png}
+        \caption{Transfer function of the configuration 2}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.5\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Tone_Control_Final_TF.png}
+    \caption{Variations in between configurations.}
+    \end{minipage}
+\end{figure}

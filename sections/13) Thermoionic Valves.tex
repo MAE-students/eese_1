@@ -1,0 +1,316 @@
+\section{Thermionic Valves}
+
+\subsection{Brief History}
+In 1880, \textbf{T. Edison} observed a unidirectional current in an incandescent lamp (``Edison effect''). \textbf{J.J. Thomson} later confirmed the electron (1897). \textbf{J.A. Fleming} then built the first two–electrode \emph{valve/diode} exploiting this effect (1904), enabling early radio rectifiers and ushering modern electronics. \textbf{Lee de Forest} added a third electrode (the grid) in 1906, inventing the \emph{triode}.
+
+\subsection{Thermionic Diode Valve}
+
+\textbf{Thermionic emission (concept): }
+heating the cathode to $\approx 1050^\circ\mathrm{K}$ gives electrons sufficient kinetic energy to escape the surface. A positive anode (plate) collects the emitted electrons, yielding a \emph{space current} from cathode to anode. High vacuum avoids collisions with gas atoms.
+
+\textbf{One–way conduction.}
+If the anode is negative, emitted electrons cannot reach it; current vanishes. Hence the diode rectifies.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{Diode.png}
+  \caption{Diode geometry: hot cathode emits electrons; a positive plate (anode) collects them through vacuum.}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.6 \linewidth}
+    \textbf{Diode characteristics (space–charge limited region): }
+For a plate voltage $V_p>0$, the Child–Langmuir law (space–charge limit) gives the plate current
+\[
+I_p=K\,V_p^{3/2}.
+\]
+At small negative plate biases $V_p\in[-V_0,0]$, some energetic electrons still arrive due to their velocity distribution (tail of the Maxwell–Boltzmann PDF).
+
+    \paragraph{Thermionic (emission) limit and work function.}
+The emission-limited saturation follows the Richardson–Dushman law
+\[
+I_p= I_s \ e^{\tfrac{qV_p}{k_BT}}=S\,A^{*}\,T^2\,e^{\frac{q\phi}{k_BT}},
+\]
+where $S$ is cathode area, $A^{*}$ the Richardson constant, $T$ absolute temperature, $q$ electron charge, $k_B$ Boltzmann constant. 
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{diode I-V.png}
+  \caption{Diode $I$–$V$: emission (saturation) vs.\ space–charge regions; $I_p\!\propto\!V_p^{3/2}$ when space charge dominates.}
+    \end{minipage}\hfill
+\end{figure}
+
+We note $\phi$ the work function (typical: Ptatinum $\phi\!\approx\!5.4$\,eV, Tungsten $\phi\!\approx\!4.5$\,eV, Molybdenum $\phi\!\approx\!4.3$\,eV, Thorium $\phi\!\approx\!2.9$\,eV).
+
+A simple evaporation law often appears as:
+\[
+I_p=I_s\,e^{\frac{q\phi}{k_BT}}.
+\]
+
+\clearpage
+A single cathode with \emph{double anode} makes a compact \emph{full–wave} rectifier when paired with a transformer.
+
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.45 \linewidth}
+        \includegraphics[width=\linewidth]{Fullwave_Rectifier_Dual_Diode.png}
+        \caption{Full–wave rectifier with dual diode: the transformer provides phase inversion; each anode conducts on its positive half–cycle.}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Diode_AC_To_DC.png}
+    \caption{AC to DC converter with supplementary RC filtering.}
+    \end{minipage}
+\end{figure}
+
+
+\textbf{Example Fender \emph{BASSMAN} power supply:} after the transformer, a dual diode keeps only the positive half–cycles. A standby switch warms filaments to stable emission before applying B+. All valves share a 6.3\,V heater supply.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{Fender_Bassman_Schematic_Power_Supply.png}
+      \caption{Fender BASSMAN schematic (power section): dual diode rectifier, heater bus, and B+ distribution.}
+\end{figure}
+
+\subsection{Triodes}
+
+A \textbf{triode} adds a \emph{control grid} between cathode and plate. A small grid voltage $v_g$ (negative wrt.\ cathode) modulates the electron flow: the first \emph{voltage–controlled current source}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.2\linewidth]{triode.png}
+    \caption{Schematic representation of the triode.}
+    \label{fig:placeholder}
+\end{figure}
+
+
+\paragraph{Low–frequency small–signal model.}
+Using average (bias) values $\bar V_g,\ \bar V_p$, the incremental parameters are
+\[
+r_p=\left.\frac{\partial V_p}{\partial I_p}\right|_{V_g = \bar V_g},\qquad
+g_m=\left.\frac{\partial I_p}{\partial V_g}\right|_{V_p = \bar V_p},\qquad
+\mu=\left.\frac{\partial V_p}{\partial V_g}\right|_{I_p = \bar I_p}=\;g_m\,r_p.
+\]
+where \(\bar V_g\) is the average voltage at the grid, \(\bar V_p\) the average voltage at the plate and \(\bar I_p\) the average current at the plate.
+
+The trio $(\mu,g_m,r_p)$ fully characterizes the small–signal behavior near the operating point.
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.45 \linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Triode_small_signal_circuit_1.png}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.4\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Triode_small_signal_circuit_2.png}
+    \end{minipage}
+    \caption{Triode small–signal models: (left) controlled current source $g_m v_g$ with $r_p$, (right) equivalent $\mu$–source with $r_p$.}
+\end{figure}
+
+
+The triode \emph{I-V} law is :
+\[
+I_p + I_g = K \left( \mu V_g + V_p \right) ^ m
+\]
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\textwidth]{triode_small_signal.png}
+    \caption{\emph{I-V} law of the triode with different grid voltages $V_g$.}
+\end{figure}
+
+From the plate–family curves $I_p$ vs.\ $V_p$ parameterized by $V_g$, we can obtain information about the small-signal equivalent of the triode: 
+\begin{itemize}
+    \item the local slope w.r.t.\ $V_g$ gives $g_m$
+    \item the local slope w.r.t.\ $V_p$ gives $1/r_p$
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{Plate_mutual_characteristics.png}
+    \caption{Triode characteristic families: iso–$V_g$ curves; $g_m$ is the slope vs.\ $V_g$, $r_p$ from slope vs.\ $V_p$.}
+\end{figure}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\textwidth]{ISO_POWER_LINES.png}
+  \caption{ECC81 typical curves: choose an operating point in the low‐power region (south–west of iso–power lines).}
+\end{figure}
+
+Many preamp valves package two triodes (e.g., 12AX7/ECC83). In designs like the BASSMAN, some double triodes are used fully; others are half used.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{Fender_Bassman_schematics_2.png}
+  \caption{Double triodes highlighted in the BASSMAN: cascaded voltage amplification (common‐cathode) and buffers (cathode followers).}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\textwidth]{ECC83S.png}
+  \caption{Marshall JCM800 uses ECC83 stages; practical tip: keep pins 2 and 7 (grids) physically separated to reduce capacitive coupling.}
+\end{figure}
+
+
+\subsection{Tetrodes}
+
+A \textbf{tetrode} inserts a second grid $g_2$ (screen) between grid $g_1$ and plate. The screen is held at a positive DC potential and AC‐grounded, reducing plate–grid capacitance and unwanted feedback.
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.6 \linewidth}
+        A tetrode tube has two grids ($g_1$ and $g_2$) between the cathode and the plate:
+\begin{itemize}
+    \item The grid adjacent to the cathode is the control electrode, which performs the same function as the grid of a triode.
+    \item The second grid $g_2$, called the screen, serves as an electrostatic shield between the control grid ($g_1$) and the
+plate. The screen reduces the plate–grid capacitance, isolating the input (grid) and output (plate) electrodes,
+thereby minimizing unwanted feedback.
+\end{itemize}
+In amplifiers, the screen is biased at a moderately positive, constant voltage with respect to the cathode and is AC
+short-circuited to ground by a capacitor, so its potential remains unaffected by the signal.
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{tetrode.png}
+  \caption{Tetrode: screen grid $g_2$ electrostatically shields $g_1$ from the plate, increasing gain and bandwidth.}
+  \end{minipage}
+\end{figure}
+
+\paragraph{Tetrode characteristic behavior.}
+
+The total cathode current is the sum of the screen and plate currents:
+\[
+i_{\text{cathode}} = i_{g2} + i_p,
+\]
+assuming the grid~$g_1$ current is negligible, i.e. $i_{g1} \approx 0$.
+
+The cathode current depends only weakly on the plate voltage $V_p$ because of the presence of the screen grid~$g_2$.  
+As $V_p$ varies, the distribution of current between the plate and the screen changes accordingly.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.3\textwidth]{Tetrode_I(V_p).png}
+  \caption{Tetrode plate and screen currents vs.\ plate voltage: secondary emission explains the ''kink'' region around $V_p\!\approx\!V_{g2}$.}
+\end{figure}
+NB: kink refers to an abrupt, non-linear, or parasitic change in the behavior or physical structure of a component, material, or signal.
+
+\paragraph{Initial region (low plate voltage):}
+At $V_p = 0\,\mathrm{V}$, almost all electrons emitted by the cathode are attracted to the screen grid, so the plate current $i_p$ is nearly zero.  
+As $V_p$ increases (up to point A), $i_p$ rises while $i_{g2}$ falls by roughly the same amount.
+
+\paragraph{Region A–B (secondary emission region): }
+The decrease in plate current and the corresponding increase in screen current result from \textbf{secondary electron emission} at the plate.  
+Electrons hitting the plate with sufficient energy can eject additional (secondary) electrons.  
+Since $V_{g2} > V_p$ in the A-B region, most of the secondary electrons are attracted to the screen.
+
+\paragraph{Region above B (normal operation): }
+As $V_p$ increases above $V_B$, the plate regains control of the emitted electrons: secondary electrons are recaptured by the plate, causing $i_{g2}$ to decrease rapidly.  
+Further increasing $V_p$ above $V_{g2}$ strengthens the plate attraction, so $i_p$ continues to rise while $i_{g2}$ falls.
+
+\paragraph{Normal operation region, $V_P>V_{g2}$.}
+When $V_p > V_{g2}$, the screen grid ensures that the plate current $i_p$ becomes less sensitive to small variations in $V_p$.  
+This effectively increases the dynamic plate resistance
+\[
+r_p = \frac{\partial V_p}{\partial I_p},
+\]
+and boosts the amplification factor:
+\[
+\mu = g_m \, r_p,
+\]
+where the transconductance $g_m = \frac{\partial I_p}{\partial V_{g1}}$.  
+As a result, the amplification factor of tetrodes remains comparable to that of triodes, while maintaining higher efficiency and better isolation between input and output stages.
+
+
+
+Net effect: the screen makes $i_p$ less sensitive to $V_p$ (higher dynamic $r_p$), boosting $\mu=g_m r_p$ relative to a triode (for similar $g_m$).
+
+
+
+\subsection{Pentodes}
+
+A \textbf{pentode} adds a third grid $g_3$ (suppressor) between screen and plate, biased near cathode potential. It repels secondary electrons back to the plate, restoring a flatter $i_p(V_p)$ and allowing larger voltage swing.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.3\textwidth]{pentode.png}
+  \caption{Pentode: suppressor grid $g_3$ prevents secondaries from reaching $g_2$, keeping $i_p$ nearly constant vs.\ $V_p$.}
+\end{figure}
+
+Compared on $i_p$–$V_p$ families: triode shows strong $V_p$ dependence (low $r_p$); tetrode has a kink due to secondaries; pentode keeps $i_p$ nearly flat up to $V_{g2}$, so small changes in $V_{g1}$ produce large $i_p$ changes (high gain).
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.49 \linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Triode_vs_Pentode.png}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{tetrode_vs_pentode.png}
+  \end{minipage}
+  \caption{Triode vs Tetrode vs Pentode. The pentode exhibits high $r_p$ (flat $i_p$ vs.\ $V_p$) and high effective $\mu$ for the same $g_m$.}
+\end{figure}
+
+
+
+Datasheets often show $i_p$–$V_p$ families at fixed $V_{g2}$ and $V_{g1}$. For a given operating point, the plate and screen currents maintain a near‐constant ratio in many devices (e.g., $\approx 4:1$).
+
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.4 \linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Pentode_I_p(V_p).png}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.53\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Pentode_I_p(V_g)_2.png}
+  \end{minipage}
+  \caption{Pentode characteristic sets: $i_p(V_p)$ families at different $V_{g1}$ and $V_{g2}$; screen current typically decreases as $V_p$ increases.}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.55\textwidth]{EL34.png}
+  \caption{EL34 transfer/plate characteristics. Operating points are chosen below iso–power limits to ensure safe dissipation.}
+\end{figure}
+
+\subsection{Two–Stage Capacitive–Coupled Triode Amplifier (example)}
+
+Input is AC–coupled by $C_1$ (DC blocking). The first stage is a \emph{common cathode} (voltage gain), the second a \emph{cathode follower} (buffer, $A_v\!\approx\!1$). Paper/oil capacitors were historically used as high‐voltage isolators.
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.49 \linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{two_stage_triode_scheme.png}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{two_stage_triode_small_signal.png}
+  \end{minipage}
+ \caption{Two–stage triode amplifier: common–cathode gain followed by cathode follower buffer; capacitors decouple DC and set the passband.}
+\end{figure}
+
+\textbf{Stage 1 (gain stage): }
+With load $R_L$ at the plate, small–signal gain is
+\[
+v_{out}\approx -\,g_m\,v_g\,(R_L\parallel r_p),\qquad \mu=g_m r_p.
+\]
+The coupling capacitor $C_3$ blocks DC between stages while passing AC.
+
+\textbf{Stage 2 (buffer): }
+A cathode follower provides low output impedance $Z_{out}\approx 1/g_m$ (if $g_m$ dominates), improving drive capability to the next stage or tone stack.

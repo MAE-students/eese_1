@@ -1,0 +1,74 @@
+\section{UNFINISHED Circuit Analysis: MXR Distortion Circuit}
+
+\subsection{General Overview}
+
+The figure below shows the MXR Distortion+ circuit.  
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{MXR_General_Overview.png}
+    \caption{Electric scheme of the MXR circuit.}
+    \label{fig:placeholder}
+\end{figure}
+\begin{itemize}
+    \item \textbf{Jack input:} the tip is connected to the negative terminal of the battery. When the tip is not connected, the battery floats, so no power is wasted.  
+    \item \textbf{AC coupling:} capacitors remove the DC component, ensuring only the AC part of the audio signal is amplified.  
+    \item \textbf{AC adaptor:} the connection on the right ensures that when the jack is inserted, the $+$ terminal floats, avoiding unnecessary power dissipation.  
+    \item \textbf{Impedance:} both the amplifier output and the final circuit output have very low output impedance.  
+    \item \textbf{Switch $S_1$:} switch $S_1$ provides a bypass when closed. It also activates an LED to indicate whether modulation is active. 
+\end{itemize}
+
+Although the full scheme looks complex, it is usually split into simpler subcircuits (see datasheet: M104.pdf).  
+
+On the datasheet, we can find the nominal input level:
+\[
+    -22 \, \text{dB} \quad \Rightarrow \quad 10^{\tfrac{-22}{20}} = 79 \, \text{mV}_{\text{RMS}}.
+\]
+The maximum output level:
+\[
+    -14 \, \text{dB} \quad \Rightarrow \quad 10^{\tfrac{-14}{20}} = 200 \, \text{mV}_{\text{RMS}}.
+\]
+The circuit uses a \textbf{741 operational amplifier}, with $\pm$ inputs and voltage supplies.  
+In this case:
+\[
+    V^-_{ss} = 0 \, V, 
+    \qquad V^+_{ss} = 9 \, V.
+\]
+
+Thus, the output dynamic range is $9 \, V$.  
+
+If the input is sinusoidal, the negative half of the waveform is clipped, since it falls below the $0 \, V$ supply rail.  
+To avoid clipping, we shift the signal to the center of the output dynamic range:
+\[
+    \frac{9 \, V}{2} = 4.5 \, V.
+\]
+
+This effectively biases the sine wave around mid-supply.  
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Important Note]
+It is easier in practice to realize a $0 \, V$ ground reference than to implement a true negative supply.  
+To restore the AC-only signal, the circuit uses coupling capacitors to remove the DC shift.
+\end{tcolorbox}
+
+\subsection{DC Analysis}
+
+For the DC operating point, capacitors act as open circuits.  
+
+Equivalent circuit simplification:  
+\[
+    V_{R_2} = V_{in} \cdot \frac{R_2}{R_1 + R_2} 
+    \quad \Rightarrow \quad 
+    R_{\text{eq1}} = 1 \, M\Omega.
+\]
+
+Resistors in series:
+\[
+    R_{\text{series}} = 3 \, M\Omega.
+\]
+
+Resistors in parallel:
+\[
+    R_{\text{eq2}} = \frac{3 \cdot 10^6 \cdot 10^6}{3 \cdot 10^6 + 10^6} 
+    = \frac{3}{4} \, M\Omega.
+\]
+
+\textbf{REST TO DO LATER FOR THIS PART }

@@ -1,0 +1,539 @@
+\section{Filters}
+\subsection{Fundamentals}
+
+\subsubsection{Basic Filters}
+We give here the processing stage after the pre-amplifier:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Post_Pre_AMp_Processing.png}
+    \caption{Processing stage after the Preamp.}
+\end{figure}
+Filters can either be passive or active:
+
+
+\begin{tabular}{|p{8cm}|p{8cm}|}
+\hline
+\textbf{Passive} & \textbf{Active} \\
+\hline
+Only passive elements (R, L, C, transformers, gyrators, …) 
+& Contain both passive and active components (transistors) \\
+\hline
+No need of power supply & Need of power supply \\
+\hline
+There is dissipation $P_{out} < P_{in}$ & $P_{out} \geq P_{in}$ \\
+\hline
+Very difficult to design, we cannot control the input/output impedances. 
+Sources/load can modify the filter response. 
+& We can decouple source/load impedance \\
+\hline
+\end{tabular}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Filters_TF.png}
+    \caption{Transfer functions of basic filters.}
+\end{figure}
+
+The order of a filter is related to the slope of the cuts (e.g. double poles and zeros).
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{Filter_Order_Illustration.png}
+    \caption{Relationship between slope's order and filter's order.}
+\end{figure}
+
+The ideal LPF has gain 1 before $f_c$, and 0 after (which means $-\infty \ \text{dB}$), while the phase shifts (which is not desirable in practice).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Ideal_LPF.png}
+    \caption{Transfer function of the ideal LPF.}
+\end{figure}
+
+Real filters differ from the ideal one and we have many different types. We provide some examples below: 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{Digital_LPF.png}
+    \caption{Butterworth and Chebicev filters.}
+\end{figure}
+
+\textbf{The usual expression of transfer functions of filters is:}
+
+\begin{itemize}
+    \item Low-pass (LPF): 
+    \[
+    TF_{LP} = \frac{K}{D(s)} \quad \text{for the 1st order}, \quad 
+    TF_{LP} = \frac{K}{D_2(s)} = \frac{K}{s^2 + b_1 s + b_0} \quad \text{for the 2nd order}
+    \]
+    \item High-pass (HPF):
+    \[
+    TF_{HP} = K \cdot \frac{N(s)}{D(s)}, \qquad 
+    TF_{HP} = \frac{K s^2}{D_2(s)} \quad \text{for the 2nd order with two zeros at the origin}
+    \]
+    \item Band-pass (BPF):
+    \[
+    TF_{BP} = K \cdot \frac{N(s)}{D(s)}, \qquad 
+    TF_{BP} = K \cdot \frac{s}{D_2(s)} \quad \text{for the 2nd order with one zero at the origin}
+    \]
+    \begin{itemize}
+        \item For band-pass filters, we usually have the order of $N$ being lower than the order of $D$.
+    \end{itemize}
+\end{itemize}
+
+The most generic 2\textsuperscript{nd} order transfer function is: 
+\[
+TF_2(s) = \frac{N_2(s)}{D_2(s)} = \frac{a_2 s^2 + a_1 s + a_0}{s^2 + b_1 s + b_0}
+\]
+which is referred to as \textbf{Biquadratic (Biquads) functions}.
+
+The frequency response of a filter can be implemented in different circuits, talking about circuit topology: Sallen-Key biquad, Tow-Thomas biquad, Stable variable filter...  
+They have different implementations with different sensitivity to parameters, they thus have different noise performance and complexity.
+
+\clearpage 
+
+\subsubsection{Sallen-Key Filter}
+The LPF has a negative feedback for gain only while this filter also regards the positive feedback.  
+
+In order to achieve stability, we attenuate the treble instead of boosting bass $G < 3$.  
+
+We have:
+\[
+TF(s) = \frac{G}{s^2 \tau^2 + s(3-G)\tau + 1}, 
+\qquad \tau = RC
+\]
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.4 \linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Sallen_Key.png}
+    \caption{Sallen-Key filter.}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Sallen_Key_dual.png}
+    \caption{Sallen-Key filter dual representation.}
+    \end{minipage}
+\end{figure}
+
+\subsubsection{Filter’s functionality}
+All filters make variations on the signal’s spectrum, but for different reasons:
+\begin{itemize}
+    \item \textbf{Tone Control:} specialized in low/mid/treble boost/cut (see tube screamer).
+    \item \textbf{Crossover:} frequency separation, each band is intended for different use cases.
+    \item \textbf{Equalizer:} series of filters centred at different frequencies. There are graphic and parametric equalizers.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{Filter_Functionality.png}
+    \caption{Illustrtion of the frequency separation.}
+    \label{fig:placeholder}
+\end{figure}
+
+\subsection*{Parametric Filters}
+Let’s start from a LPF configuration and understand how to change the cutoff frequency without changing the in-band gain $G_{in,band}$:
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.6 \linewidth}
+    We have $v^+ = v^- = 0$ from the ideal OPAMP equations, thus: 
+    \begin{align*}
+        & v^- = \frac{\frac{v_{in}}{R_1} + \frac{v_{out}}{R_2//C}}{\frac{1}{R_1} + \frac{1}{R_2//C}}=0
+    \quad \Rightarrow \quad
+    \frac{v_{in}}{R_1} + \frac{v_{out}}{R_2//C} = 0 \\
+    \Rightarrow \quad & \frac{v_{out}}{v_{in}} = -\frac{\frac{R_2}{1+sCR_2}}{R_1}
+    \quad \Rightarrow \quad
+    \frac{v_{out}}{v_{in}} = -\frac{R_2}{R_1} \cdot \frac{1}{1+sC R_2} \\
+    \Rightarrow \quad &
+    \frac{v_{out}}{v_{in}} = -G_{in,band} \cdot \frac{1}{1+s\tau} , 
+    \qquad G_{in,band} = \frac{R_2}{R_1} , \quad \tau = C R_2
+    \end{align*}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Parametric_LPF.png}
+    \caption{Parametric LPF scheme.}
+    \end{minipage}
+\end{figure}
+
+\newpage
+We can modify the cut-off frequency $ f_p = \tfrac{1}{2 \pi R_2 C}$ by changing:
+\begin{itemize}
+    \item $C$: very difficult (no potentiometer)
+    \item $R_2$: easy, but $G_{in,band}$ will also change since $ GBWP = G_{in,band} \cdot f_p$ is constant
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{Parametric_LPF_TF.png}
+    \caption{Transfer function of the parametric LPF.}
+\end{figure}
+In order not to change $G_{in,band}$, we may counterbalance ${R}_2$ increase with $R_1$ (dual potentiometer).  
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.6 \linewidth}
+    We have $v^+ = v^- = 0$ from the ideal OPAMP equations, thus: 
+    \begin{align*}
+        & v^- = \frac{\tfrac{v_{in}}{P} + \tfrac{v_{out}}{P//C}}{\tfrac{1}{P} + \tfrac{1}{P//C}} = 0
+\quad \Rightarrow \quad 
+\tfrac{v_{in}}{P} + \tfrac{v_{out}}{P//C}=0 \\
+\Rightarrow \quad & v_{out} = -\frac{v_{in}}{P}\cdot P//C
+\quad \Rightarrow \quad \frac{v_{out}}{v_{in}} = -\frac{\tfrac{P/sC}{P+1/sC}}{P}=-\frac{\tfrac{P}{1+sCP}}{P} \\
+\Rightarrow \quad & \frac{v_{out}}{v_{in}} =-\frac{P}{P} \frac{1}{1+sCP}
+\quad \Rightarrow \quad \frac{v_{out}}{v_{in}}= -\frac{1}{1+sCP}
+    \end{align*}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Parametric_LPF_dual.png}
+    \caption{Parametric LPF with the dual potentiometer $P$.}
+    \end{minipage}
+\end{figure}
+On the transfer function below, we do observe that $G_{in,band}$ is conserved even when modifying $P$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{Parametric_LPF_Dual_TF.png}
+    \caption{Transfer function of the Parametric LPF with dual potentiometer $P$.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.6 \linewidth}
+    The parametric HPF has a similar design, we have here: 
+\begin{align*}
+& v^- = \frac{\tfrac{v_{in}}{P+C} + \tfrac{v_{out}}{P}}{\tfrac{1}{P+C} + \tfrac{1}{P}} = 0
+\quad \Rightarrow \quad 
+\tfrac{v_{in}}{P+C} + \tfrac{v_{out}}{P}=0 \\
+\Rightarrow \quad & v_{out} = -\frac{v_{in}}{P+C}\cdot P
+\quad \Rightarrow \quad 
+\frac{v_{out}}{v_{in}} = -\frac{P}{P+1/sC} \\
+\Rightarrow \quad & \frac{v_{out}}{v_{in}} =-\frac{scP}{1+sCP} 
+\end{align*}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Parametric_HPF_Dual.png}
+    \caption{Parametric HPF with the dual potentiometer $P$.}
+    \end{minipage}
+\end{figure}
+
+
+Similarly to the parametric LPF, we see on the transfer function below that $G_{in,band}$ is conserved even when modifying $P$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{Parametric_HPF__TF.png}
+    \caption{Transfer function of the parametric HPF with dual potentiometer $P$.}
+\end{figure}
+
+\subsection{Tone Control Filters}
+Tone control filters are sometimes associated with equalization. More precisely, bass/treble control.  
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{Tone_Control_Filters_Gen.png}
+    \caption{Audio equalization performed by tone control filters.}
+\end{figure}
+
+Let's start from a simple circuit as shown below: 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Simple circuit.png}
+    \caption{Basic HPF scheme.}
+\end{figure}
+
+We want the transfer function to have more zeros in $f_z \neq 0$, and add a pole $f_p > f_z$ in order to obtain a low-pass shelf.  
+We show below two different ways for achieving such a goal.
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.45 \linewidth}
+    We have $v^+ = v^- = 0$ from the ideal OPAMP equations, thus: 
+\begin{align*}
+& v^- = \frac{\tfrac{v_{in}}{R//C} + \tfrac{v_{out}}{R_1}}{\tfrac{1}{R//C} + \tfrac{1}{R_1}} = 0
+\quad \Rightarrow \quad 
+\tfrac{v_{in}}{R//C} + \tfrac{v_{out}}{R_1}=0 \\
+\Rightarrow \quad 
+& v_{out} = -\frac{v_{in}}{R//C}\cdot R_1
+\quad \Rightarrow \quad 
+\frac{v_{out}}{v_{in}} = -\frac{R_1}{\tfrac{R/sC}{R+1/sC}} \\
+\Rightarrow \quad & \frac{v_{out}}{v_{in}} = - \frac{R_1}{\tfrac{R}{1+sCR}} 
+\quad \Rightarrow \quad \frac{v_{out}}{v_{in}}=-\frac{R_1}{R} \cdot \left( 1+sCR\right)
+\end{align*}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{LPF_Shelf_1.png}\caption{Introducing a high pass shelf with a parallel resistor $R$ on the input.}
+    \end{minipage}
+\end{figure}
+
+
+Expanding the circuit's structure, we can introduce a highpass shelf by adding a series resistor on the input: 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{Tone_Control_2.png}
+    \caption{Corrected configuration of the bass cut control filter.}
+\end{figure}
+
+Similarly to what we did before, we observe : 
+\begin{align*}
+& \frac{v_{in}}{R//C+R_1} + \frac{v_{out}}{R_1}=0 
+\quad \Rightarrow \quad
+v_{out} = -\frac{v_{in}}{R//C+R_1}\cdot R_1
+\quad \Rightarrow \quad 
+\frac{v_{out}}{v_{in}} = -\frac{R_1}{R_1 +  \tfrac{R/sC}{R+1/sC}} \\
+\Rightarrow \quad
+& 
+\frac{v_{out}}{v_{in}} = - \frac{R_1}{R_1 + \tfrac{R}{1+sCR}} 
+\quad \Rightarrow \quad 
+\frac{v_{out}}{v_{in}}=-\frac{R_1 \left(1+sCR \right)}{R + R_1 + sCRR_1} 
+\quad \Rightarrow \quad 
+\frac{v_{out}}{v_{in}} = - \frac{R_1}{R+R_1}\frac{ 1+sCR }{1 + sC\left(R // R_1 \right)} 
+\end{align*}
+
+We want to control the bass-cut amount only by changing $R$.  
+The bass-cut gain is
+\[
+G_{BC} = \frac{v_{out}}{v_{in}} 
+= -\frac{Z_F}{Z_{IN}} 
+= - \frac{R_1}{R+R_1} \cdot \frac{1+s\tau_z}{1+s\tau_p}
+\]
+Where:
+\begin{itemize}
+    \item $\dfrac{R_1}{R+R_1} = G_{BC}(0)$ the static gain
+    \item $\tau_z$: the zero, related to $R \cdot C$
+    \item $\tau_p$: the pole, related to $ C \left( R//R_1 \right)$
+\end{itemize}
+
+
+Intuitively, we can switch $Z_F \leftrightarrow Z_{in}$ to implement a bass-boost:
+\[
+G_{BB} = \frac{1}{G_C} = \frac{R+R_1}{R_1} \cdot \frac{1+s\tau_p}{1+s\tau_z},
+\qquad
+\tau_p = C \left( R//R_1 \right), \quad \tau_z=RC
+\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{Tone_Control_Bass_Boost.png}
+    \caption{Scheme of the bass boost.}
+\end{figure}
+
+
+The overall bass-control configuration is:
+\[
+\text{Bass Control: } 
+\quad \max \, \text{boost} = +K\,\text{dB}, 
+\quad \max \, \text{cut} = -K\,\text{dB},
+\quad \text{mid point}= 0 \ \text{dB}
+\quad f_z = \frac{1}{2 \pi R \cdot C}, 
+\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Overall_Bass_Control.png}
+    \caption{Complete scheme of the bass-control configuration.}
+\end{figure}
+
+Similarly, the overall treble-control configuration is:
+\[
+\text{Treble Control: } 
+\quad \max \, \text{boost} = +K\,\text{dB}, 
+\quad \max \, \text{cut} = -K\ ,\text{dB}, 
+\quad \text{mid point} = 0 \ \text{dB}
+\quad f_p = \frac{1}{2 \pi R \cdot C}, 
+\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{Overall_Treble_Control.png}
+    \caption{Complete scheme of the treble-control configuration.}
+\end{figure}
+
+Finally, the Baxandall tone control merges the previous bass/treble controls into a single stage:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Bakandall_Tone_Control.png}
+    \caption{Scheme of the Baxandall tone control.}
+\end{figure}
+
+
+
+\subsection{Notes from the slides}
+
+\paragraph{Active Filters and Tone Control Circuits: }
+
+Filters are essential in both analog and digital audio systems.  
+They shape the frequency content of signals, attenuating or amplifying specific bands to achieve tonal balance, noise reduction, or crossover between drivers.
+
+In this part we discuss:
+\begin{itemize}
+  \item Tone control circuits (Bass and Treble),
+  \item Active filter topologies such as the Sallen–Key configuration,
+  \item Crossover and equalization networks in professional audio.
+\end{itemize}
+
+\paragraph{Tone Control Filters: }
+Tone controls allow independent adjustment of low and high frequencies.  
+A typical \textbf{bass} control boosts or cuts frequencies below about $100\,\text{Hz}$–$300\,\text{Hz}$,  
+while a \textbf{treble} control acts above $5\,\text{kHz}$–$10\,\text{kHz}$.
+
+\paragraph{The Baxandall Circuit: }
+One of the most widely used tone control circuits is the \textbf{Baxandall network}, introduced by Peter Baxandall in 1952.  
+It employs active feedback to achieve smooth, symmetrical boost and cut characteristics with minimal distortion.
+
+
+\textbf{Example: Luxman L-215 Amplifier: }
+In high-fidelity amplifiers such as the \emph{Luxman L-215}, the tone control stage based on the Baxandall configuration is inserted between the preamplifier and the main amplifier stages.  
+This placement ensures that tonal corrections are applied before the power amplification, avoiding overload or distortion.
+
+\paragraph{Filter Order and Attenuation: }
+Filters are classified by their order, corresponding to the highest power of \(s\) in the denominator of their transfer function.  
+Each additional order increases the roll-off steepness:
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Order} & \textbf{Attenuation per Octave} & \textbf{Attenuation per Decade} \\
+\hline
+1 & $-6$ dB/oct & $-20$ dB/dec \\
+2 & $-12$ dB/oct & $-40$ dB/dec \\
+3 & $-18$ dB/oct & $-60$ dB/dec \\
+\hline
+\end{tabular}
+\end{center}
+
+The most common responses are:
+\begin{itemize}
+  \item \textbf{Butterworth} – maximally flat amplitude response.
+  \item \textbf{Chebyshev} – equiripple in the passband, steeper roll-off.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Order_Filter.png}
+    \caption{Illustration of the different attenuations per octave for different orders of filters.}
+\end{figure}
+
+\paragraph{Active Filters: the Sallen–Key Topology}
+Active filters use operational amplifiers to implement low-, high-, or band-pass responses without inductors.  
+The \textbf{Sallen–Key topology} is among the simplest and most robust second-order filter designs.
+
+\textbf{Low-Pass Filter:}
+\[
+TF_{LP}(s) = \frac{G}{s^2 R_1 R_2 C_1 C_2 + s \left[(3 - G) R_2 C_2 + R_1 C_1 \right] + 1}.
+\]
+
+\textbf{High-Pass Filter:}
+\[
+TF_{HP}(s) = \frac{G s^2 R_1 R_2 C_1 C_2}{s^2 R_1 R_2 C_1 C_2 + s \left[(3 - G) R_1 C_1 + R_2 C_2 \right] + 1}.
+\]
+These filters provide a slope of \(-12\,\text{dB/oct}\) (\(-40\,\text{dB/dec}\)) and are widely used in professional mixing consoles.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Sallen_Key_Slides.png}
+    \caption{Sallen–Key low-pass and high-pass configurations used for tone control and crossover applications.}
+\end{figure}
+
+\paragraph{Crossover Filters: }
+\textbf{Crossover filters} divide the audio spectrum into separate bands—low, mid, and high—each feeding a dedicated amplifier and loudspeaker driver:
+\[
+\begin{aligned}
+f_\text{L--M} &\approx 200\,\text{Hz}, \qquad
+f_\text{M--H} &\approx 2\,\text{kHz}.
+\end{aligned}
+\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Crossover_Filters.png}
+    \caption{Illustration of the per-band separation of the spectrum.}
+\end{figure}
+
+Using active components ensures precise frequency division and better phase alignment compared to passive crossovers.
+
+\paragraph{Graphic Equalizers: }
+A \textbf{graphic equalizer} provides independent boost or cut on multiple frequency bands (typically 10, 15, or 31 bands).  
+Each band corresponds to a band-pass filter centered at \(f_i\), controlled by a slider (fader).
+
+When the slider is centered, the response is flat.  
+Moving it upward \emph{boosts} the band around \(f_i\); downward movement \emph{cuts} it:
+\[
+v_{out} = v_{in}\,(1 \pm \beta G_{f_i}),
+\quad \text{where \(G_{f_i}\) is the gain of the band-pass cell.}
+\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{Graphic_EQ.png}
+    \caption{Simple representation  of the graphic EQ control over frequencies $f_i$.}
+\end{figure}
+
+\paragraph{Effect of the Quality Factor \(Q\).}
+The selectivity of each band depends on the quality factor:
+\[
+Q = \frac{f_0}{\Delta f} = \frac{f_0}{BW}.
+\]
+High-\(Q\) filters affect only narrow frequency ranges, while low-\(Q\) filters create smoother, overlapping corrections.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Q_Factor.png}
+    \caption{Influence of the quality factor \(Q\) on the equalizer band response. Higher \(Q\) produces a narrower, more selective peak or dip. Linear scale on the left, log scale on the right.}
+\end{figure}
+
+\paragraph{Equalizer circuit: } We show below the computation of the output of the circuit for different configurations. \textbf{CHECK SLIDE L10 - Graphic equalizer details.pdf}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.45 \linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{EQ_circuit_1.png}
+        \caption{Starting Configuration.}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{EQ_Circuit_2.png}
+        \caption{Flat response, cursor at the center.}
+    \end{minipage}
+    \vspace{0.5cm}
+   \begin{minipage}[c] {0.45 \linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{EQ_circuit_3.png}
+        \caption{Boost around $f_1$, cursor at the top.}
+    \end{minipage}\hfill
+    \begin{minipage}[c] {0.45 \linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{EQ_circuit_4.png}
+    \caption{Cut around $f_1$, cursor at the bottom}
+    \end{minipage}
+\end{figure}
+
+
+\paragraph{Parametric Equalizers}
+Unlike graphic equalizers, \textbf{parametric equalizers} allow full control over:
+\begin{itemize}
+  \item \textbf{Center frequency} \(f_0\),
+  \item \textbf{Gain} (boost or cut),
+  \item \textbf{Bandwidth or quality factor \(Q\)}.
+\end{itemize}
+
+The core element is a tunable band-pass filter, typically implemented with operational amplifiers.
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Param_EQ.png}
+    \caption{Response of a parametric equalizer showing adjustable \(f_0\), gain, and \(Q\).  
+This configuration enables precise shaping of the signal spectrum.}
+\end{figure}
+
+Digital implementations of parametric and graphic equalizers are now standard in DAWs and mixing consoles, using IIR or FIR filters for accurate and recallable tone shaping.
+
+\textbf{Summary}
+\begin{itemize}
+  \item Tone controls (Bass/Treble) use active feedback networks such as Baxandall filters.
+  \item Active filters (e.g., Sallen–Key) provide stable, low-distortion second-order responses for tone control and crossovers.
+  \item Equalizers—graphic and parametric—extend filtering concepts to multiple or variable frequency bands, giving engineers fine spectral control.
+  \item Digital realizations replicate these analog behaviors with high precision and flexibility.
+\end{itemize}
+

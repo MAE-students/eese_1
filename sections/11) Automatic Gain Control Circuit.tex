@@ -1,0 +1,253 @@
+\section{Automatic Gain Control Circuit}
+
+\subsection{Basic blocks}
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.55 \linewidth}
+    In audio processing, we want to modify and control the amplitude of a signal, enhancing or cutting the dynamics of low-amplitude (fader, expander) and/or high-amplitude (compressor, limiter) audio signals.  
+The idea is to use a \textbf{Voltage Controlled Amplifier (VCA)} which adjusts the amplification and gain based on a reference voltage $V_c$.
+\[
+v_{out} = G(V_c) \cdot v_{in}
+\]
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{VCA.png}
+    \caption{VCA block and transfer function.}
+    \end{minipage}\hfill
+\end{figure}
+
+To implement this, one building block is the \textbf{voltage multiplier}:
+\[
+v_{out} = v_a \cdot v_b
+\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{Voltage_Multiplier.png}
+    \caption{Voltage Multiplier block representation.}
+\end{figure}
+To compute the signal’s average, we define the \textbf{integrator}:
+\[
+\overline{v} = \frac{1}{T} \int_T v(\tau) \, d\tau
+\]
+In OPAMP form:
+\[
+v_{out}(t) = -\frac{1}{RC} \int v_{in}(t) \, dt
+\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{integrator.png}
+    \caption{Integrator block representation.}
+\end{figure}
+To compute the \textbf{signal RMS}, we also define the \textbf{square root} operator.
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.55 \linewidth}
+    First, we define:
+    \[
+    v_2 = v_{out}^2
+    \]
+    From the ideal OPAMP laws:
+    \[
+    i_1 + i_2 = i^- = 0
+    \]
+    with
+    \[
+    i_1 = \frac{v_{in}}{R_1}, 
+    \qquad i_2 = \frac{v_2}{R_2} = \frac{v_{out}^2}{R_2}
+    \]
+    Thus:
+    \[
+    \frac{v_{in}}{R_1} + \frac{v_{out}^2}{R_2} = 0 
+    \quad \Rightarrow \quad
+    v_{out} = \sqrt{-\frac{R_2}{R_1} v_{in}}
+    \]
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{square_root.png}
+    \caption{Circuit for the square root operator.}
+    \end{minipage}\hfill
+\end{figure}
+
+\textbf{Note:} The formula gives real results only if $v_{in} < 0$, hence we use an inverting buffer (as in the integrator).  
+
+The complete signal path to compute the RMS is:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{RMS_Pipeline.png}
+    \caption{RMS computation block diagram.}
+    \label{fig:placeholder}
+\end{figure}
+
+For a sinusoidal input $v_{in}$, the RMS measurement is:
+\[
+v_{RMS} = \frac{v_{peak}}{\sqrt{2}}
+\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{RMS_sine.png}
+    \caption{Sine signal RMS computation illustration.}
+\end{figure}
+
+\subsection{Compressor and Limiter}
+
+The Automatic Gain Control requires a voltage reference, which depends directly on the input signal itself.  
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{AGC_Circuit.png}
+    \caption{Illustration of the voltage threshold inclusion in the circuit.}
+\end{figure}
+
+The \textbf{threshold condition} is:
+\[
+v_{in} > V_{threshold} \quad \Rightarrow \quad \text{signal is attenuated (compression/limiting).}
+\]
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.35 \linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{linear_scale.png}
+    \caption{Linear scaling of the compressor/limiter.}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.6\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Limiter.png}
+    \caption{Attack and release times highlighted.}
+    \end{minipage}\hfill
+\end{figure}
+
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.6 \linewidth}
+    Gain control is not immediate. We define:
+\begin{itemize}
+    \item \textbf{Attack time}: the time needed for the system to reduce the gain when the input amplitude suddenly increases.
+    \item \textbf{Release time}: the time needed for the system to restore the gain after the input amplitude decreases.
+\end{itemize}
+
+These times determine how the gain changes during transitions between low and high amplitudes.  
+
+The RMS-based description of a compressor/limiter can be expressed as: $ v_{out,RMS} \quad \text{versus} \quad v_{in,RMS}$
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.38\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{limiter_comparison.png}
+    \caption{Comparison in between free compression and compressed signal.}
+    \end{minipage}\hfill
+\end{figure}
+
+The degree of compression is described by the \textbf{Compression Ratio} $1:k$. This means:
+\[
+\text{Input increase of } k \, \text{dBu} \quad \Rightarrow \quad \text{Output increase of } 1 \, \text{dBu}
+\]
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.5 \linewidth}
+    We distinguish 2 types of transitions:
+\begin{itemize}
+    \item \textbf{Hard knee} (red curve): the compression starts abruptly at the threshold.  
+    \item \textbf{Soft knee} (blue curve): the compression starts gradually around the threshold.  
+\end{itemize}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.5\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Hard_Knee_Soft_Knee.png}
+    \caption{Hard knee (left) and Soft knee (right).}
+    \end{minipage}\hfill
+\end{figure}
+
+\textbf{Limiter vs Clipper:}
+    \begin{itemize}
+        \item A \textbf{limiter}, using gain control, prevents the signal from exceeding a threshold but does not introduce distortion.  
+        \item A \textbf{clipper}, instead, abruptly cuts the signal above a threshold, introducing distortion.  
+    \end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{Limiter_vs_Clipper.png}
+    \caption{Limiter and Clipper comparison.}
+\end{figure}
+
+Based on the temporal evolution of the input, the gain control function becomes:
+\[
+G(t) = f\big(v_{in}(t), \, V_{threshold}, \, \text{attack time}, \, \text{release time}, \, k \big)
+\]
+where $k$ is the compression ratio.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{Gain_Control.png}
+    \caption{Gain control as a function of time.}
+    \label{fig:placeholder}
+\end{figure}
+
+\subsection{Gate and Expander}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.65 \linewidth}
+    We now focus on controlling low amplitudes.  
+\begin{itemize}
+    \item The \textbf{Gate} is used to \textit{cut signals} that are lower than a threshold.  
+    \item The \textbf{Expander} is used to \textit{change the gain} (and therefore the compression ratio) for low-level signals.  
+\end{itemize}
+
+The structure is similar to the Compressor/Limiter, but this time we switch the lower OPAMP inputs: RMS on pin "-" and $V_{threshold}$ on pin "+".
+
+We have: 
+\[
+v_{out,RMS} = f(v_{in,RMS}, \, V_{threshold}, \, k_{exp})
+\]
+where $k_{exp}$ is the expansion ratio.  
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.3\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Gate_Expander_Circuit.png}
+    \caption{Circuit of the Gate/Expander system.}
+    \end{minipage}\hfill
+\end{figure}
+
+\textbf{Gate:}
+If $v_{in,RMS} < V_{threshold}$, the output is attenuated strongly (or cut).  
+This suppresses background noise or unwanted weak signals.
+
+\textbf{Expander:}
+The expander reduces, but does not cut, low signals.  
+This results in an \textbf{enhanced dynamic range}, since the difference between low and high levels is increased.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Gate_vs_Expander.png}
+    \caption{Gate (left) and Expander (right).}
+\end{figure}
+
+
+\textbf{Examples of Dynamic Control:}
+\begin{itemize}
+    \item A \textbf{Downward Expander} reduces the volume of signals below the threshold.
+    \item An \textbf{Upward Expander} increases the level of signals above the threshold, expanding dynamics in the opposite way.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Expander_Dynamic_Control.png}
+    \caption{Dynamic control modification of the expander.}
+\end{figure}
+
+\textbf{Related Techniques:}
+\begin{itemize}
+    \item \textbf{De-esser:} Works like a compressor, but limits compression to a specific frequency band (e.g., sibilant sounds in vocals).  
+    \item \textbf{Side-chain compression:} The threshold is controlled by an \textit{external signal}.  
+    Example: lowering the music when a voice is detected (common in broadcasting).  
+\end{itemize}
+

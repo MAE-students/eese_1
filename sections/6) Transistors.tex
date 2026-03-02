@@ -1,0 +1,293 @@
+\section{Transistors}
+
+Transconductance $ G = I/V = 1/Z$
+and varistors $R = f(V) $ are at the base of active circuits.
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[t]{0.5\linewidth}
+    Active circuits can be modeled in a very simple way as a power gain scheme $P_{out} > P_{in}$:
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.25\linewidth]{active_circuits.png}
+        \caption{Power gain model of active circuits.}
+        \label{fig:placeholder}
+    \end{figure}
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[t]{0.5\linewidth}
+        \centering
+        In opposition to passive circuits $ P_{out} < P_{in} $: 
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.35\linewidth]{passive_circuits.png}
+        \caption{Power gain model of passive circuits.}
+        \label{fig:placeholder}
+    \end{figure}
+    \end{minipage}
+\end{figure}
+
+\subsection{Bipolar Junction Transistor (BJT)}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.6\linewidth}
+    The equations governing BJT transistors are:
+    \begin{itemize}
+        \item $i_B + i_C = i_E$ (from KCL)
+        \item $i_C = \beta \cdot i_B$ where $\beta$ is the current gain (usually 50–300)
+    \end{itemize}
+    Usually, $\beta >>1$, thus we obtain:
+    \[
+    i_E = (\beta + 1)i_B \approx i_C
+    \]
+    The collector’s current obeys the law:
+\[
+i_C = I_s \cdot e^{\tfrac{V_{BE}}{V_T}}
+\]
+where $V_T \approx 26 \,\text{mV}$ at $300 \,\text{K}$ is the thermal voltage (a physical constant).
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.36\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{BJT_Symbole.png}
+    \caption{Symbol of the BJT transistor.}
+    \end{minipage}
+\end{figure}
+
+\subsubsection{Small-Signal Transconductance}
+
+We define the transconductance behavior between the input $V_{BE}$ and $i_C$.
+
+
+\textbf{Bias + small-signal decomposition:} we choose an operating point $(V_{BE}^{OP}, I_C)$ with
+\[
+I_C = I_s e^{\tfrac{V_{BE}^{OP}}{V_T}}.
+\]
+Writing total variables as DC + small variations:
+\[
+V_{BE}=V_{BE}^{OP}+v_{be}, \qquad i_C = I_C + i_c, \qquad |v_{be}|\ll V_T.
+\]
+\textbf{Linearization (Taylor at the OP):} with $f(V_{BE})=I_s e^{\tfrac{V_{BE}}{V_T}}$, first-order Taylor gives
+\[
+i_C(V_{BE}^{OP}+v_{be}) \approx i_C(V_{BE}^{OP}) + \left.\frac{di_C}{dV_{BE}}\right|_{OP} v_{be}
+= I_C + g_m v_{be},
+\]
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.55\linewidth}
+    where
+    \[
+    \textcolor{red}{g_m \triangleq \left.\frac{di_C}{dV_{BE}}\right|_{OP}
+    = \left.\frac{1}{V_T} I_s e^{\tfrac{V_{BE}}{V_T}}\right|_{OP}
+    = \frac{I_C}{V_T}}
+    \]
+    Hence the \emph{small-signal} collector current is
+    \[
+    \textcolor{red}{{i_c = g_m v_{be}}}
+    \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.4\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{BJT_Simple_Equiv_Scheme.png}
+    \caption{Equivalent scheme of the simple approximation of the BJT.}
+    \end{minipage}
+\end{figure}
+
+\paragraph{Input resistance $r_\pi$.}
+In forward-active region, small-signal currents satisfy $i_c \approx \beta i_b$, so
+\[
+i_b = \frac{i_c}{\beta} = \frac{g_m}{\beta} v_{be}.
+\]
+Define the small-signal base--emitter resistance:
+\[
+\textcolor{red}{{r_\pi \triangleq \frac{v_{be}}{i_b} = \frac{\beta}{g_m} = \frac{\beta V_T}{I_C}}}
+\]
+
+
+\subsubsection{Varistor behaviour of the BJT}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.7\linewidth}
+    \textbf{Saturation Region:} \\
+    In the saturation region (low $V_{CE}$), the transistor acts somewhat like a low-value resistor (closed switch). We define this saturation resistance as:
+    \[
+    \frac{V_{CE}}{i_C} = R_{sat} \quad [\text{typically a few } \Omega]
+    \]
+    NB: $r_0$ is confused with $R_{sat}$ in the figure on the right.
+    
+    \textbf{Active Region:} \\
+    When $V_{CE} > V_{CE}^{SAT}$, the transistor acts as a current source. However, due to the Early Effect, the current increases slightly as voltage increases. This is modeled by the \textbf{small-signal output resistance} $r_o$:
+    \[
+    r_o = \frac{\partial v_{CE}}{\partial i_C} \approx 100\,k\Omega 
+    \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.25\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]
+        {BJT_Varistor.png}
+    \caption{Graph of $i_C (v_{CE})$.}
+    \end{minipage}
+\end{figure}
+\textit{(Note: In ideal models, $r_o \to \infty$, but in real small-signal models, it is finite and large, typically $10k\Omega - 100k\Omega$, not $100M\Omega$.)}
+
+\textbf{Cutoff Region:} \\   
+Normally, conduction occurs when $v_{BE} \approx 0.7\,V$. If $v_{BE} < 0.5\,V$, the transistor is in the \textbf{off-state} (cutoff), thus $I_C \approx 0$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{BJT_Complete_Scheme.png}
+    \caption{Small-Signal Hybrid-Pi Model for the Active Region of the BJT.}
+    \label{fig:placeholder}
+\end{figure}
+
+\subsection{MOSFET}
+
+\textbf{MOSFET} stands for Metal-Oxide Semiconductor Field Effect Transistor.
+We provide below the scheme of the nMOS and pMOS transistors. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.15\linewidth]{NMOS_PMOS.png}
+    \caption{Schemes of the nMOS and pMOS transistors.}
+    \label{fig:placeholder}
+\end{figure}
+
+\subsubsection*{nMOSFET}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.75\linewidth}
+    The equations governing nMOSFET transistors are:
+\begin{itemize}
+    \item \textbf{Drain Current Law:}  
+The drain current equation is quadratic, whereas the BJT collector’s current is exponential.
+\[i_D = k \cdot (v_{GS} - V_{TH})^2\]
+where $V_{TH}$ is the threshold voltage (usually in the range $0.4 - 1.5 \,\text{V}$).
+    \item \textbf{Input Characteristic}: Unlike the BJT, the MOSFET has an extremely high input impedance $ i_G \approx 0$ . The Gate current is effectively zero, so there is no $\beta$ current-gain relationship.
+\end{itemize}
+
+Similarly to the BJT, we define a transconductance behavior.  
+Considering small oscillations around the operating point, we obtain the small-signal transconductance:
+\[
+g_m = \frac{d i_D}{d V_{GS}} = 2 \sqrt{k \cdot I_D}
+\]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.2\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{NMOS.png}
+    \caption{nMOS scheme.}
+    \end{minipage}
+\end{figure}
+
+Considering the transconductance above, a simplified equivalent circuit is shown below:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{nMOS_simple_scheme.png}
+    \caption{Scheme of the simplification of the nMOS.}
+    \label{fig:placeholder}
+\end{figure}
+
+The output relation between current $i_D$ and voltage $v_{DS}$ describes a varistor-like behavior.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{nMOS_Varistor.png}
+    \caption{Graph of $i_D (v_{DS} ) $.}
+    \label{fig:placeholder}
+\end{figure}
+
+The transistor is in \textbf{off-state} when:
+\[
+v_{GS} < V_{TH}, \quad \text{i.e., } v_{0V} < 0 \quad \Rightarrow \quad i_D = 0
+\]
+
+\clearpage
+
+\subsection{Junction Field Effect Transistors (JFET)}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.65\linewidth}
+\[
+I_0 \; \text{is max when:} \quad
+\begin{cases}
+v_{GS} = 0 \\
+v_{GS} \geq v_P \\
+v_{DS} \geq v_N
+\end{cases}
+\]
+The equations governing JFETs are:
+\[
+i_D = k_{JFET} \left( 1 - \frac{v_{GS}}{V_P} \right)^2
+\]
+where $V_P$ is the pinch-off voltage.
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.3\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{JFET.png}
+    \caption{JFET scheme.}
+    \end{minipage}
+\end{figure}
+
+Once again, considering small oscillations around the operating point, we obtain:
+\[
+g_m = \frac{d i_D}{d v_{}} = 2 \sqrt{k \cdot I_D}
+\]
+We observe:
+\[
+r_{in} \to +\infty
+\]
+
+\subsection*{n-Transistors Summary}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+ & \textbf{OFF-STATE} & \textbf{TRANSCONDUCTANCE} & \textbf{VARISTOR} \\
+\hline
+\textbf{BJT} 
+& $i_C = 0$ for $V_{BE} < 0.7\,V$ 
+& \begin{tabular}[c]{@{}l@{}}
+   \vspace{4pt} % extra top space
+   Active for $V_{BE} \geq 0.7V$, $V_{CE} \geq 0.2V$ \\[6pt]
+   $i_C = \beta \cdot i_B = I_S \cdot e^{\tfrac{V_{BE}}{V_T}}$ \\[6pt]
+   $g_m = \tfrac{I_C}{V_T}, \quad r_\pi = \tfrac{\beta}{g_m}$ 
+   \vspace{4pt} % extra bottom space
+   \end{tabular} 
+& Active for $V_{BE} \geq 0.7V$, $V_{CE} < 0.2V$ \\
+\hline
+\textbf{MOSFET} 
+& $i_D = 0$ for $V_{GS} < V_{TH}$ 
+& \begin{tabular}[c]{@{}l@{}}
+   \vspace{4pt}
+   Active for $V_{GS} > V_{TH}$, $v_{DS} \geq V_{0V}$ \\[6pt]
+   $i_s \approx i_D = k (v_{GS} - V_{TH})^2$ \\[6pt]
+   $g_m = 2 \sqrt{k \cdot I_D}, \quad r_{IN} \to +\infty$
+   \vspace{4pt}
+   \end{tabular} 
+& Active for $V_{GS} > V_{TH}$, $V_{DS} < V_{0V}$ \\
+\hline
+\textbf{JFET} 
+& $v_{GS} < V_P \; (\Leftrightarrow V_P < 0)$ 
+& \begin{tabular}[c]{@{}l@{}}
+   \vspace{4pt}
+   Active for $V_{GS} > V_P$, $v_{DS} \geq V_{0V}$ \\[6pt]
+   $i_D=i_{max}$ for $ v_{GS}=0\ V$\\
+   $i_D = k_{JFET}\!\left(1 - \tfrac{v_{GS}}{V_P}\right)^2$ \\[6pt]
+   $g_m = 2 \sqrt{k \cdot I_D}, \quad r_{IN} \to +\infty$
+   \vspace{4pt}
+   \end{tabular} 
+& Active for $V_{GS} > V_{P}$, $V_{DS} < V_{0V}$ \\
+\hline
+\end{tabular}
+\end{center}
+

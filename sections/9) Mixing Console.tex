@@ -1,0 +1,451 @@
+\section{Mixing Console}
+
+\subsection{Signal Summation}
+See page 139 of teacher’s book.
+
+Mixing console general pipeline: we have $N$ channels with signal processing blocks.  
+At the end of the audio processing pipeline, we usually want to sum up different channels together:
+\[
+y(t) = \sum_{k=1}^{N} a_k \, x_k(t)
+\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Mixing_Console_Gen.png}
+    \caption{General Overview of the signal summation}
+\end{figure}
+
+The weights $\{a_k\}_{k=1}^N$ are from the mixer of the channels, such that $a_k \in [0,1], \ \forall k \in [1,N]$.
+
+To sum voltages, we can connect them in series. However, this is not satisfying if we have a lot of channels. Instead, we’ll put current generators in parallel.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Mixing_Console_limitation.png}
+    \caption{Illustration of the limitations of summing voltages.}
+\end{figure}
+
+In an analog point of view, the voltages sum is obtained through the series of component voltages:
+\[
+\begin{cases}
+v_0 = v_1 - iR_1 \\
+v_0 = v_2 + iR_2
+\end{cases}
+\quad \Rightarrow \quad
+i= \frac{v_1 - v_2}{R_1 + R_2}
+\quad \Rightarrow \quad
+v_0 = v_1 - \frac{v_1 - v_2}{R_1+R_2} \, R_1
+\]
+Thus:
+\[
+v_0 = v_1 \left( 1-\frac{R_1}{R_1+R_2}\right) + v_2\frac{R_1}{R_1+R_2} 
+\quad \Rightarrow \quad v_0 = v_1 \frac{R_2}{R_1+R_2} + v_2\frac{R_1}{R_1+R_2}\neq v_1 + v_2
+\]
+As we do not obtain the desired result $v_0 = v_1 + v_2$, an idea is to sum currents instead of voltages, which requires a transconductance stage.
+ 
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.45 \linewidth}
+    The simplest way is to create a current, as a function of a given voltage using a resistor, $i = f(v)$.
+    
+    NB: we don’t want the current to go to the ground, but we still want a ground reference. We talk about \textbf{virtual ground}. 
+
+    Thus, we’ll use a transconductance circuit to generate a current proportional to the target voltage. To get rid of the ground issue, we’ll use an OPAMP. 
+    
+    The negative feedback configuration will solve the problem since $\varepsilon = 0$. This is understood as summing (negative) feedback amplifier.
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.5\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Mixing_Console_Summing_Currents.png}
+    \caption{Summing currents.}
+    \end{minipage}
+\end{figure}
+
+
+With a single input, we obtain:  $ v_{o} = -v_1 \frac{R_f}{R_1} $.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.3\linewidth]{Mixing_Console_1_input.png}
+\caption{OPAMP circuit with 1 input.}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.65 \linewidth}
+    With 2 inputs, we obtain: 
+    \[
+    v_{0}|_{v_2=0} = -v_1 \frac{R_f}{R_1}, 
+    \quad v_{0}|_{v_1=0} = -v_2 \frac{R_f}{R_2}
+    \]
+    Thus we obtain that:
+    \[
+    v_0 = v_{0}|_{v_2=0} + v_{0}|_{v_1=0} = -v_1 \frac{R_f}{R_1} -v_2 \frac{R_f}{R_2} = -R_f \left( \frac{v_1}{R_1} + \frac{v_2}{R_2} \right)
+    \]
+    In this way, multiple currents can be summed together into the feedback branch, and superposition occurs:  
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.3\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Mixing_Console_2_inputs.png}
+        \caption{OPAMP circuit with 2 input.}
+    \end{minipage}
+\end{figure}
+
+NB: we are not talking about mixing yet, that is a slightly different operation (with multipliers).  
+
+A problem occurs when we consider too many channels entering the pin ``$-$'' of the OPAMP:  
+\[
+G_{LOOP} = A_0 \cdot \beta = A_0 \cdot \frac{R_{IN}}{N \cdot R_F} \propto \frac{1}{N} \quad \Rightarrow \quad \lim_{N \to +\infty} G_{LOOP} = 0
+\]
+Where the $\beta$ factor (voltage divider between input and feedback) is such that:
+\[
+\beta = \frac{R_{IN}}{N \cdot R_F}
+\]
+However the above configuration works only if $G_{LOOP} \gg 1$.
+
+To solve this issue, we usually stack up different summing stages. For example:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Mixing_Console_Multiple_Summing_layers.png}
+    \caption{Illustration of multiple 2-summing layers.}
+\end{figure}
+
+
+
+\subsection{Crosstalk}
+Crosstalk is the coupling between a signal varying in time and others because of coupling capacitors $C_{STRAY}$.  
+They are due to the close placement of metal elements (wire, plaque...).  
+They create short circuits between nodes at high frequencies.
+
+Thanks to the current summation of signals, we don’t get an effective coupling, leading to channel separation.
+
+In the circuit below, L stands for Left channel, R for Right channel, C for Centre channel.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Mixing_Console_Crosstalk.png}
+    \caption{Illustration of the Crosstalk.}
+\end{figure}
+
+\clearpage
+
+\subsection{Panning potentiometer structure}
+
+The potentiometers for panning are such that, when $R_{POT,L}$ goes up, $R_{POT,R}$ goes down and vice-versa.  
+
+We usually introduce a voltage buffer (gain 1), characterized by an output resistor $R$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.2\linewidth]{Pan_Pot_1.png}
+    \caption{Model of the panning potentiometer.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.6 \linewidth}
+    The total power will be given by $P_{TOT} = P_L + P_R$, and
+    \[
+    P = \frac{v^2}{R} \quad \Rightarrow \quad P_{TOT} = \frac{v_L^2}{R} + \frac{v_R^2}{R}
+    \]
+    \textbf{Case 1: Full-left}
+    \[
+    v_L = v_s, \quad v_R = 0 
+    \quad \Rightarrow \quad
+    P_{TOT} = \frac{v_s^2}{R}
+    \]
+    \textbf{Case 2: Full-right}
+    \[
+    v_L = 0, \quad v_R = v_s 
+    \quad \Rightarrow \quad
+    P_{TOT} = \frac{v_s^2}{R}
+    \]
+    \textbf{Case 3: Centre}
+    \[
+    v_L = v_R = \frac{v_s}{2}
+    \quad \Rightarrow \quad
+    P_{TOT} = \frac{v_L^2}{R} + \frac{v_R^2}{R}
+    = \frac{v_s^2}{4R} + \frac{v_s^2}{4R}
+    = \frac{v_s^2}{2R}
+    \]
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Pan_Pot_Circuit_1.png}
+    \caption{Panning potentiometer circuit.}
+    \end{minipage}\hfill
+\end{figure}
+
+At centre, the power is half compared to full-right or full-left.  
+This creates a power gap, meaning a different amount of loudness is perceived.
+
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.5 \linewidth}
+    To correct it, design of the panning is crucial. Ideally, we want:
+    \[
+    P_{TOT} = P_L + P_R = \frac{v_L^2}{R} + \frac{v_R^2}{R}
+    = \frac{1}{R}\left(v_L^2 + v_R^2\right) = c^{st}
+    \]
+    NB: $ v_L = f_L(v_s), \quad v_R = f_R(v_s) $ which varies with the potentiometer position.
+    
+    Assuming a rotary potentiometer, we have:
+    \[
+    \begin{cases}
+    v_L = v_s \cdot \sin(\theta) \\
+    v_R = v_s \cdot \cos(\theta)
+    \end{cases}
+    \]
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.2\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Pan_Pot_Bad.png}
+    \caption{Basic yet inefficient potentiometer power graph.}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.2\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{Pan_Pot_Good.png}
+    \caption{Rectified panning potentiometer power graph.}
+    \end{minipage}
+\end{figure}
+Thus, we obtain:
+\[
+P_{TOT} = \frac{1}{R} v_s^2 \left[ \sin^2(\theta) + \cos^2(\theta) \right]
+= \frac{1}{R} v_s^2, \quad \forall \theta \in [0,2\pi]
+\]
+Thus, the problem here is solved using a rotary potentiometer.
+
+We can also use compensated potentiometers: we add bypass resistors $R_b$ that give smoother transmission.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{Pan_Pot_Bypass_Resistor.png}
+    \caption{Scheme of the panning potentiometer circuit with 2 bypass resistors.}
+\end{figure}
+
+\subsection{Comments on the Mixing Console Presentation}
+
+\begin{itemize}
+    \item \textbf{+48V Phantom Power}: supplies phantom power to microphones that require it (typically condenser microphones).  
+    It acts as a pure voltage shift, ensuring the mic receives the necessary bias for operation.
+
+    \item \textbf{Transformers (two sets)}: remove any DC component from the signal path, allowing only the AC (audio) component to pass through.  
+    They also provide galvanic isolation, helping reduce noise and interference.
+
+    \item \textbf{Rng (Range) Button}: when engaged, this bypasses the first amplifier stage, routing the signal directly to the second amplifier.  
+    \textit{Note}: the sensitivity scale on the knob must be read carefully, as two values are indicated (inner and outer markings), each corresponding to a different gain reference.
+
+    \item \textbf{Phase Button (Ø symbol)}: inverts the signal’s polarity.  
+    Useful when multiple microphones capture the same source but are subject to phase cancellation. By inverting one signal, destructive interference can be mitigated.  
+    (\textit{See OneNote examples on phase inversion in mic setups.})
+
+    \item \textbf{Band-Pass Filters (BP)}: placed at the end of the pre-amplification stage to attenuate unwanted low and high frequency components before equalization.
+
+    \item \textbf{Post Pre-Amp Equalizer}:  
+    \begin{itemize}
+        \item Inner numbers on the knob’s crown: cutoff frequency of the \textbf{LPF} (Low-Pass Filter).
+        \item Outer numbers on the knob’s crown: cutoff frequency of the \textbf{HPF} (High-Pass Filter).
+    \end{itemize}
+    This dual marking system allows precise control over both low- and high-frequency shaping.
+
+    \item \textbf{PFL (Pre-Fader Listen)}: monitoring mode where the signal is taken \textit{before the fader}.  
+    This allows the operator to check levels or tone without being affected by the fader’s position in the mix.
+
+    \item \textbf{AFL (After-Fader Listen)}: monitoring mode where the signal is taken \textit{after the fader}.  
+    This reflects exactly what is being sent to the mix bus, including any adjustments made with the fader.
+\end{itemize}
+
+
+\subsection{Notes from the slides}
+
+A \textbf{mixing console} (or mixing desk) is the central element in both recording and live-sound systems.  
+It allows multiple audio signals to be preamplified, equalized, combined, monitored, and routed toward various outputs.  
+Its architecture exemplifies the integration of analog and digital electronics for high-fidelity and flexible sound processing.
+
+Two principal families exist:
+\begin{itemize}
+  \item \textbf{Analog consoles:} perform all signal processing in the continuous voltage domain.
+  \item \textbf{Digital consoles:} include analog-to-digital (A/D) and digital-to-analog (D/A) conversion, with internal DSP processing.
+\end{itemize}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{Analog_vs_Digital_Mixing_Console.png}
+    \caption{Comparison between analog and digital console architectures.  
+Analog consoles operate fully in the voltage domain, while digital ones use conversion and DSP for processing.}
+\end{figure}
+
+A professional mixing console typically comprises:
+\begin{itemize}
+  \item \textbf{Input modules:} preamplifiers, filters, equalizers, pan, mute, and fader.
+  \item \textbf{Group and auxiliary buses:} allow submixing, effects routing, and monitor sends.
+  \item \textbf{Output modules:} summing amplifiers, master faders, and output processing.
+  \item \textbf{Control and automation:} VCAs (Voltage Controlled Amplifiers) or digital control layers.
+\end{itemize}
+
+Each input can be routed to one or several outputs through a programmable \textbf{mixing matrix}.
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.45 \linewidth}
+    \centering
+        \includegraphics[width=\linewidth]{Mixing_Console_Matrix.png}
+    \caption{Simplified signal flow of a mixing console. Each channel can feed multiple outputs through routing and grouping.}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Mixing_Console_Routing_Matrix.png}
+    \caption{Simplified signal flow of the mixing console's routing matrix.}
+    \end{minipage}
+\end{figure}
+
+
+\paragraph{Input Module}
+The input module is the fundamental building block. It contains:
+\begin{enumerate}
+  \item \textbf{Preamplifier:} provides gain (typically +20 to +60 dB) to bring microphone-level signals up to line level.
+  \item \textbf{Filters:} high-pass and low-pass filters with adjustable cutoffs (e.g., 20–800\,Hz, 1–20\,kHz).
+  \item \textbf{Equalizer (EQ):} usually a 4-band parametric EQ with variable frequency, gain, and quality factor $Q$.
+  \item \textbf{Auxiliary sends:} direct signal copies to monitor or effects buses.
+  \item \textbf{Pan control:} distributes the signal between left and right (L–R) outputs.
+  \item \textbf{Fader:} adjusts the output signal level following a logarithmic law.
+  \item \textbf{Mute and routing switches:} determine the channel’s active buses.
+\end{enumerate}
+
+
+\paragraph{Tone Shaping and Filtering}
+After preamplification, the signal passes through:
+\begin{itemize}
+  \item A \textbf{high-pass filter} (HPF) to remove rumble and low-frequency noise.
+  \item A \textbf{low-pass filter} (LPF) to reduce high-frequency interference.
+  \item A \textbf{parametric equalizer} for tone control and correction.
+\end{itemize}
+
+Low-frequency (LF) and high-frequency (HF) sections often allow switching between \textbf{bell} and \textbf{shelf} responses:
+\begin{itemize}
+  \item \textbf{Bell response:} localized boost/cut centered around $f_0$.
+  \item \textbf{Shelf response:} gradual boost/cut below or above a threshold frequency.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{Mixing_Console_Bell_vs_Shelf.png}
+    \caption{Parametric equalizer responses: bell and shelf characteristics for LF and HF bands.}
+\end{figure}
+
+
+\paragraph{Auxiliary (AUX) Lines}
+Auxiliary lines allow parallel routing for:
+\begin{itemize}
+  \item Effects sends (reverb, delay),
+  \item Monitor mixes,
+  \item Recording or broadcast feeds.
+\end{itemize}
+
+They can be configured as:
+\begin{itemize}
+  \item \textbf{Pre-fader} – independent from channel fader adjustments,
+  \item \textbf{Post-fader} – follow channel fader level,
+  \item \textbf{Pre-EQ or Post-EQ} – depending on whether they are affected by the equalizer section.
+\end{itemize}
+
+A professional console (e.g., Soundcraft Series V) may include up to 12 auxiliary buses, grouped in stereo or mono pairs.
+
+\paragraph{Groups and Submixes}
+Input channels can be assigned to one or several \textbf{groups}.  
+A group collects and controls a set of related channels (e.g., drum mics, backing vocals) using a single fader.  
+Groups can be panned between odd/even buses for stereo submixing. \textbf{Pan-switch behavior:}
+\begin{itemize}
+  \item When the pan switch is ON: groups receive the post-pan-pot signals (odd groups = left, even groups = right).
+  \item When the pan switch is OFF: groups receive the pre-pan-pot signal (centered).
+\end{itemize}
+
+\paragraph{Monitoring: PFL and AFL Lines}
+Monitoring systems use two specific routing modes:
+\begin{itemize}
+  \item \textbf{PFL (Pre-Fader Listen):} allows listening to the signal before the fader, unaffected by level changes.
+  \item \textbf{AFL (After-Fader Listen):} monitors the post-fader signal, reflecting mix balance.
+\end{itemize}
+
+A \textbf{SOLO} switch can combine PFL and AFL functions, isolating one channel in the monitor output.
+
+\paragraph{Voltage Controlled Amplifiers (VCA)}
+In professional consoles, manual fader movements can be replaced or paralleled by a \textbf{Voltage Controlled Amplifier (VCA)} system.  
+The signal gain is governed by a control voltage $V_C$:
+\[
+\frac{v_{out}}{v_{in}} = G(V_C),
+\]
+where $G(V_C)$ is the gain law defined by the control circuitry.
+
+VCAs allow:
+\begin{itemize}
+  \item grouped control over several channels without altering signal summing,
+  \item automation or remote fader control,
+  \item accurate recall of mix levels.
+\end{itemize}
+
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.65 \linewidth}
+    \paragraph{Output Modules and Routing}
+The output section aggregates all buses and provides final routing and level management:
+\begin{itemize}
+  \item \textbf{LCR (Left–Center–Right)} main outputs,
+  \item \textbf{Group outputs} (e.g., 8),
+  \item \textbf{Auxiliary outputs} (e.g., 12),
+  \item \textbf{Matrix outputs} for complex distribution to external destinations.
+\end{itemize}
+\medskip
+Each output may include:
+\begin{itemize}
+  \item send/return loops for external processors,
+  \item master fader,
+  \item signal monitoring and metering circuits.
+\end{itemize}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.3\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Mixing_Console_Output_Matrix.png}
+    \caption{Simplified schematic of a 16×10 matrix section.}
+    \end{minipage}
+\end{figure}
+
+
+\paragraph{Master Section}
+The master section combines multiple functions:
+\begin{itemize}
+  \item \textbf{L–R output module:} includes oscillator, talkback, and main bus routing.
+  \item \textbf{Monitor and headphone section:} controls PFL/AFL monitoring and auxiliary returns.
+  \item \textbf{Matrix and external routing:} sums groups and auxiliaries into custom mixes.
+\end{itemize}
+
+\paragraph{Inside the Console: Preamplifier and VCA Implementation}
+The console’s preamplifier uses low-noise transistors (e.g., pnp BJT 2SB737) in differential configuration for excellent common-mode rejection.  
+Two cascaded stages provide gain and headroom, while the following VCA stage (e.g., THAT2181) allows smooth gain control.
+
+\paragraph{Analog vs. Digital Consoles}
+\textbf{Analog consoles} rely on continuous electronic processing and are often valued for their sound character and tactile workflow.  
+\textbf{Digital consoles}, instead, offer:
+\begin{itemize}
+  \item recallable settings and automation,
+  \item integration with DAWs,
+  \item onboard digital effects,
+  \item flexible virtual routing.
+\end{itemize}
+
+Despite different implementations, both follow the same conceptual structure:  
+\[
+\text{\emph{input → processing → grouping → summing → output}
+}
+\]
+
+

@@ -1,0 +1,714 @@
+\section{Electronic Noise}
+\subsection{Presentation}
+
+In the acoustical domain, noise is usually associated with undesired disturbance. In the electronical domain, it may be desired.  
+
+The standard notation for noise is:
+\[
+v(t) = V_{DC} + v_s(t) + v_n(t) + v_d(t)
+\]
+Where:
+\begin{itemize}
+    \item $v_n(t)$ : the noise voltage
+    \item $v_d(t)$ : the disturbance voltage (for example the 50 Hz AC supply)
+\end{itemize}
+
+\textbf{NB:} Random signals are often associated to zero mean value, i.e. $ \overline{v_n} = 0 $.
+
+The average power is usually computed taking the RMS value of the signals:
+\[
+v_{n,RMS} = \sqrt{\lim_{T \to +\infty} \frac{1}{T} \int_0^T v_n^2(t)\, dt}
+\]
+
+We introduce:
+\begin{itemize}
+    \item the \textbf{Signal to Noise Ratio (SNR)}: 
+    \[
+    SNR = \frac{v_{s,RMS}}{v_{n,RMS}} \in [0,+\infty[
+    \]
+    \item the \textbf{Signal to Disturbance Ratio (SDR)}:
+    \[
+    SDR = \frac{v_{s,RMS}}{v_{d,RMS}} \in [0,+\infty[
+    \]
+    \item Both quantities are usually expressed in dB:
+\[
+SNR_{dB} = 20 \cdot \log_{10}(SNR)
+\]
+\end{itemize}
+
+$v_{n,RMS}(f_0, \Delta f)$ is characterized by the central frequency $f_0$ and its bandwidth $\Delta f$.
+
+\textbf{NB:} SNR at low frequencies is lower than SNR at high frequencies.  
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{Narrow_Band_Filtering.png}
+    \caption{Processing pipeline for spectral distribution analysis.}
+    \label{fig:placeholder}
+\end{figure}
+
+The \textbf{Noise Power Spectral Density (NPSD)} plot describes how the squared RMS voltage behaves on the frequency spectrum.
+
+We identify different components in the Noise Power Spectral Density (NPSD) curve:
+\begin{itemize}
+    \item \textbf{White noise component} $S_{n,w}(v^2)$: constant across the spectrum.
+    \item \textbf{Flicker / Pink noise component} $S_{n,f}(v^2)$: decreases with frequency in a $\propto \tfrac{c}{f}$ manner.
+    \item \textbf{Brown noise component} $S_{n,b}(v^2)$: decreases faster, in a $\propto \tfrac{c}{f^2}$ manner.
+\end{itemize}
+
+\textbf{Remark:} Pink noise is particularly relevant in audio systems, as it impacts the low-frequency part of the spectrum.  
+The typical audio band (20--20 kHz) is often considered as a \textit{low-frequency range} in electronic circuits.  
+
+When analyzing noise, we can choose voltage or current as our reference for Power Spectral Density (PSD):
+\[
+S_{v,f} = \frac{dv_n^2}{df} \qquad [V^2/Hz]
+, \qquad
+S_{i,f} = \frac{di_n^2}{df} \qquad [A^2/Hz]
+\]
+Thus, we usually refer to \textbf{Voltage Noise Spectral Density} $\left( S_{v,f}\right)$ and \textbf{Current Noise Spectral Density} $\left( S_{i,f}\right)$.  
+
+By integrating the PSD over frequency, we obtain the RMS values of these noise components:
+\[
+\int_{BW} S_n(f)\, df = \overline{v_n^2} = v_{RMS,n}^2
+\quad \text{or} \quad
+\int_{BW} S_n(f)\, df = \overline{i_n^2} = i_{RMS,n}^2
+\]
+depending on whether the target is voltage or current.
+
+\subsection{Measuring Noise}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.6 \linewidth}
+    To evaluate the overall contribution of each component (voltage and current) to the output, we resort to an \textbf{equivalent circuit model}.  
+Random noise components may add together or cancel out; therefore, their relationship is often analyzed in terms of correlation.  
+
+We typically use \textbf{two generators} at the input, instead of one, for the following reasons:
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.3\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Meausing_Noise_1.png}
+    \caption{Abstract representation of the setup.}
+    \end{minipage}
+\end{figure}
+
+\begin{itemize}
+    \item If we measure the output voltage with \textbf{no input voltage}, the noise voltage source contributes nothing (since it is floating).  
+    The measured noise is then solely due to the \textbf{current generator}.
+    
+    \item If we \textbf{short-circuit the input}, the current generator no longer contributes.  
+    The measured output noise is then entirely due to the \textbf{voltage generator}.
+\end{itemize}
+
+\textbf{Conclusion:}  
+By combining these two measurement cases, we can separately identify and quantify the contributions of voltage noise and current noise to the total system noise.
+
+We know that for any circuit, the output is given by :
+\[
+{{v}_{out,sig}}={{v}_{in,sig}}\cdot TF\left( j\omega  \right)
+\]
+When working with the NPSD $S_{out,n} \ [V^2/Hz]$, such that $S_{out,n} = | TF(j \omega) |^2 \cdot S_{in,n}$.
+
+
+\subsection{Resistors' Noise}
+
+We can think of resistors as blocks of conductors to which we apply a certain voltage and current.  
+Inside the conductor, electric charges move randomly due to thermal agitation.  
+This random motion generates fluctuations, which create heat in the conductor.  
+This phenomenon is called \textbf{thermal noise} or \textbf{Johnson noise}.
+
+The Voltage Noise PSD of a Resistor is given by: 
+\[
+S^R_{n,V} = 4k_B T R
+\]
+which is \textbf{frequency independent}.  
+
+\begin{itemize}
+    \item $k_B = 1.38 \cdot 10^{-23}\ [J/K]$ is the Boltzmann constant.
+    \item $T$ is the absolute temperature in Kelvin (commonly $T \approx 300\,K$).
+    \item $R$ is the resistance in $\Omega$.
+\end{itemize}
+
+Since $S^R_{n,v}$ does not depend on frequency, this is a \textbf{white noise process}.
+
+The RMS fluctuation is computed as:
+\[
+v_{n,RMS} = \sqrt{\int_{BW} S_{n,V} \, df}
+= \sqrt{\int_{BW} 4 k_B T R \, df}
+= \sqrt{BW \cdot 4k_B T R}
+\]
+For an audio bandwidth of $20\,\text{Hz} - 20\,\text{kHz}$:
+\[
+v_{n,RMS} = \sqrt{(20 \cdot 10^3 - 20)\, 4k_B T R}
+\approx \sqrt{20 \cdot 10^3 \cdot 4k_B T R}
+\]
+
+Numerical Example: taking $R = 1\,k\Omega$ and $T = 300\,K$:
+\[
+S_{n,v} \approx 1.6 \cdot 10^{-17}\ \left[\frac{V^2}{Hz}\right], 
+\qquad v_{n,RMS} \approx 80 \,\mu V_{\text{RMS}}
+\]
+From Ohm’s law $V = RI$, the current noise PSD is obtained as:
+\[
+S_{n,i} = \frac{S_{n,v}}{|R|^2} 
+= \frac{4k_B T R}{R^2}
+\quad \Rightarrow \quad
+S_{n,i} = \frac{4k_B T}{R}
+\]
+
+\subsection{PN Junctions Noise}
+
+The noise described in the figure is called \textbf{shot noise}.  
+It is associated with the current flow, more precisely related to the passage of electrons from one side to the other of the PN junction.  
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{shot_noise.png}
+    \caption{Illustration of the shot noise.}
+\end{figure}
+\[
+S_{n,I} = \frac{d\overline{i_n}^2}{df} = 2 \cdot q \cdot I
+\]
+where $q = 1.6 \cdot 10^{-19}$ C is the electron charge, and $I$ is the current through the junction. We observe that this is a \textbf{white noise} process, i.e. constant in frequency.  
+
+\paragraph{Comparison: Thermal vs Shot Noise}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Thermal noise} & \textbf{Shot noise} \\
+\hline
+Depends on the resistor (material, device) & Depends on the current (not the material, but the bias) \\
+\hline
+Depends on temperature (can be reduced) & Cannot be reduced by temperature \\
+\hline
+\end{tabular}
+\end{center}
+
+\clearpage
+
+\subsection{Noise in Transistors}
+
+We have different transistor types: BJT, JFET, and MOSFET.
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.75 \linewidth}
+    \paragraph{BJT:}  
+The main noise component is a current noise seen across its emitter and collector, $\overline{i_{n,C}^2}$, associated to the CNPSD:
+\[
+S_{n,I} = 2q \cdot I_C \text{ which is purely shot noise.}
+\]
+The Voltage Noise PSD of a BJT is:
+\[
+S_{n,V}^{BJT} = 2q \cdot \frac{I_C}{g_m^2} \text{ where $g_m$ is the transconductance.}
+\]
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.2\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{BJT_Noise.png}
+    \caption{Model of the noise within a BJT.}
+    \end{minipage}\hfill
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.75 \linewidth}
+    \paragraph{JFETs and MOSFETs:}  
+The current noise is associated with the current flow through the gate $\overline{i_{n,G}^2}$, with CNPSD:
+\[
+S_{n,G}^{MOSFET/JFET} = 2q I_G \ \ \text{ where $I_G$ is very small (pA for JFETs, fA for MOSFETs).}
+\]
+Another important source of noise is the \textbf{drain current noise}, $\overline{i_{n,D}^2}$, modeled as thermal noise:
+\[
+S_{n,I}^{MOSFET/JFET} = \frac{4 k_B T}{R_{eq}} = 4k_B T \cdot g_m
+\quad \text{where } g_m = \frac{1}{R_{eq}}
+\]
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.2\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{JFET_MOSFET_Noise.png}
+    \caption{Model of the noise within a JFET/MOSFET.}
+    \end{minipage}\hfill
+\end{figure}
+
+Thus, the Voltage Noise PSD of JFETs and MOSFETs is:
+\[
+S_{n,V}^{JFET/MOSFET} = \frac{4k_BT g_m}{g_m^2} = \frac{4k_BT}{g_m}
+\]
+
+\paragraph{Corner Frequency:}
+It is the frequency where the two asymptotic noise curves merge.
+
+\begin{itemize}
+    \item For JFETs and BJTs, the corner frequency is typically around $10\,Hz$.
+    \item For MOSFETs, the corner frequency is much higher, often above the audio range.
+\end{itemize}
+
+\textbf{Remark:}  
+Since MOSFET corner frequencies are so high, they are generally not used in audio systems.  
+However, MOSFETs remain dominant in integrated circuits because of their high integration capability (smaller size than other transistor types).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Corner_Frequency.png}
+    \caption{NPSD of transistors with the corner frequency.}
+    \label{fig:placeholder}
+\end{figure}
+
+\clearpage
+
+
+\subsection{Noise in Multi-Stage Systems}
+
+Let’s consider a 3-stage circuit:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Multi_Stage_Noise_Pipeline.png}
+    \caption{Pipeline of 3 OPAMPs with noise.}
+\end{figure}
+
+\textbf{NB:} The red and blue quantities indicate noise sources.  
+
+The output signal is the product of the input signal and the gain stages.  
+The output \textit{noise}, however, is different: to compute it, we must account for the \textbf{impedances in the circuit} as illustrated below.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\linewidth]{Source_Impedane_Noise.png}
+    \caption{Accounting for the impedances at stage 1.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.55 \linewidth}
+    \textbf{Current noise component in the 1\textsuperscript{st} stage:}
+We remove (short-circuit) the voltage source and the voltage noise source.  
+The voltage associated to the input current is:
+\[
+\overline{v_{n,1_{IN}}}^2 = \overline{i_{n,1}}^2 \cdot \left|Z_{in,1}//Z_S\right|^2
+\quad \Rightarrow \quad
+\overline{v_{n,1_0}}^2 = \overline{i_{n,1}}^2 \cdot \left|Z_{in,1}//Z_S\right|^2 \cdot \left|G_1\right|^2
+\]
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Current_Component.png}
+    \caption{Circuit with the voltage sources as short circuits.}
+    \end{minipage}\hfill
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.55 \linewidth}
+    \textbf{Voltage noise component in the 1\textsuperscript{st} stage:}
+We remove (open-circuit) the current source and the current noise source.  
+The current associated to the input voltage is:
+\[
+\overline{v_{n,1_{IN}}}^2 = \overline{v_{n,1}}^2 \cdot \left|\frac{Z_{in,1}}{Z_{in,1} + Z_s}\right|^2
+\quad \Rightarrow \quad
+\overline{v_{n,1_0}}^2 = \overline{v_{n,1}} ^2 \cdot \left|\frac{Z_{in,1}}{Z_{in,1} + Z_s}\right|^2 \cdot |G_1|^2
+\]
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Voltage_Component.png}
+    \caption{Circuit with the current sources as floating points.}
+    \end{minipage}\hfill
+\end{figure}
+
+\textbf{Complete Output Noise:}
+The total output noise contribution of stage 1 to the output of stage 1 is:
+\[
+\overline{v_{n,1_0}}^2 = \overline{i_{n,1}}^2 \left|Z_{in,1}//Z_S\right|^2 \cdot |G_1|^2 
++ \overline{v_{n,1}}^2 \cdot \left|\frac{Z_{in,1}}{Z_{in,1} + Z_s}\right|^2 \cdot |G_1|^2
+\]
+\textbf{Discussion:}
+\begin{itemize}
+    \item The \textbf{current noise} becomes more relevant as the source impedance increases.  
+    This is one of the reasons why we typically design systems with \textbf{low source impedances}.
+    \item When $Z_s \to 0$, the \textbf{voltage noise} dominates.  
+    \item When $Z_s \to \infty$, the \textbf{current noise} dominates.
+\end{itemize}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Multi_Stage_Noise_params.png}
+    \caption{Pipeline of the multi-stage system with $\alpha, \beta, \gamma$} parameters.
+\end{figure}
+\textbf{NB:} Parameters $\alpha, \beta, \gamma$ account for the impedances in parallel at each stage of the pipeline.
+
+
+Each input is given by a voltage partition:
+\[
+\alpha =\frac{{{Z}_{IN,1}}}{{{Z}_{IN,1}}+{{Z}_{S}}},\ \beta =\frac{{{Z}_{IN,2}}}{{{Z}_{IN,2}}+{{Z}_{0,1}}},\ \gamma =\frac{{{Z}_{IN,3}}}{{{Z}_{IN,3}}+{{Z}_{0,2}}}
+\]
+and we have:
+\[
+v_{out,s} = \alpha G_1 \cdot \beta G_2 \cdot \gamma G_3 \cdot v_s
+\]
+
+\textbf{Noise Voltage Contribution of Stage 1: }
+The noise voltage of stage 1 is filtered by both $TF_2$ and $TF_3$.  
+Thus, the contribution of stage 1 noise ($\overline{v}_{out,n,1,0}^2$) on the system output is:
+\[
+\overline{v}_{out,N,1}^2 = \overline{v}_{n,1,0}^2 \cdot |TF_2 \cdot TF_3|^2 
+= \overline{v}_{n,1,0}^2 \cdot |\beta G_2 \cdot \gamma G_3|^2
+\]
+The noise PSD at input ($S_{N,1}$) and output ($S_{N,1_0}$)of stage 1 are:
+\[
+S_{N,1} = \overline{v_{n,1}}^2 + \overline{v_{n,1_{IN}}}^2  
+\quad \Rightarrow \quad
+S_{N,1_0} = S_{N,1}\,|TF_1|^2 = S_{N,1} \cdot |\alpha G_1|^2
+\]
+The noise PSD contribution of stage 1 in the entire system is:
+\[
+S_{OUT,N1} = S_{N,1}\,|TF_1  \cdot TF_2 \cdot TF_3|^2
+\]
+\textbf{Stage 2 and Stage 3 Contributions: }
+Similarly to stage 1:
+\[
+S_{OUT,N,2} = S_{N,2}\,|TF_2 \cdot TF_3|^2, 
+\qquad
+S_{OUT,N,3} = S_{N,3} \left| TF_3 \right|^2
+\]
+The total output noise PSD is the sum of the three contributions:
+\[
+S_{OUT,N} = S_{OUT,N,1} + S_{OUT,N,2} + S_{OUT,N,3}
+= S_{N,1}\,|TF_1 \cdot TF_2 \cdot TF_3|^2 + S_{N,2}\,|TF_2 \cdot TF_3|^2 + S_{N,3}|TF_3|^2
+\]
+The noisiness of the system is expressed by the signal-to-noise ratio:
+\[
+SNR = \frac{v_{OUT,S,RMS}}{v_{OUT,N,RMS}}
+= \frac{v_{S,RMS}\,|TF_1 \cdot TF_2 \cdot TF_3|}
+{\sqrt{\int_{BW} S_{OUT,N}\,df}}
+= \frac{v_{S,RMS}}{\sqrt{\int_{BW} \left(S_{N,1} + \frac{S_{N,2}}{|TF_1|^2} + \frac{S_{N,3}}{|TF_1 \cdot TF_2|^2}\right)df}}
+\]
+\textbf{Discussion}
+\begin{itemize}
+    \item The noise generated at the \textbf{first stage} contributes directly to the output SNR.  
+    \item Noise from later stages is attenuated when referred back to the input, because it is divided by the gains of previous stages.  
+    \item Therefore, the \textbf{first stage} plays the most critical role in determining the system’s noise performance.
+\end{itemize}
+
+\textbf{NB:} For audio applications, the bandwidth is typically:
+\[
+BW = [20, \, 20 \cdot 10^3] \ \text{Hz}
+\]
+\textbf{Key Design Principles for Low Noise Operation}
+\begin{itemize}
+    \item The first stage should have as little noise as possible.  
+    \item The first stage should provide as much gain as possible.  
+\end{itemize}
+
+This is why the \textbf{preamplifier} is such a crucial component in audio systems.
+
+
+\subsection{Noise in OPAMPs}
+
+An OPAMP disconnected from any external signal has two main internal noise sources: a voltage noise source and two bias current noise sources.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\linewidth]{Noise_OPAMP.png}
+    \caption{Noise model in the OPAMP.}
+\end{figure}
+
+
+
+\subsubsection{Exercise: Noise in a Non-Inverting Configuration}
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.6 \linewidth}
+    For a non-inverting amplifier:
+\[
+v_{out} = \left(1 + \frac{R_2}{R_1}\right) v_s, 
+\qquad G = 1 + \frac{R_2}{R_1}
+\]
+The noise components arise from the resistors:
+\[
+\quad \overline{v_{n,Rs}}^2, \quad \overline{v_{n,R1}}^2, \quad \overline{v_{n,R2}}^2
+\]
+The NPSD of a generic resistor is:
+\[
+S_{n,R} = 4k_B T R
+\]
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.4\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Noise_OPAMP_Ex.png}
+    \caption{Non-inverting OPAMP of interest.}
+    \end{minipage}\hfill
+\end{figure}
+Thusthe output NPSD is:
+\[
+S_{out,n,Rx} = |TF_{Rx}|^2 \cdot S_{n,Rx}
+\]
+\textbf{Contribution of $R_s$:}
+\[
+S_{out,n,Rs} = |G|^2 \cdot S_{n,Rs} = |G|^2 4 \cdot k_b \cdot T \cdot R_s
+\]
+\textbf{Contribution of $R_1$:}
+\[
+S_{out,n,R1} = |G-1|^2 \cdot 4 \cdot k_B \cdot T \cdot R_1
+\]
+\textbf{Contribution of $R_2$:}
+We must reason carefully:  
+If the voltage sources are short-circuited, there is no voltage across $R_2$.  
+Since the negative input of the OPAMP is at ground potential (virtual ground), we also have 0V across $R_2$.  
+Thus the noise contribution of $R_2$ is:
+\[
+S_{out,n,R2} = 4\cdot k_B \cdot T \cdot R_2
+\]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{noise_volt_curr_noise.png}
+    \caption{Scheme of the OPAMP with voltage noise $\overline{e}_n^2$ and input current noises $\overline{i}_{n_+}^2, \ \overline{i}_{n_-}^2$.}
+\end{figure}
+\textbf{Other Contributions:}
+\begin{itemize}
+    \item Input voltage noise $\overline{e_n}^2$: 
+    \[
+    S_{out,n,e} = |G|^2 \cdot S_{n,e}, \quad \text{(given in datasheets)}
+    \]
+    \item Input current noise $\overline{i}_{n_+}^2$ (through $R_s$):
+    \[
+    S_{out,n,i_+} = |R_s \cdot G|^2 \cdot S_{n,i_+}
+    \]
+    \item Input current noise $\overline{i}_{n_-}^2$ (through $R_2$):  
+    Reasoning as before, the current noise must flow through $R_2$ (with negative input output voltage at $R_2$).  
+    Thus:
+    \[
+    S_{out,n,i_-} = |-R_2|^2 \cdot S_{n,i_-}
+    \]
+\end{itemize}
+
+The \textbf{total Output Noise Power Spectral Density is:}
+\[
+S_{out,n,tot} = S_{out,n,Rs} + S_{out,n,R1} + S_{out,n,R2} + S_{out,n,e} + S_{out,n,i_{-}} + S_{out,n,i_{+}}
+\]
+The \textbf{RMS Output Noise is} : 
+\[
+v_{out,n,RMS} = \sqrt{\int_{BW} S_{out,n,tot}\, df}
+\]
+If $S_{out,n,tot}$ is white (i.e. constant across frequency), then:
+\[
+v_{out,n,RMS} = \sqrt{(f_h - f_l) \cdot S_{out,n,tot}}
+\]
+For the audio band with $ BW = [20,\, 20 \cdot 10^3] \ \text{Hz} $
+\[
+\Rightarrow \quad v_{out,n,RMS} \approx \sqrt{20 \cdot 10^3} \cdot \sqrt{S_{out,n,tot}}
+\]
+The \textbf{Signal-to-Noise Ratio (SNR)} is: 
+\[
+SNR = \frac{v_{out,s,RMS}}{v_{out,n,RMS}} = \frac{G \cdot v_s}{v_{out,n,RMS}}
+\]
+
+
+\subsection{Notes from the slide}
+In audio and electroacoustic systems, the \textbf{noise performance} of electronic components—especially operational amplifiers (op-amps)—is crucial in determining the achievable signal-to-noise ratio (SNR) and dynamic range.  
+Datasheets provide detailed noise specifications to help engineers predict and minimize noise in preamplifiers, filters, and other low-level audio circuits.
+
+This section summarizes how noise is characterized, how to read it from datasheets, and how it affects the performance of practical audio systems.
+
+\paragraph{Types of Electronic Noise}
+The main types of intrinsic noise encountered in electronic components are:
+\begin{itemize}
+  \item \textbf{Thermal noise (Johnson–Nyquist noise):} generated by random motion of charge carriers in resistors and semiconductors.  
+        It is white noise with spectral density:
+        \[
+        e_n = \sqrt{4 k T R}\,[\mathrm{V}/\sqrt{\mathrm{Hz}}],
+        \]
+        where \(k\) is Boltzmann’s constant, \(T\) the absolute temperature, and \(R\) the resistance.
+  \item \textbf{Shot noise:} produced by the discrete nature of electric charge in active devices (transistors, diodes).
+  \item \textbf{Flicker noise (1/f noise):} dominant at low frequencies (below a few hundred Hz), often visible as a rising slope in log–log spectral plots.
+\end{itemize}
+
+\paragraph{Noise Parameters in Datasheets}
+Operational amplifier datasheets specify several key noise parameters:
+\begin{itemize}
+    \item \textbf{Input Voltage Noise Density (\(e_n\)):} The equivalent input voltage noise per unit bandwidth, typically expressed in $\mathrm{nV}/\sqrt{\mathrm{Hz}}$.  
+For example, a low-noise audio op-amp might specify \(e_n = 3\,\mathrm{nV}/\sqrt{\mathrm{Hz}}\) at 1\,kHz.
+\item \textbf{Input Current Noise Density (\(i_n\)):}
+The equivalent input current noise per unit bandwidth, expressed in $\mathrm{pA}/\sqrt{\mathrm{Hz}}$.  
+It becomes significant when the source resistance is high, since voltage noise due to current noise is \(V = i_n R_S\).
+\item \textbf{Noise Spectral Density Graph:}
+Datasheets usually plot $e_n(f)$ or total input noise vs. frequency.  
+At low frequencies, flicker noise increases, while above a few hundred Hz, the noise tends to flatten (white region).
+\item \textbf{4. Total Noise Voltage:}
+The total RMS noise over a given bandwidth \(B\) is obtained by integrating the noise spectral density:
+\[
+V_{n,\text{RMS}} = \sqrt{ \int_{0}^{B} e_n^2(f) \, df }.
+\]
+For white noise, this simplifies to \(V_{n,\text{RMS}} = e_n \sqrt{B}\).
+\item \textbf{5. Equivalent Noise Resistance:}
+Some datasheets specify the \textbf{equivalent noise resistance} \(R_n\), defined such that its thermal noise equals the amplifier’s input noise:
+\[
+e_n = \sqrt{4 k T R_n}.
+\]
+This provides a convenient measure of noise performance independent of circuit details.
+
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Input_Voltage_Noise_Density.png}
+    \caption{Typical input voltage noise density of an audio op-amp.  
+The low-frequency region shows 1/f noise, while above 1\,kHz the curve becomes flat (white noise).}
+\end{figure}
+
+
+Noise datasheets usually include the following graphs:
+\begin{itemize}
+  \item \textbf{Voltage noise spectral density:} $e_n$ vs. frequency (log–log scale).
+  \item \textbf{Current noise spectral density:} $i_n$ vs. frequency.
+  \item \textbf{Noise vs. source resistance:} showing the optimum source impedance that minimizes total noise.
+\end{itemize}
+
+The total input noise voltage $V_{n,\text{tot}}$ for a given source resistance \(R_S\) combines both effects:
+\[
+V_{n,\text{tot}} = \sqrt{ (e_n)^2 + (i_n R_S)^2 + 4 k T R_S }.
+\]
+Minimizing \(V_{n,\text{tot}}\) involves matching the amplifier’s input noise characteristics with the expected source impedance.
+
+\textbf{Typical Values for Audio Op-Amps: }
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Op-Amp Model} & \textbf{$e_n$ (nV/$\sqrt{\text{Hz}}$)} & \textbf{$i_n$ (pA/$\sqrt{\text{Hz}}$)} & \textbf{Comments} \\
+\hline
+NE5532 & 5 & 0.7 & Industry standard for audio preamps \\
+OPA2134 & 8 & 1.0 & Low noise, FET input \\
+LM4562 & 2.7 & 0.4 & Ultra-low-noise audio op-amp \\
+TL072 & 18 & 2.0 & Higher voltage noise, low current noise (FET) \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Noise in Multi-Stage Systems}
+In multi-stage amplifiers (e.g., microphone preamplifier $\rightarrow$ tone control $\rightarrow$ power amplifier), the first stage typically dominates overall noise performance because its noise is amplified by all subsequent stages.
+
+The \textbf{Friis formula} expresses total input-referred noise in cascaded stages:
+\[
+F_{\text{total}} = F_1 + \frac{F_2 - 1}{G_1} + \frac{F_3 - 1}{G_1 G_2} + \cdots
+\]
+where \(F_i\) is the noise factor and \(G_i\) the power gain of stage \(i\).
+
+Thus, optimizing the first amplifier stage (preamplifier) is the most effective way to improve total system SNR.
+
+\subsection{Datasheet Example Interpretation and Practical Comparison}
+
+To understand how datasheet parameters translate into real audio performance, let us analyze two common low-noise operational amplifiers widely used in sound engineering:
+\begin{itemize}
+  \item \textbf{NE5532:} a bipolar-input dual op-amp, optimized for low voltage noise and high current drive capability.
+  \item \textbf{OPA2134:} a JFET-input dual op-amp, designed for very low distortion and high input impedance.
+\end{itemize}
+
+\subsubsection{Theoretical Comparison Based on Datasheet Parameters}
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Parameter} & \textbf{Symbol} & \textbf{NE5532} & \textbf{OPA2134} \\
+\hline
+Input voltage noise density & $e_n$ & $5\,\mathrm{nV}/\sqrt{\mathrm{Hz}}$ & $8\,\mathrm{nV}/\sqrt{\mathrm{Hz}}$ \\
+Input current noise density & $i_n$ & $0.7\,\mathrm{pA}/\sqrt{\mathrm{Hz}}$ & $1.0\,\mathrm{fA}/\sqrt{\mathrm{Hz}}$ \\
+Input type &  & Bipolar (BJT) & JFET \\
+Typical input resistance &  & $100\,\text{k}\Omega$ & $10\,\text{M}\Omega$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Both devices exhibit excellent audio performance, but their optimal applications differ depending on the source impedance:
+\begin{itemize}
+  \item The NE5532, with its very low voltage noise, excels with \emph{low-impedance sources} (e.g., microphone preamps, line-level circuits).
+  \item The OPA2134, with extremely low current noise, is ideal for \emph{high-impedance sources} (e.g., piezo pickups, sensor inputs).
+\end{itemize}
+
+\subsubsection{Total Input-Referred Noise Calculation}
+
+The total equivalent input noise is given by:
+\[
+V_{n,\text{tot}} = \sqrt{(e_n)^2 + (i_n R_S)^2 + 4kTR_S}.
+\]
+
+Assume a bandwidth of $B = 20\,\text{kHz}$ and ambient temperature $T = 300\,\text{K}$.
+
+\paragraph{Example A — NE5532 with $R_S = 1\,\text{k}\Omega$:}
+\[
+\begin{aligned}
+e_n &= 5\,\mathrm{nV}/\sqrt{\mathrm{Hz}}, \\
+i_n R_S &= 0.7\,\mathrm{pA}/\sqrt{\mathrm{Hz}} \times 1\,\text{k}\Omega = 0.7\,\mathrm{nV}/\sqrt{\mathrm{Hz}}, \\
+\sqrt{4kTR_S} &= \sqrt{4 \times 1.38\times10^{-23} \times 300 \times 10^3} = 4.1\,\mathrm{nV}/\sqrt{\mathrm{Hz}}.
+\end{aligned}
+\]
+
+Thus:
+\[
+V_{n,\text{tot}} = \sqrt{5^2 + 0.7^2 + 4.1^2} = 6.5\,\mathrm{nV}/\sqrt{\mathrm{Hz}}.
+\]
+Over the 20\,kHz audio band:
+\[
+V_{n,\text{RMS}} = 6.5 \times \sqrt{20{,}000} = 0.92\,\mu\text{V}_{\mathrm{RMS}}.
+\]
+
+\paragraph{Example B — OPA2134 with $R_S = 100\,\text{k}\Omega$:}
+\[
+\begin{aligned}
+e_n &= 8\,\mathrm{nV}/\sqrt{\mathrm{Hz}}, \\
+i_n R_S &= 1\,\mathrm{fA}/\sqrt{\mathrm{Hz}} \times 100\,\text{k}\Omega = 0.1\,\mathrm{nV}/\sqrt{\mathrm{Hz}}, \\
+\sqrt{4kTR_S} &= \sqrt{4 \times 1.38\times10^{-23} \times 300 \times 10^5} = 12.9\,\mathrm{nV}/\sqrt{\mathrm{Hz}}.
+\end{aligned}
+\]
+
+Thus:
+\[
+V_{n,\text{tot}} = \sqrt{8^2 + 0.1^2 + 12.9^2} = 15.2\,\mathrm{nV}/\sqrt{\mathrm{Hz}},
+\]
+and over 20\,kHz:
+\[
+V_{n,\text{RMS}} = 15.2 \times \sqrt{20{,}000} = 2.15\,\mu\text{V}_{\mathrm{RMS}}.
+\]
+
+\subsubsection{Discussion of Results}
+
+\begin{itemize}
+  \item For low source impedances ($R_S < 2\,\text{k}\Omega$), the NE5532 achieves sub-microvolt noise levels, making it ideal for microphone preamplifiers, active filters, and summing stages.
+  \item For high source impedances ($R_S > 50\,\text{k}\Omega$), the OPA2134 avoids the high current noise typical of bipolar op-amps and offers quieter operation despite higher voltage noise.
+  \item The thermal noise of the source resistor often dominates once $R_S$ exceeds a few tens of kilohms.
+\end{itemize}
+
+\textbf{Summary of the Comparison:}
+\begin{itemize}
+  \item \textbf{NE5532:} lower noise for low-$R_S$ sources, excellent for professional balanced microphone inputs.
+  \item \textbf{OPA2134:} superior for high-$R_S$ sources, high input impedance, and extremely low distortion.
+  \item Both devices, properly applied, provide noise levels well below the audibility threshold in typical studio or live sound applications.
+\end{itemize}
+
+\subsubsection{Practical Implications for Audio Circuits}
+In audio preamplifier design:
+\begin{itemize}
+  \item \textbf{Low-impedance microphones (150–600 $\Omega$):} favor low-voltage-noise bipolar op-amps (e.g., NE5532, LM4562).
+  \item \textbf{High-impedance transducers (piezo, guitar pickups):} favor low-current-noise FET op-amps (e.g., OPA2134, TL072).
+  \item \textbf{Tone control and line-level circuits:} both types perform adequately if the impedance network is properly matched.
+\end{itemize}
+
+The subjective impact of electronic noise depends on gain and spectral content.  
+For instance, $1\,\mu\text{V}_{\mathrm{RMS}}$ of input noise in a 40\,dB preamp becomes $100\,\mu\text{V}$ at the output—corresponding to about $-80\,\text{dBV}$, near the threshold of audibility in quiet studio environments.
+
+\subsubsection{Design Optimization Strategies}
+To achieve the lowest practical noise floor:
+\begin{enumerate}
+  \item Select op-amps whose noise characteristics match the expected source impedance.
+  \item Keep resistors in the signal path as low as practical to reduce thermal noise.
+  \item Minimize input bias currents and leakage paths to avoid DC offsets that can increase noise coupling.
+  \item Limit the system bandwidth to what is strictly necessary (e.g., 20\,Hz–20\,kHz) using well-designed filters.
+  \item Pay attention to grounding, shielding, and layout symmetry to avoid additional induced noise.
+\end{enumerate}
+
+

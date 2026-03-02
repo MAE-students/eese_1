@@ -1,0 +1,592 @@
+\section{Power Amplifiers Output Stages / Classes}
+
+When consulting amplifier datasheets, one of the first pieces of information given is the \textbf{amplifier class}: Class A, B, AB, etc.  
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{Signal_Chain.png}
+    \caption{Signal chain.}
+\end{figure} 
+\[
+\text{MIC} \;\rightarrow\; \text{PRE} \;\rightarrow\; \text{FILTER} \;\rightarrow\; \text{EQ} \;\rightarrow\; \text{POST-EQ PROCESSING} \;\rightarrow\; \text{POWER AMP} \;\rightarrow\; \text{LOUDSPEAKER}
+\]
+\textbf{Note:}  
+The power amplifier is usually configured as a \textbf{voltage buffer} and is mainly responsible for \textbf{current amplification}.
+
+\subsection{Class A Speaker}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.65 \linewidth}
+    This amplifier class is based on an \textbf{emitter-follower architecture}.  
+    \begin{itemize}
+        \item $R_L$ is the load impedance (the loudspeaker).
+        \item The capacitor $C$ is used to decouple the DC component, so that the loudspeaker only receives the AC part of the signal (average level $\approx 0$).
+    \end{itemize}
+    \medskip
+    If the capacitor $C$ is large enough, the output node satisfies:
+    \[
+    v_{out} \approx v_{E} \quad \text{(AC behavior)}
+    \]
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.25\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Class_A_Stage.png}
+    \caption{Circuit of the class A stage.}
+    \end{minipage}\hfill
+\end{figure}
+
+Indeed, we have: 
+\[
+v_{out} = v_E \frac{R_L}{R_L+1/(sC)}
+\quad \Rightarrow \quad
+\frac{v_{out}}{v_E} = \frac{sCR_L}{1+sCR_L}  \ \underset{C\rightarrow+\infty}{\rightarrow} \  1
+\]
+Moreover, we know that:
+\[
+v_{out} = R_L \cdot  i_L \approx R_L \cdot i_C, \quad \text{assuming } i_Q\approx 0
+\]
+Since $ i_C = g_m v_{BE} $, we obtain 
+\begin{align*}
+    & v_{out} = R_L \cdot g_m \cdot v_{BE} = R_L \cdot g_m \cdot \left( v_B - v_E\right) 
+\quad \Rightarrow \quad 
+v_{out} = R_L \cdot g_m \cdot \left( v_{in} - v_{out}\right) \quad \text{since } v_E \approx v_{out}  \\
+   \Rightarrow \quad & v_{out} \left( 1+ g_mR_L\right) = R_L \cdot g_m \cdot v_{in} 
+   \quad \Rightarrow \quad
+   \frac{v_{out}}{v_{in}} = \frac{g_m \cdot R_L}{1+g_m \cdot R_L} = A_V
+\end{align*}
+The \textbf{voltage transfer} is:
+\[
+\frac{v_{out}}{v_{in}} = \frac{g_m \cdot R_L}{1 + g_m \cdot R_L} \approx 1
+\]
+since we assume $g_m \cdot R_L \gg 1$.  
+\textit{(This is similar to the principle of the tube screamer circuit.)}
+
+The \textbf{Current Gain} is: 
+\[
+i_L = i_E = (1 + \beta) i_B
+\]
+since the quiescent current $I_Q$ is disconnected in this configuration.  
+
+Thus:
+\[
+\frac{i_E}{i_B} = \beta + 1 = A_I \gg 1
+\]
+In practice, $\beta + 1$ typically ranges between $10$ and $100$.  
+This shows that a Class A stage provides \textbf{large current gain} but only \textbf{unity voltage gain}.
+
+\paragraph{Computing the Required Voltage Supply:}
+
+Let us consider a power amplifier designed to deliver the following load power:
+\[
+P_L = 100 \, W \quad \text{with} \quad R_L = 8 \, \Omega
+\]
+The load power is related to the RMS voltage:
+    \[
+    P_L = \frac{v_{RMS,L}^2}{R_L}
+    \quad \Rightarrow \quad v_{RMS,L} = \sqrt{P_L \cdot R_L}
+    \]
+    Substituting values:
+    \[
+    v_{RMS,L} = \sqrt{100 \cdot 8} = 28.3 \, V_{RMS}
+    \]
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.65 \linewidth}
+    
+    The corresponding peak voltage is:
+    \[
+    \hat{V}_L = \sqrt{2} \cdot v_{RMS,L} = 40 \, V
+    \]
+    Therefore, the amplifier must provide at least $40 \, V$ peak at the output.  
+    As a supply condition, the total supply voltage must satisfy:
+    \[
+    V_{CC} \geq 2 \cdot \hat{V}_L = 80 \, V
+    \]
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.3\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{V_CC_Class_A.png}
+    \caption{$V_{CC}$ representation.}
+    \end{minipage}\hfill
+\end{figure}
+
+\paragraph{Computing the Required Current Supply:}
+
+Using the same configuration, the load current is:
+\[
+\hat{i}_L = \frac{\hat{V}_L}{R_L} = \frac{40}{8} = 5 \, A
+\]
+Thus, the power supply must be capable of delivering a \textbf{peak current of 5 A}.
+
+Finally: 
+\[
+\hat{i}_{IN} = \frac{\hat{i}_L}{\beta + 1} \approx 50 \ \text{mA assuming that} \ \beta + 1 =100
+\]
+
+\subsection{Efficiency of an Output Stage}
+
+The \textbf{efficiency} of a power amplifier is defined as:
+\[
+\eta \in [0,1], \qquad \eta = \frac{P_L}{P_S}
+\]
+where:
+\begin{itemize}
+    \item $P_L$ = average power delivered to the load (output power)
+    \item $P_S$ = average power drawn from the supply (input power)
+\end{itemize}
+
+For a sinusoidal signal, the \textbf{load power} is:
+\[
+P_L = \frac{v_{RMS,L}^2}{R_L} = \frac{\hat{V}_L^2}{2R_L}
+\]
+At maximum efficiency, the peak load voltage satisfies:
+\[
+\hat{V}_L = \frac{V_{CC}}{2}
+\quad \Rightarrow \quad
+P_L = \frac{V_{CC}^2}{8R_L}
+\]
+The \textbf{average power delivered by the supply} is:
+\[
+P_S = \frac{1}{T} \int_0^T V_{CC} \cdot i_S \, dt 
+= V_{CC} \cdot \frac{1}{T} \int_0^T i_S \, dt
+= V_{CC} \cdot \overline{I_S}
+\]
+
+where $\overline{I_S}$ is the average current drawn from the supply.
+
+We can think of $i_S$ as the superposition of:
+\[
+i_S = i_L + i_Q
+\]
+where: 
+\begin{itemize}
+    \item $i_L$: the load current (sinusoidal)  
+    \item $i_Q$: the quiescent current of the transistor \textbf{assumed to be constant}
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.65 \linewidth}
+    As $i_L$ is sinusoidal, its average is zero:
+    \[
+    \overline{I_L} = 0
+    \quad \Rightarrow \quad 
+    \overline{I_S} = I_Q
+    \]
+    Since t\textbf{he supply current and the transistor current cannot be negative}, the load must provide current to $i_Q$ when the transistor is off. I.e.
+    \[
+    \check{I}_S \geq 0 
+    \quad \Rightarrow \quad
+    \check{I}_L + \check{I}_Q = -\frac{V_{CC}}{2R_L}+\check{I}_Q \geq 0 
+    \quad \Rightarrow \quad  
+    \check{I}_Q \geq \frac{V_{CC}}{2 R_L}
+    \]
+    Thus minimum quiescent current is:
+    \[
+    I_Q^{min} = \frac{V_{CC}}{2R_L}
+    \]
+    For the peak value, we have:
+    \[
+    \hat{I}_S = I_Q + \hat{i}_L = I_Q + \frac{\hat{v}_L}{R_L} = I_Q + \frac{{V}_{CC}}{2 R_L}
+    \]
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.3\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{I_s(t).png}
+    \caption{Graph of $I_s(t)$.}
+    \end{minipage}\hfill
+\end{figure}
+Note: $\check{I}$ denotes the minimum value of $I$.
+
+Thus: 
+    \[{{P}_{s}}={{V}_{CC}}\cdot {{\bar{I}}_{s}}={{V}_{CC}}\frac{{{V}_{CC}}}{2{{R}_{L}}}=\frac{V_{CC}^{2}}{2{{R}_{L}}}
+    \quad \Rightarrow \quad {\eta }_{max}=\frac{V_{CC}^{2}}{8{{R}_{L}}}\frac{2{{R}_{L}}}{V_{CC}^{2}}=\frac{1}{4}
+    \]
+The power is wasted since the load sometimes needs a negative current while we keep feeding a positive current (\textbf{TO
+BE RECHECKED}). To solve this matter, we introduced class B stages.
+
+\subsection{Class B Stages}
+
+From the previous analysis, the efficiency of a Class A stage is limited to:
+\[
+\eta_{max} = \frac{1}{4} = 25\%
+\]
+This low efficiency arises because the load sometimes requires negative current while the supply continues delivering positive current, leading to wasted power.  
+To overcome this issue, \textbf{Class B stages} were introduced.
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.65 \linewidth}
+    \textbf{Principle of Operation:}
+Class B stages are designed to provide much higher efficiency compared to Class A.  
+\begin{itemize}
+    \item Instead of a single amplifier, Class B uses a \textbf{push-pull configuration}.
+    \item The circuit employs two complementary transistors:
+    \begin{itemize}
+    \item An NPN transistor (top) that conducts during the positive half-cycle.  
+    \item A PNP transistor (bottom) that conducts during the negative half-cycle.  
+  \end{itemize}
+\end{itemize}
+This way, each transistor only amplifies one half of the input waveform.
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.3\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Class_B.png}
+    \caption{Circuit of the B stage.}
+    \end{minipage}\hfill
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.3 \linewidth}
+    \centering
+        \includegraphics[width=\linewidth]{class_B_graph.png}
+    \caption{Graph of $v_{in},v_{out}$ for the class B stage.}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.65\linewidth}
+        \textbf{Conduction Conditions:}
+    \[
+    \begin{cases}
+    Q_1 \ \text{(NPN) is ON if } V_{BE} \geq 0.7 \, V \\
+    Q_2 \ \text{(PNP) is ON if } V_{EB} \geq 0.7 \, V \ \Leftrightarrow \ V_{BE} \leq -0.7 \, V
+    \end{cases}
+    \]
+    \end{minipage}\hfill
+\end{figure}
+
+\textbf{Crossover Distortion:}
+At low input voltages (close to $0$), neither transistor is conducting.  
+This creates a \textbf{dead zone} around the origin, which causes \textbf{crossover distortion}.  
+
+Crossover distortion is a common drawback of pure Class B stages, leading to signal non-linearity when the input amplitude is small. 
+
+To correct it, we introduced AB stages.
+
+\subsection{Class AB speaker}
+
+\begin{figure}[H]
+    \centering
+    % Left side: Text
+    \begin{minipage}[c]{0.44\textwidth}
+    \textbf{Class AB Solution:}
+To avoid crossover distortion, we can apply a small \textbf{DC bias shift} to the transistor bases (about 0.7 V).  
+        This ensures that both transistors conduct slightly even when the input is near zero, thus eliminating the dead zone.  
+
+        The resulting stage is called a \textbf{Class AB amplifier}, which combines:
+        \begin{itemize}
+            \item The higher efficiency of Class B,  
+            \item With the low distortion of Class A.
+        \end{itemize}
+    \end{minipage}
+    \hfill
+    % Right side: Image
+    \begin{minipage}[c]{0.55\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{class AB power amplifier.png}
+        \caption{Scheme of the AB class (left) and graph of $v_{in}, v_{out}$ (right)}
+        \label{fig:placeholder}
+    \end{minipage}
+\end{figure}
+The \textbf{Class AB configuration} is essentially a refinement of Class B.  
+It removes most of the crossover distortion by biasing both transistors slightly on, although small artifacts may still remain.  
+This stage uses a \textbf{push-pull configuration}: one transistor sources current (push), while the other sinks current (pull).
+
+The efficiency is:
+\[
+\eta = \frac{P_L}{P_S} 
+= \frac{V_{CC}^2 / (8 R_L)}{\frac{1}{T} \int_0^T V_{s} \cdot I_S \, dt}
+= \frac{{V}_{CC}^2 / (8R_L)}{V_{CC} \cdot \overline{I_S}}
+\quad \Rightarrow \quad 
+\eta = \frac{{V}_{CC}}{8 R_L \overline{I_S}}
+\]
+For a sinusoidal waveform (positive half-wave only), the average supply current is:
+\[
+\overline{I_S} = \frac{1}{T} \int_0^{T/2} I_S \, dt
+=
+\frac{1}{T} \int_0^{T/2} \frac{V_{CC}}{2R_L}\sin(\omega t) \, dt
+\quad \Rightarrow \quad
+\overline{I_S}= \frac{V_{CC}}{2R_L} \cdot \frac{1}{T} \int_0^{T/2} \sin(\omega t) \, dt, \qquad \omega = \frac{2 \pi}{T}
+\]
+Evaluating the integral:
+\[
+\overline{I_S} = \frac{V_{CC}}{2 \cdot R_L \cdot T} \left[-\frac{\cos(\omega t)}{\omega} \right]_0^{T/2}
+= \frac{V_{CC}}{2R_L} \frac{1}{T \tfrac{2 \pi}{T}}\cdot [1 + 1]
+= \frac{V_{CC}}{2 R_L \pi}
+\]
+Therefore, the power is : 
+\[
+P_S = V_{CC} \cdot \overline{I_S} = \frac{V_{CC}^2}{2 R_L \pi}
+\]
+The efficiency is obtained through: 
+\[
+\eta = \frac{P_L}{P_S}
+= \frac{\frac{V_{CC}^2}{8R_L}}{\frac{V_{CC}^2}{2 \pi R_L }}
+= \frac{2 \pi R_L}{8 R_L} = \frac{\pi}{4} \approx 79 \%
+\]
+Note that for the given conditions, we have:
+\[
+P_{supply}|_{P_L=100W} \approx 127 \, W
+\]
+This shows that Class AB is much more efficient than Class A (25\%), while keeping distortion at a low and acceptable level.
+
+\textbf{Remark:}
+Class AB stages may still be subject to \textbf{thermal runaway}, requiring bias stabilization mechanisms.
+
+
+\subsection{Class D Stages}
+
+Class D amplifiers use a more complex architecture, but they rely on two fundamental principles:
+\begin{itemize}
+    \item Very efficient ``digital'' voltage transfer ($V_{CC}$ or $0V$).  
+    \item Very efficient passive low-pass filters (LC filters rather than RC, since we want to avoid power dissipation).  
+\end{itemize}
+
+\textbf{Example:}
+Consider the simple circuit below, where we want:
+$v_{out} = V_{CC}$. By introducing a switch between the supply and the output, we can directly connect or disconnect the output from the supply.  
+For high efficiency, the switch must have an extremely small resistance when closed.  
+
+In the ideal case:
+\[
+\eta = \frac{P_L}{P_S} \approx 1 \quad \Rightarrow \quad \eta = 100\%
+\]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{Class_D.png}
+    \caption{Circuit of Class D stage.}
+    \label{fig:placeholder}
+\end{figure}
+
+\clearpage
+
+\subsubsection{Pulse Width Modulation (PWM)}
+To achieve a ``digital'' representation of $v_{out}$, Class D amplifiers use \textbf{Pulse Width Modulation (PWM)}.
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.55 \linewidth}
+The duty cycle $\alpha$ is defined as:
+\[
+\alpha = \frac{T_H}{T_H + T_L} = \frac{T_H}{T}
+\]
+where $T_H$ is the time the switch is ON, and $T_L$ the time it is OFF.  
+
+Efficiency is maximum when the PWM is $0$ (output OFF), and minimum when it is fully ON.  
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.4\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{PWM_graph.png}
+    \caption{Graph of a PWM.}
+    \end{minipage}\hfill
+\end{figure}
+The average value of the PWM output is:
+\[
+\overline{v_{out}} = V_{CC} \cdot \alpha
+\]
+
+\textbf{Principle of Modulation:}
+The idea is to vary the duty cycle in order to encode a time-varying signal.  
+\begin{itemize}
+    \item For instance, a sinusoidal input can be reconstructed from the average value of a PWM signal whose duty cycle follows the sinusoid. 
+    \item The PWM is typically generated by comparing the input signal with a \textbf{carrier wave} (usually triangular). 
+    \item The carrier signal $v_{carrier}$ has a very high frequency (in the MHz range), much higher than the input audio signal.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.45 \linewidth}
+        \centering        \includegraphics[width=\linewidth]{PWM_1.png}
+    \caption{Comparison with rectangular carrier waves.}  
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{PWM_2.png}
+    \caption{Comparison with triangular carrier waves.}
+    \end{minipage}\hfill
+\end{figure}
+
+
+
+\textbf{Filtering and Output:}
+The PWM signal is then passed through a \textbf{low-pass filter} (LC filter) that extracts the average value.  
+The result is an amplified version of the input signal, with very high efficiency and low power dissipation in the amplifier itself.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{PWM_Pipeline.png}
+    \caption{Overall PWM pipeline.}
+    \label{fig:placeholder}
+\end{figure}
+
+\subsection*{From the Power Amplifiers Slides}
+
+The load voltage can be expressed as:
+\[
+v_L = \frac{R_L}{R_0 + R_L} \cdot v_0
+\]
+where:
+\begin{itemize}
+    \item $R_0$ is the internal (output) resistance of the amplifier,  
+    \item $R_L$ is the load resistance (the loudspeaker),  
+    \item $v_0$ is the internal voltage source of the amplifier.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.45 \linewidth}
+        
+        \centering
+        \includegraphics[width=\linewidth]{P(R_L).png}
+    \caption{Graph of $P(R_L)$.}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.47\linewidth}
+    The load power is given by:
+        \[
+        P_L = v_L \cdot i_L
+        \]
+        Since:
+        \[
+        i_L = \frac{v_L}{R_L} = \frac{v_0}{R_0 + R_L}
+        \]
+        we can write:
+        \[
+        P_L = \frac{v_0^2 R_L}{(R_0 + R_L)^2}
+        \]
+        From this expression, the maximum power delivered to the load (\textbf{maximum power transfer}) occurs when:
+        \[
+        R_L = R_0
+        \]
+        At this point, the power transfer from the amplifier to the load is optimal.
+    \end{minipage}\hfill
+\end{figure}
+
+
+\textbf{Practical Limitation:}
+In practice, achieving $R_L = R_0$ across the entire audio bandwidth is \textbf{impossible}, because:
+\begin{itemize}
+    \item The load resistance $R_L$ (i.e., the loudspeaker impedance) is not constant but varies strongly with frequency.  
+    \item This mismatch means that the condition for maximum power transfer can only be satisfied at a specific frequency, not across the whole spectrum.
+\end{itemize}
+
+
+\textbf{Key Observation:}
+\begin{itemize}
+    \item If $R_L \gg R_0$: most voltage appears across the load, but the power transfer is low.  
+    \item If $R_L \ll R_0$: most power is dissipated inside the amplifier, reducing efficiency.
+    \item Only at $R_L = R_0$ do we reach maximum transfer, which is why amplifier–loudspeaker matching is a key design consideration in audio systems.
+\end{itemize} 
+
+\subsection{Notes from the slides}
+Power amplifiers are the final stage in an audio signal chain.  
+Their purpose is to deliver sufficient voltage and current to drive loudspeakers, ensuring accurate reproduction of the input signal at the desired sound pressure level.  
+While small-signal amplifiers focus on linearity and low noise, power stages must also handle high power transfer, thermal dissipation, and protection against overloads.
+
+
+\paragraph{Example: Luxman 900u Integrated Amplifier}
+The \textbf{Luxman 900u} is a high-end reference amplifier often cited in audio engineering for its design precision and sonic transparency.  
+It exemplifies the principles of Class AB topology optimized for low distortion and wide bandwidth.
+
+\begin{itemize}
+  \item \textbf{Topology:} Dual-mono symmetrical configuration to minimize crosstalk and maintain channel isolation.
+  \item \textbf{Amplification stage:} Parallel complementary push-pull output pairs using high-speed bipolar transistors.
+  \item \textbf{Biasing:} Precisely controlled quiescent current ensures Class A operation at low levels, transitioning to Class AB at higher output.
+  \item \textbf{Feedback:} Local and global feedback networks maintain low total harmonic distortion (THD < 0.005\%) across the full audio band.
+  \item \textbf{Power supply:} Oversized toroidal transformers with independent filtering for each channel reduce hum and noise coupling.
+\end{itemize}
+
+
+\paragraph{Key Performance Characteristics.}
+\begin{itemize}
+  \item Power output: typically $120\,\text{W}/\text{channel}$ at $8\,\Omega$.
+  \item Frequency response: $10\,\text{Hz}$ – $100\,\text{kHz}$ (–1 dB).
+  \item Damping factor: above 150, ensuring tight control of loudspeaker motion.
+  \item Slew rate: high (tens of V/µs), allowing fast transient response.
+\end{itemize}
+
+\paragraph{Output Protection Mechanisms: }
+High-power amplifiers must protect both the output devices and the load (speakers) from electrical faults or excessive currents.  
+Typical \textbf{short-circuit protection} strategies include:
+\begin{itemize}
+  \item \textbf{Current sensing resistors} monitoring the emitter current in each output transistor.
+  \item \textbf{Comparator and limiter circuits} that reduce drive or cut the signal when current exceeds a safe threshold.
+  \item \textbf{Output relays} that disconnect the load under DC offset or startup transients.
+\end{itemize}
+
+\paragraph{Power Transistors and Output Devices}
+Modern power amplifiers use complementary NPN–PNP (or N-channel–P-channel MOSFET) pairs for the final stage.  
+Desirable properties of power devices include:
+\begin{itemize}
+  \item High current handling and safe operating area (SOA),
+  \item High transition frequency ($f_T$) for wide bandwidth,
+  \item Low output capacitance and minimal storage time (for low distortion),
+  \item Thermal stability via bias-compensating networks.
+\end{itemize}
+
+\paragraph{BJT vs. MOSFET Output Stages.}
+\begin{itemize}
+  \item \textbf{BJTs:} offer lower on-resistance and better linearity; require bias stabilization to avoid thermal runaway.
+  \item \textbf{MOSFETs:} have voltage-controlled gates and inherent thermal stability, making them suitable for high-speed or Class D designs.
+\end{itemize}
+
+\paragraph{Power Transfer and Load Matching}
+The load impedance strongly influences power delivery.  
+For an amplifier with open-circuit voltage $V_o$ and internal resistance $R_o$, the power transferred to a load $R_L$ is:
+\[
+P_{L} = \frac{V_o^2 R_L}{(R_L + R_o)^2}.
+\]
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{Power_Load_Load_Resistance.png}
+\caption{Example of power delivered to the load as a function of load resistance for $V_o = 20\,\text{V}$ and $R_o = 0.5\,\Omega$.  
+Maximum power occurs when $R_L = R_o$, but in audio amplifiers $R_o \ll R_L$ to minimize losses and distortion.}
+\end{figure}
+
+In practice, power amplifiers are designed with a very low output impedance (high damping factor) to maximize voltage transfer rather than power matching, ensuring accurate loudspeaker control.
+
+\paragraph{Class D Amplifiers and Applications:}
+\textbf{Class D amplifiers} achieve high efficiency by using pulse-width modulation (PWM) and switching output devices rather than linear conduction.  
+They are widely used in modern sound reinforcement systems and active loudspeakers.
+
+\textbf{Key Characteristics.}
+\begin{itemize}
+  \item Efficiency above 85–90\%, drastically reducing heat generation.
+  \item Compact size and low weight, ideal for portable and embedded systems.
+  \item Require output low-pass filters to remove high-frequency switching components.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{Class_D_System.png}
+\caption{Simplified diagram of a Class D amplifier system driving a loudspeaker.  
+The PWM signal is demodulated by the output LC filter, reconstructing the amplified audio waveform.}
+\end{figure}
+
+
+\paragraph{Applications in Professional Audio: }
+Manufacturers such as \textbf{K-Array} and other live-sound brands implement Class D amplifier modules in powered speaker arrays and subwoofer drivers, achieving high output power with minimal weight and heat dissipation.
+
+\begin{itemize}
+  \item \textbf{Loudspeaker driver amplifiers:} each driver (woofer, mid, tweeter) is powered by its dedicated amplifier channel, allowing precise crossover and dynamic control.
+  \item \textbf{Subwoofer amplifiers:} designed for very low frequencies, typically using high-current Class D stages capable of several hundred watts.
+  \item \textbf{Integrated systems:} include DSP crossovers, limiters, and monitoring networks.
+\end{itemize}
+
+
+\textbf{Summary and Comparative Overview}
+\begin{itemize}
+  \item The Luxman 900u illustrates state-of-the-art linear amplification with extremely low THD and wide bandwidth.  
+  \item Protection circuits (short-circuit, DC offset, over-temperature) are essential for reliability in high-power designs.
+  \item The choice of output devices (BJT or MOSFET) affects both sound character and thermal behavior.
+  \item Class D amplifiers represent the modern trend in professional audio for efficiency and integration, particularly in powered speaker systems.
+  \item Proper load management and high damping factors ensure faithful control of loudspeaker motion and accurate reproduction of transient dynamics.
+\end{itemize}

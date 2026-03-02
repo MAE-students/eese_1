@@ -1,0 +1,279 @@
+\section{CMRR Improvement}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.6\linewidth}
+    Let’s study a feedback amplification stage for balanced signals:
+\begin{align*}
+    \left| G^+ \right| & = \left| \frac{v_{out}}{v_1} \Big|_{v_2 = 0} \right| = \left| 1 + \frac{R_2}{R_1} \right| \\
+    \left| G^- \right| & = \left| \frac{v_{out}}{v_2} \Big|_{v_1 = 0} \right| = \left| -\frac{R_2}{R_1} \right| = \left| \frac{R_2}{R_1} \right|
+\end{align*}
+As seen before, the \textbf{Common-Mode Rejection Ratio} (CMRR) is defined as:
+\[
+CMRR = \frac{G_{DIFF}}{G_{CM}}, \quad \text{where:} \quad 
+\begin{cases} 
+G_{DIFF} = \frac{G^+ + G^-}{2} \\ 
+G_{CM} = G^+ - G^- 
+\end{cases}
+\]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{OPAMP_FB_Config.png}
+    \caption{Feedback OPAMP.}
+    \end{minipage}
+\end{figure}
+
+In the ideal case where $CMRR \to +\infty$, we have that $G^+ = G^-$, so $G_{CM} = 0$.  
+
+An issue that occurs, in particular for high-precision instrumentation, is that $G_{CM}$ cannot be exactly zero.  
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.6\linewidth}
+    An intuition is to apply an attenuation $A$ on the pin ``$+$''. We obtain:
+    \[
+    G^+ = \left( 1 + \frac{R_2}{R_1} \right) \cdot A
+    \]
+    As we want to force $G^+ = G^-$, we obtain:
+    \[
+    \left( 1 + \frac{R_2}{R_1} \right) \cdot A = \frac{R_2}{R_1}
+    \quad \Rightarrow \quad 
+    A = \frac{R_2}{R_1 + R_2}
+    \]
+    We recognize here a voltage divider expression, so the circuit can be drawn as shown on the right.  
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{OPAMP_FB_With_Correction.png}
+    \caption{Feedback OPAMP with the correction term.}
+    \end{minipage}
+\end{figure}
+However, in real scenarios, voltage sources are not ideal and have their own impedances as shown on the scheme below.  
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{OPAMP_FB_Correct_Source_Imp.png}
+    \caption{Feedback OPAMP with source impedances.}
+\end{figure}
+
+\subsection{Source impedance issue}
+\paragraph{Computing $G^-$: }
+We set $v_1 = 0$, and we observe on the pin ``$-$'' under the ideal OPAMP hypothesis: $i^- = 0$.  
+\[
+i_{v_2} + i_{out} = 0 
+\quad \Rightarrow \quad 
+\frac{v_2}{R_1 + R_{S2}} + \frac{v_{out}}{R_2} = 0
+\]
+\[
+\Rightarrow \quad \frac{v_{out}}{v_2} \Big|_{v_1 = 0} = -\frac{R_2}{R_1 + R_{S2}}
+\quad \Rightarrow \quad 
+G^- = -\frac{R_2}{R_1 + R_{S2}}
+\]
+
+\paragraph{Computing $G^+$}
+We set $v_2 = 0$, and we observe at the pin ``$+$'' the following voltage divider:
+\[
+v^+ = v_1 \, \frac{R_2}{R_1 + R_{S1} + R_2}
+\]
+On the pin ``$-$'', we have:
+\[
+v^- = v_{out} \, \frac{R_1 + R_{S2}}{R_1 + R_2 + R_{S2}}
+\]
+From the ideal OPAMP assumption, we have $v^+ = v^-$. Thus:
+\[
+v_1 \, \frac{R_2}{R_1 + R_{S1} + R_2} 
+= v_{out} \, \frac{R_1 + R_{S2}}{R_1 + R_2 + R_{S2}}
+\quad \Rightarrow \quad 
+\frac{v_{out}}{v_1} 
+= \frac{R_2}{R_1 + R_{S2}} \cdot \frac{R_1 + R_2 + R_{S2}}{R_1 + R_{S1} + R_2}
+\]
+Therefore:
+\[
+G^+ = \frac{R_2}{R_1 + R_{S2}} \cdot \frac{R_1 + R_2 + R_{S2}}{R_1 + R_2 + R_{S1}}
+\]
+In the ideal case, we want to have $|G^+| = |G^-|$, which implies:
+\[
+\frac{R_2}{R_1 + R_{S2}} \cdot \frac{R_1 + R_2 + R_{S2}}{R_1 + R_2 + R_{S1}} 
+= \frac{R_2}{R_1 + R_{S2}}
+\quad \Rightarrow \quad \frac{R_2 + R_1 + R_{S2}}{R_1 + R_2 + R_{S1}} = 1
+\quad \Rightarrow \quad G^+ = G^-
+\quad \Leftrightarrow \quad R_{S2} = R_{S1}
+\]
+\textbf{This is an assumption we generally cannot make since we can't guarantee that the voltage sources have identical source impedances}.  
+
+
+\subsection{Improving the Circuit}
+
+In order to remove the source impedances $R_{S1}, R_{S2}$ from the equations, we may apply a \textbf{voltage buffer} right after the voltage sources:  
+\[    
+CMRR_{TOT} = CMRR_{stage1} \cdot CMRR_{stage2}
+\]
+However, note that the 2nd stage is not ideal (e.g. mismatch between $R_1$ and $R_2$ in the voltage divider and feedback branch).  
+
+Thus, $G_{CM} \neq 0 \Rightarrow CMRR_{stage2} < +\infty$. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{CMRR_Improvement_Buffers.png}
+    \caption{Scheme of the CMRR Improvement circuit with voltage buffers.}
+\end{figure}
+
+Since we want to improve the CMRR using the 1st stage, an idea is to implement a \textbf{gain stage} instead of the voltage buffer.  
+
+\clearpage
+
+\subsection{Gain Stage Implementation}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.6\linewidth}
+    We write the following equations:
+    \[
+    \begin{cases}
+    v_{o1} - v_1 = R_4 \, i \\
+    v_1 - v_2 = R_3 \, i \\
+    v_2 - v_{o2} = R_5 \, i
+    \end{cases}
+    \]
+    From the 2nd equality, we have:
+    \[
+    i = \frac{v_1 - v_2}{R_3}
+    \]
+    Substituting into the other two equations:
+    \[
+    \begin{cases}
+    v_{o1} = v_1 \left( 1 + \frac{R_4}{R_3} \right) - \frac{R_4}{R_3} v_2 \\
+    v_{o2} = v_2 \left( 1 + \frac{R_5}{R_3} \right) - \frac{R_5}{R_3} v_1
+    \end{cases}
+    \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.3\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{CMRR_Improvement_Gain_Stage.png}
+    \caption{Scheme of the considered gain stage.}
+    \end{minipage}
+\end{figure}
+From the formulas of the differential and common-mode voltages, we can now evaluate the impact on $CMRR$ by evaluating $v_{DIFF}$ and $v_{CM}$ (from $v_{o1}, \ v_{o2}$ as they are the input voltages of the next OPAMP stage).
+\begin{itemize}
+    \item \textbf{Differential voltage:}
+    \begin{align*}
+        & v_{DIFF} = v_{o1} - v_{o2}
+    \quad \Rightarrow \quad
+    v_{DIFF} = v_1 \left( 1 + \frac{R_4}{R_3} \right) - \frac{R_4}{R_3} v_2 - \left[ v_2 \left( 1 + \frac{R_5}{R_3} \right) - \frac{R_5}{R_3} v_1 \right] \\
+    \Rightarrow \quad & v_{DIFF} = v_1 \left( 1 + \frac{R_4}{R_3} + \frac{R_5}{R_3} \right) - v_2 \left( 1 + \frac{R_5}{R_3} + \frac{R_4}{R_3} \right) = (v_1 - v_2) \left( 1 + \frac{R_4 + R_5}{R_3} \right) \\
+    \Rightarrow \quad & \textcolor{red}{v_{DIFF}  = G_{DIFF,1} \cdot (v_1 - v_2), \qquad G_{DIFF,1} = 1 + \frac{R_4 + R_5}{R_3}}
+    \end{align*}
+    \item \textbf{Common-mode voltage:}
+    \begin{align*}
+        & v_{CM} = \frac{v_{o1} + v_{o2}}{2} = \frac{1}{2} \left[ v_1 \left( 1 + \frac{R_4}{R_3} \right) - \frac{R_4}{R_3} v_2 + v_2 \left( 1 + \frac{R_5}{R_3} \right) - \frac{R_5}{R_3} v_1 \right] \\
+        \Rightarrow \quad & v_{CM} = \frac{1}{2} \left[ v_1 \left( 1 + \frac{R_4 - R_5}{R_3} \right) + v_2 \left( 1 + \frac{R_5 - R_4}{R_3} \right) \right] 
+    \end{align*}
+    By setting $R_4 = R_5$, we obtain: 
+    \[
+    \textcolor{red}{v_{CM} = \frac{v_1 + v_2}{2} \quad \Rightarrow \quad G_{CM,1} = 1}
+    \]
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.5\linewidth}
+    There is no contribution of the source impedances $R_{S1,2}$, and the CMRR for the first stage is quite good.  
+    Indeed, we have:
+    \[
+    CMRR_{TOT} = CMRR_{stage\,1} \cdot CMRR_{stage\,2}
+    \]
+    where:
+    \[
+    CMRR_{stage\,1} = \frac{G_{DIFF,1}}{G_{CM,1}} = G_{DIFF,1} > 1
+    \]
+    Thus:
+    \[
+    \textcolor{red}{
+    CMRR_{TOT} = G_{DIFF,1} \cdot CMRR_{stage\,2} > CMRR_{stage\,2}
+    }
+    \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{CMRR_Improvement_Final_Scheme.png}
+    \caption{Final scheme of the CMRR improvement circuit.}
+    \end{minipage}
+\end{figure}
+
+
+\subsection{Summary}
+
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Effect of Source Impedances]
+\begin{itemize}
+    \item For the non-ideal differential input:
+    \[
+        G^- = -\frac{R_2}{R_1 + R_{S2}}, \qquad
+        G^+ = \frac{R_2}{R_1 + R_{S2}} \cdot \frac{R_1 + R_2 + R_{S2}}{R_1 + R_2 + R_{S1}}
+    \]
+    \item Perfect balance ($G^+ = G^-$) occurs only when $R_{S1} = R_{S2}$, which is rarely achievable.
+    \item Unequal source impedances directly translate into imperfect differential gain and lower CMRR.
+\end{itemize}
+\end{tcolorbox}
+
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Compensation via Input Attenuation]
+\begin{itemize}
+    \item Adding an attenuation $A$ on the $+$ input helps balance the gains:
+    \[
+        A = \frac{R_2}{R_1 + R_2}
+    \]
+    \item This acts as a voltage divider, making $G^+ = G^-$ under ideal source conditions.
+    \item However, mismatched $R_{S1,2}$ reintroduce imbalance; perfect CMRR is not recovered.
+\end{itemize}
+\end{tcolorbox}
+
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Buffer-Based Improvement]
+\begin{itemize}
+    \item Inserting \textbf{voltage buffers} after the sources isolates the circuit from $R_{S1}$ and $R_{S2}$:
+    \[
+        CMRR_{TOT} = CMRR_{stage1} \times CMRR_{stage2}
+    \]
+    \item Stage 1 (buffers) eliminates effects of source impedance mismatch.
+    \item Stage 2 (differential amplifier) still limited by resistor tolerances and asymmetries.
+\end{itemize}
+\end{tcolorbox}
+
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Gain Stage for Enhanced CMRR]
+\begin{itemize}
+    \item Replacing buffers with a \textbf{gain stage} further improves rejection:
+    \[
+        v_{o1} - v_{o2} = (v_1 - v_2)\left(1 + \frac{R_4 + R_5}{R_3}\right)
+    \]
+    \item Differential gain: $\displaystyle G_{DIFF,1} = 1 + \frac{R_4 + R_5}{R_3}$.
+    \item Common-mode gain (if $R_4 = R_5$): $\displaystyle G_{CM,1} = 1$.
+    \item Thus:
+    \[
+        CMRR_{stage1} = \frac{G_{DIFF,1}}{G_{CM,1}} = G_{DIFF,1} > 1
+    \]
+\end{itemize}
+\end{tcolorbox}
+
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Overall Improvement and Design Insights]
+\begin{itemize}
+    \item The total CMRR is: $ \Pi_i G_{DIFF,i}$
+    \item The first stage amplifies the differential signal before the second, improving noise immunity and total rejection.
+    \item For optimal results:
+    \begin{itemize}
+        \item Match $R_4 = R_5$ precisely to eliminate common-mode gain.
+        \item Choose large $G_{DIFF,1}$ to maximize $CMRR_{TOT}$.
+        \item Use precision resistors (low tolerance, low temperature coefficient).
+    \end{itemize}
+    \item This multi-stage approach forms the basis of the \textbf{instrumentation amplifier}, combining high input impedance with excellent common-mode rejection.
+\end{itemize}
+\end{tcolorbox}

@@ -1,0 +1,282 @@
+\section{Source Impedances}
+
+We recall how to describe the audio source in the audio path.  
+We usually start in \textbf{balanced configuration} (robust against interferences, both inputs fed with signal) and then consider the \textbf{unbalanced configuration}.
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Audio_Path.png}
+    \caption{Audio Path.}
+    \label{fig:placeholder}
+\end{figure}
+We model audio sources using resistances, capacitances, and inductances.  
+Each component couples differently with the load.
+\subsection{Resistive Sources}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.5\linewidth}
+    Example: mp3 player output impedance $100 \,\Omega \text{ to } 600 \,\Omega$.  
+    \[
+        R_S = 500\,\Omega, 
+        \qquad R_{IN} = 50\,k\Omega.
+    \]
+    We observe:
+    \[
+        \frac{v_{in}}{v_s} = \frac{R_{IN}}{R_{IN} + R_S} = \frac{50k}{50k + 500} \approx 1.
+    \] 
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{imagePure_Resistive_Source.png}
+    \caption{Simple resistive source.}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.55\linewidth}
+    Increasing the complexity of the model, me can model it with capacitors. 
+    Note that one of the common-mode capacitors can be neglected when the system is unbalanced.  
+
+    Total capacitance:
+    \[
+        C_{IM}^{TOT} = C_D + C_{CM}.
+    \]
+    If we add a capacitance model:
+    \[
+        C_{IN} = C_D \, // \, C_{CM} = C_D + C_{CM} = 18 \cdot 10^{-12} \, F.
+    \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.4\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Resistive_Source_with_Capacitors.png}
+    \caption{More complex model of the source.}
+    \end{minipage}
+\end{figure}
+Thus:
+    \[
+        \frac{v_{in}}{v_s} = \frac{Z_{IN}}{Z_{IN} + R_S} = \frac{\frac{1}{s C_{IN}}}{\frac{1}{s C_{IN}} + R_S}
+        \quad \Rightarrow \quad
+    \frac{v_{in}}{v_s} = \frac{1}{1 + s R_S (C_D + C_M)}
+\]
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.55\linewidth}
+    This is an RC filter.  
+    The pole frequency is:
+    \[
+        f_p = \frac{1}{2\pi R_S (C_D + C_{CM})}
+    \]
+    Numerical example:
+    \[
+        f_p = \frac{1}{2\pi \cdot 500 \cdot 18 \cdot 10^{-12}} \approx 17.7 \,\text{MHz} \gg 20 \,\text{kHz}.
+    \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Transfer_Function_MP3.png}
+    \caption{Transfer function of the given setting.}
+    \end{minipage}
+\end{figure}
+
+
+
+
+\subsection{Capacitive Sources}
+
+Example: microphone source, modeled as a capacitor.
+
+Equivalent circuit:
+\[
+C_S = 10 \,pF, 
+\quad R_{IN} = 50 \,k\Omega.
+\]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{Capacitive_Source.png}
+    \caption{Equivalent circuit for the capacitive source}
+    \label{fig:placeholder}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.5\linewidth}
+    The transfer function is a CR high-pass filter:
+    \[
+        \frac{v_{in}}{v_s} = \frac{R_{IN}}{R_{IN} + \frac{1}{sC_s}} 
+        = \frac{s C_s R_{IN}}{1 + s C_s R_{IN}},
+    \]
+    The cut-off frequency is :
+    \[
+    f_p = \frac{1}{2 \pi R_{in} C_s} = \frac{1}{2 \pi \cdot 50 k \cdot 10p}
+    \quad \Rightarrow 
+    f_p = 31.3 \ MHz \ >> 20 \ kHz
+    \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.4\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Capacitive_Source_HP.png}
+    \caption{Highpass filter graph of the considered source.}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.6\linewidth}
+    If we consider two capacitors $C_s$ and $C_{in}$ in the model, we have:  
+    \begin{align*}
+        & \frac{v_{in}}{v_s} = \frac{Z_{in}}{Z_{in} + Z_s} 
+        = \frac{\tfrac{1}{sC_{in}}}{\tfrac{1}{sC_{in}} + \tfrac{1}{sC_s}} \\
+        \Rightarrow \quad & \frac{v_{in}}{v_s} = \frac{1}{1 + \tfrac{C_{in}}{C_s}} 
+        = \frac{C_s}{C_{in} + C_s}
+    \end{align*}
+    This results in attenuation that is \textbf{constant across frequency}.  
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.39\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]
+        {Double_Capacitive_Model.png}
+    \caption{Double capacitice model - constant across frequency.}
+    \end{minipage}
+\end{figure}
+Numerical example:
+\[
+    \frac{v_{in}}{v_s} = \frac{10p}{10p + 18p} = 0.36.
+\]
+
+\clearpage
+
+\subsection{Inductive Sources}
+
+Inductive sources are commonly found in \textbf{guitar pickups}. A single coil pickup consists of an inductance (coil wound around a magnet).  
+Typical winding resistance: $5k\Omega \text{ to } 10k\Omega$.  
+The section of the wire is referred to as its \emph{gauge}.  
+
+ Metal strings above the pickup are polarized by the magnet (dipole).  
+Their magnetic field interferes with the coil’s field, inducing a voltage.  
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.58 \linewidth}
+    For a coil with $N$ turns:
+    \[
+        L_s \propto N, 
+        \qquad R_s \propto N
+    \]
+    Thus, more windings increase both inductance and resistance, creating a trade-off.  
+    
+    The induced voltage is related to the flux:
+    \[
+        V_s \propto \frac{\partial \Phi_B}{\partial t}
+    \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.4\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]
+        {Inductive_Source.png}
+    \caption{Simple representation of the single coil.}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.58 \linewidth}
+    We observe 
+    \[
+    \frac{V_{in}}{V_s} = \frac{R_{in}}{R_s + sL_s + R_{in}} 
+    = \frac{R_{in}}{R_s + R_{in}} \cdot \frac{1}{1 + s \dfrac{L_s}{R_{in} + R_s}}
+\]
+This corresponds to a \textbf{first-order low-pass filter}.  
+
+The cutoff frequency is:
+\[
+    f_p = \frac{1}{2\pi} \cdot \frac{R_{in} + R_s}{L_s}
+\]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]
+        {Pickup_Electric_Scheme.png}
+    \caption{Equivalent scheme of the single coil pickup.}
+    \end{minipage}
+\end{figure}
+Numerical example:  
+For $L_s = 2.2 \, H$, $R_s = 5.8k\Omega$, $R_m = 50k\Omega$:  
+\[
+    f_p \approx 4 \,\text{kHz}.
+\]
+This limits very high harmonics, but it is acceptable for guitar sound.  
+
+
+\subsection{Summary}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Big Picture \& Design Rules]
+\begin{itemize}
+    \item Audio sources are modeled by their internal impedance ($R_S$, $C_S$, $L_S$) interacting with the input impedance $R_{IN}$ of the next stage.
+    \item To minimize signal loss: use \textbf{bridging connection}, ensuring $R_{IN} \gg R_S$ (typically $R_{IN} \ge 10\,R_S$).
+    \item Parasitic elements (cable capacitance $C_{IN}$, common-mode capacitance $C_{CM}$) shape high-frequency response and affect phase.
+    \item Balanced connections reject external interferences, while unbalanced configurations are more sensitive to noise pickup.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Resistive Sources]
+\begin{itemize}
+    \item Behavior: voltage divider $\displaystyle \frac{v_{in}}{v_s} = \frac{R_{IN}}{R_{IN} + R_S} \xrightarrow{R_{IN} \gg R_S} 1$.
+    \item Including input capacitance $C_{IN}$: $\displaystyle \frac{v_{in}}{v_s} = \frac{1}{1 + s R_S C_{IN}}$ → low-pass filter.
+    \item Cutoff frequency: $\displaystyle f_p = \frac{1}{2\pi R_S C_{IN}}$.
+    \item In typical audio devices, $f_p \gg 20\,\text{kHz}$ → flat frequency response in the audio band.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Capacitive Sources (e.g., microphones)]
+\begin{itemize}
+    \item Equivalent circuit: series capacitor into $R_{IN}$ → high-pass filter $\displaystyle \frac{v_{in}}{v_s} = \frac{s C_S R_{IN}}{1 + s C_S R_{IN}}$.
+    \item Cutoff frequency: $\displaystyle f_p = \frac{1}{2\pi R_{IN} C_S}$.
+    \item If $C_S$ and $C_{IN}$ are in series: capacitive divider $\displaystyle \frac{v_{in}}{v_s} = \frac{C_S}{C_S + C_{IN}}$ (constant attenuation).
+    \item Practical guideline: large $R_{IN}$ and small $C_{IN}$ preserve low-frequency extension and minimize level loss.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Inductive Sources (e.g., guitar pickups)]
+\begin{itemize}
+    \item Model: series $R_S + sL_S$ feeding $R_{IN}$ → low-pass filter
+    \[
+        \frac{v_{in}}{v_s} = \frac{R_{IN}}{R_S + R_{IN}} \cdot \frac{1}{1 + s \frac{L_S}{R_S + R_{IN}}}.
+    \]
+    \item Cutoff frequency: $\displaystyle f_p = \frac{R_S + R_{IN}}{2\pi L_S}$.
+    \item More coil turns $\Rightarrow L_S \uparrow$, $R_S \uparrow$ thus implies narrower bandwidth but higher output.
+    \item Cable capacitance interacts with $L_S$, creating a resonant peak shaping the tonal color of the pickup.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Balanced vs Unbalanced Connections]
+\begin{itemize}
+    \item \textbf{Balanced:} interference appears as common-mode signal ($v_{CM}$), rejected by the differential input.  
+    \item \textbf{Unbalanced:} disturbances couple directly into the signal path ($v^+$ input).  
+    \item Balanced wiring is preferred for long cables or high-impedance sources (e.g., microphones, instruments).
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Quick Reference Formulas]
+\begin{itemize}
+    \item RC low-pass cutoff: $\displaystyle f_p = \frac{1}{2\pi R_S C_{IN}}$ (resistive sources).  
+    \item CR high-pass cutoff: $\displaystyle f_p = \frac{1}{2\pi R_{IN} C_S}$ (capacitive sources).  
+    \item RL low-pass cutoff: $\displaystyle f_p = \frac{R_S + R_{IN}}{2\pi L_S}$ (inductive sources).  
+    \item Capacitive divider attenuation: $\displaystyle \frac{v_{in}}{v_s} = \frac{C_S}{C_S + C_{IN}}$ (frequency-independent).  
+\end{itemize}
+\end{tcolorbox}

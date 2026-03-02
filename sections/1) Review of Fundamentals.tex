@@ -1,0 +1,1080 @@
+\section{Review of Fundamentals}
+
+\subsection{Basics}
+
+The \textbf{acoustical operating principle} determines the type of sensor used.  
+For example, a pressure-gradient transducer detects sound based on pressure differences.  
+
+The \textbf{sensitivity} of a sensor is defined as the minimum value of pressure that can be detected at each frequency.  
+
+In electrical systems, circuit elements map current to voltage, usually expressed as:
+\[
+    V = f(I).
+\]
+\paragraph{Basic Quantities:}
+\[
+I = [A] = \left[\frac{C}{s}\right], \qquad
+V = [V] = \left[\frac{J}{C}\right], \qquad
+P = I \cdot V = \left[\frac{C}{s} \cdot \frac{J}{C}\right] = \left[\frac{J}{s}\right] = [W].
+\]
+
+\begin{figure}[H]
+    \centering
+    % Left column: text
+    \begin{minipage}[c]{0.5\linewidth}
+        \paragraph{Kirchhoff’s Current Law (KCL):}  
+        For any node with $N$ branches, the sum of currents flowing into the node is zero:
+        \[
+            \sum_{n=1}^{N} i_n = 0.
+        \]
+
+        \paragraph{Kirchhoff’s Voltage Law (KVL):}  
+        For any closed loop in a circuit, the sum of voltages is zero:
+        \[
+            \sum_{n=1}^{N} v_n = 0.
+        \]
+    \end{minipage}%
+    \hfill
+    % Right column: picture
+    \begin{minipage}[c]{0.5\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{KVL_KCL.jpg}
+        \caption{Illustration of the Kirchhoff's laws}
+    \end{minipage}
+\end{figure}
+
+
+\subsection{Passive Components}
+
+% ====================== RESISTOR ======================
+\begin{figure}[H]
+    \centering
+    % Left: text
+    \begin{minipage}[c]{0.7\linewidth}
+        \paragraph{Resistor:}  
+        A resistor $R$ is expressed in Ohms $(\Omega)$.  
+        The current–voltage relation is:
+        \[
+            v_R(t) = R \cdot i_R(t)
+        \]
+    \end{minipage}\hfill
+    % Right: image
+    \begin{minipage}[c]{0.25\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{resistor.png}
+        \caption*{Model of the resistor}
+    \end{minipage}
+\end{figure}
+
+% ====================== CONDUCTANCE ======================
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[c]{0.7\linewidth}
+        \paragraph{Conductance:}  
+        A conductance $G$ is expressed in Siemens $(S)$, also written as Mho,  
+        and is the inverse of resistance:
+        $G = \Omega^{-1}$.
+        The current–voltage relation is:
+        \[
+            v_G(t) = \frac{1}{G} \cdot i_G(t)
+        \]
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.25\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{conductance.png}
+        \caption*{Model of the conductance}
+    \end{minipage}
+\end{figure}
+
+% ====================== INDUCTOR ======================
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[c]{0.7\linewidth}
+        \paragraph{Inductor:}  
+        An inductor $L$ is expressed in Henrys $(H)$.  
+        The current–voltage relation is:
+        \[
+            v_L(t) = L \cdot \frac{di_L}{dt}
+        \]
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.25\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{inductor.png}
+        \caption*{Model of the inductor}
+    \end{minipage}
+\end{figure}
+
+
+% ====================== CAPACITOR ======================
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[c]{0.5\linewidth}
+        \paragraph{Capacitor:}  
+        A capacitor $C$ is expressed in Farads $(F)$.  
+        The current–voltage relation is:
+        \[
+            v_C(t) = \frac{1}{C} \int_0^t i_C(\tau) \, d\tau.
+        \]
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{capacitor.png}
+        \caption*{Model of the capacitor}
+    \end{minipage}
+\end{figure}
+
+\subsection{Active Components}
+
+\paragraph{Voltage Generator:}  
+A voltage generator provides a fixed voltage $V_s$.  
+The resulting current $I_s$ depends on the connected circuit.  
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{batteries.png}
+    \caption{Voltage generators models}
+\end{figure}
+
+
+
+\paragraph{Current Generator:}  
+A current generator provides a fixed current $I_s$.  
+The resulting voltage $V_s$ depends on the connected circuit.  
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.2\linewidth]{current_generator.png}
+    \caption{Current generator model}
+\end{figure}
+
+\paragraph{Voltage-Controlled Generator:}  
+In a voltage-controlled generator, the output current depends on the input voltage.
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.25\linewidth]{voltage_controlled_generator.png}
+    \caption{Voltage-controlled generator model}
+    \label{fig:placeholder}
+\end{figure}
+
+\subsection{Basic Circuits}
+
+\subsubsection{Voltage Divider}
+
+\begin{figure}[H]
+    \centering
+    % Left side: text + equations
+    \begin{minipage}[c]{0.8\linewidth}
+        From Kirchhoff’s laws:
+        \[
+            V_{IN}(t) = V_{R_1}(t) + V_{R_2}(t), 
+            \qquad I_{R_1}(t) = I_{R_2}(t) = I(t).
+        \]
+        Using Ohm’s law:
+        \[
+            V_{R_1}(t) = I(t) \cdot R_1, 
+            \qquad V_{R_2}(t) = I(t) \cdot R_2.
+        \]
+        Thus
+        \[
+            V_{IN}(t) = I(t) \cdot (R_1 + R_2).
+        \]
+        Setting $R_{eq} = R_1 + R_2$, we get:
+\[
+    I(t) = \frac{V_{IN}(t)}{R_{eq}}.
+\]
+    \end{minipage}\hfill
+    % Right side: picture
+    \begin{minipage}[c]{0.2\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{voltage_divider.png}
+        \caption{Scheme of the voltage divider}
+    \end{minipage}
+\end{figure}
+
+
+Therefore, the voltages across each resistor are:
+\[
+    V_{R_1}(t) = \frac{R_1}{R_1+R_2} \, V_{IN}(t),
+    \qquad
+    V_{R_2}(t) = \frac{R_2}{R_1+R_2} \, V_{IN}(t).
+\]
+
+These are the \textbf{voltage divider expressions}.
+
+
+\subsubsection{Current Divider}
+
+\begin{figure}[H]
+    \centering
+    % Left side: text + equations
+    \begin{minipage}[c]{0.65\linewidth}
+        Using Kirchhoff’s laws:
+        \[
+            I_{IN}(t) = I_{R_1}(t) + I_{R_2}(t),
+            \qquad V_{IN}(t) = V_{R_1}(t) = V_{R_2}(t).
+        \]
+        From Ohm’s law:
+        \[
+            V_{R_1}(t) = I_{R_1}(t) \cdot R_1, 
+            \qquad V_{R_2}(t) = I_{R_2}(t) \cdot R_2.
+        \]
+        Since $V_{R_1}(t) = V_{R_2}(t)$, we have:
+        \[
+            I_{R_1}(t) \cdot R_1 = I_{R_2}(t) \cdot R_2
+            \quad \Rightarrow \quad 
+            I_{R_1}(t) = I_{R_2}(t) \cdot \frac{R_2}{R_1}.
+        \]
+    \end{minipage}\hfill
+    % Right side: picture
+    \begin{minipage}[c]{0.3\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{current_divider.png}
+        \caption{Scheme of the current divider}
+    \end{minipage}
+\end{figure}
+Thus,
+\[       
+I_{IN}(t) = I_{R_2}(t) \left(1 + \frac{R_2}{R_1}\right) 
+            = I_{R_2}(t) \cdot \frac{R_1 + R_2}{R_1}
+            \qquad \Rightarrow
+            \begin{cases}
+                I_{R_2}(t) & = I_{IN}(t) \cdot \frac{R_1}{R_1 + R_2}\\
+                I_{R_1}(t) & = I_{IN}(t) \cdot \frac{R_2}{R_1 + R_2}
+            \end{cases}
+        \]
+These are the \textbf{current divider expressions} where $\frac{R_1}{R_1+R_2}, \ \frac{R_2}{R_1+R_2}$ are the \textbf{current divider coefficients}.
+
+Since $V_{IN}(t) = V_{R_1}(t)$, we have:
+    \[
+        V_{IN}(t) = I_{IN}(t) \cdot \frac{R_1 R_2}{R_1 + R_2} =  I_{IN}(t) \cdot \left( R_1 //R_2 \right)
+    \]
+
+\subsubsection{Circuits as Linear Time-Invariant (LTI) Systems}
+
+It is often useful to treat circuits as \textbf{LTI systems} as they have useful properties:
+\begin{itemize}
+    \item \textbf{Linearity:}  
+    \[
+        y_1(t) = f(x_1(t)), \quad y_2(t) = f(x_2(t)) 
+        \quad \Rightarrow \quad 
+        f(\alpha x_1(t) + \beta x_2(t)) 
+        = \alpha y_1(t) + \beta y_2(t).
+    \]
+    \item \textbf{Time invariance:}  
+    \[
+        y(t) = f(x(t)) 
+        \quad \Rightarrow \quad 
+        y(t - \tau) = f(x(t - \tau)).
+    \]
+\end{itemize}
+
+A key property of LTI systems is that if the input is a sinusoidal signal, the output will also be a \textbf{sinusoid of the same frequency, possibly with a different amplitude and phase}.
+\[
+    x(t) = A_x \sin(\omega_x t + \phi_x)
+    \quad \Rightarrow \quad 
+    y(t) = A_y \sin(\omega_y t + \phi_y),
+    \quad \text{with } \omega_y = \omega_x, \; T_y = T_x.
+\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{signal_decomosition.png}
+    \caption{Signal decomposition illustration}
+    \label{fig:placeholder}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: text + equations
+    \begin{minipage}[c]{0.7\linewidth}
+        We can describe an LTI system using its \textbf{transfer function}, 
+        expressed through Fourier or Laplace transforms.  
+        In the Laplace domain we set $s = j \omega$:  
+        \[
+            H(j\omega) = \frac{Y(j\omega)}{X(j\omega)}.
+        \]
+        This transfer function $H(j\omega)$ describes how the system 
+        changes the amplitude and phase of each sinusoidal component.  
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[t]{0.25\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{LTI_system_block.png}
+        \caption{LTI system block model}
+        \label{fig:LTI_block}
+    \end{minipage}\hfill
+\end{figure}
+
+For cascaded systems:
+\[
+    Y(s) = X(s) \cdot \prod_{i=1}^{N} H_i(s).
+\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{LTI_cascade_blocks.png}
+    \caption{Cascade of LTI systems}
+\end{figure}
+
+
+\subsubsection{RC Low-Pass Filter}
+\begin{figure}[H]
+    \centering
+    % Left side: text + equations
+    \begin{minipage}[c]{0.65\linewidth}
+        From Kirchhoff’s laws:
+        \[
+            V(t) = V_R(t) + V_C(t).
+        \]
+        With current–voltage relations:
+        \[
+            V_R(t) = I(t) \cdot R, 
+            \qquad V_C(t) = \frac{1}{C} \int_0^t I(\tau) \, d\tau.
+        \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.2\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{RC_LPF.png}
+        \caption{Low-pass RC filter scheme}
+    \end{minipage}
+\end{figure}
+
+Instead of solving this differential equation directly,  
+        we use the \textbf{Laplace Transform}:
+        \[
+            L\{f\} = F(s) = \int_{-\infty}^{\infty} f(t) e^{-st} \, dt, 
+            \qquad s \in \mathbb{C}.
+        \]
+Applying this to the capacitor voltage:
+        \[
+            V_C(t) \xrightarrow{\;L\;} V_C(s) 
+            = \frac{1}{C} \int_{-\infty}^{\infty} 
+            \left( \int_0^t I(\tau) \, d\tau \right) e^{-st} \, dt.
+        \]     
+This simplifies to:
+\[
+    V_C(s) = \frac{1}{sC} \int_{-\infty}^{\infty} I_C(t) e^{-st} dt 
+    = \frac{1}{sC} I_C(s).
+\]
+Thus, the impedance of the capacitor is:
+\[
+    Z_C(s) = \frac{V_C(s)}{I_C(s)} = \frac{1}{sC}.
+\]
+This corresponds to the generalized Ohm’s law.  
+The Laplace Transform (and its inverse) is a powerful way of analyzing circuit behavior without solving the whole differential equation.
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: text + equations
+    \begin{minipage}[c]{0.65\linewidth}
+        From the RC circuit we studied previously, we have the following:
+        \[
+            V_{OUT}(s) = Z_C(s) \cdot I_C(s) 
+            \quad \Rightarrow \quad
+            V_{OUT}(s) = Z_C(s) \cdot \frac{V_{IN}(s)}{Z_R+Z_C(s)}.
+        \]
+        Thus, the transfer function is:
+        \[
+            H(s) = \frac{V_{OUT}(s)}{V_{IN}(s)} = \frac{Z_C(s)}{Z_R + Z_C(s)}
+            = \frac{\tfrac{1}{sC}}{R + \tfrac{1}{sC}}
+            \quad \Rightarrow \quad
+            H(s) = \frac{1}{1 + sRC}.
+        \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.3\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{RC_LPF_LT.png}
+        \caption{RC LPF scheme}
+    \end{minipage}
+\end{figure}
+
+
+
+
+We identify that $RC$ is a \textbf{pole} of the transfer function with cut-off frequency $\omega_c = \frac{1}{RC}$.
+
+We are often interested in the \textbf{frequency response}, characterized by the magnitude $|H(j\omega)|$ and phase $\angle H(j\omega)$.
+
+Since
+\[
+    H(j\omega) = \frac{1}{1 + j\omega RC} \in \mathbb{C} 
+    \quad \Rightarrow \quad
+    H(j\omega) = |H(j\omega)| \, e^{j \angle H(j\omega)}
+\]
+\textbf{Magnitude:}
+\[
+    |H(j\omega)| = \sqrt{\text{Re}^2(H(j\omega)) + \text{Im}^2(H(j\omega))}.
+\]
+
+\textbf{Phase:}
+\[
+    \angle H(j\omega) = \arctan\!\left(\frac{\text{Im}(H(j\omega))}{\text{Re}(H(j\omega))}\right)
+\]
+Let's write $H(j\omega)$ with it's real and imaginary parts:
+\[
+    H(j\omega) = \frac{1}{1+j\omega RC} \cdot \frac{1-j\omega RC}{1-j\omega RC}
+    \quad \Rightarrow \quad
+    H(j\omega) = \frac{1-j\omega RC}{1+(\omega RC)^2}
+    \quad \Rightarrow \quad 
+    H(j\omega) = \underbrace{\frac{1}{1+(\omega RC)^2}}_{\text{Re}(H(j\omega))} + j\underbrace{\frac{-\omega RC}{1+(\omega RC)^2}}_{\text{Im}(H(j\omega))}
+\]
+Thus we obtain for the magnitude : 
+\[ 
+\abs{H(j\omega)} = \sqrt{\frac{1}{\left(1+(\omega RC)^2\right)^2} + \frac{\left(\omega RC\right)^2}{\left(1+(\omega RC)^2\right)^2}}
+\quad \Rightarrow \quad 
+\abs{H(j\omega)} = \frac{\sqrt{1+\left(\omega RC\right)^2}}{1+(\omega RC)^2}
+\quad \Rightarrow \quad 
+\abs{H(j\omega)} = \frac{1}{\sqrt{1+(\omega RC)^2}}
+\]
+
+For the phase, we have: 
+\[
+\angle H(j\omega) = \arctan\left( \frac{\frac{-\omega RC}{1+(\omega RC)^2}}{\frac{1}{1+(\omega RC)^2}}\right)
+\quad \Rightarrow \quad
+\angle H(j\omega) = \arctan\left( -\omega RC\right)
+\quad \Rightarrow \quad 
+\angle H(j\omega) = - \arctan\left(\omega RC\right)
+\]
+\begin{figure}[H]
+    \centering
+    % Left side: text + equations
+    \begin{minipage}[c]{0.6\linewidth}
+        For $\omega \to 0$, we have:
+        \[
+        \lim_{\omega \to 0} |H(j\omega)| \to 1,
+        \qquad
+        \lim_{\omega \to 0} \angle H(j\omega) \to 0.
+        \]
+
+        For $\omega \to +\infty$, we have:
+        \[
+        \lim_{\omega \to +\infty} |H(j\omega)| \to 0,
+        \qquad
+        \lim_{\omega \to +\infty} \angle H(j\omega) \to -\frac{\pi}{2}.
+        \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.4\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{RC_LPF_Bode_Plot.png}
+        \caption{RC LPF frequency response}
+    \end{minipage}
+\end{figure}
+
+
+
+Since it is often convenient to multiply transfer functions in decibels, we define:
+\[
+|H|_{dB} = 20 \cdot \log_{10} \left( |H(j\omega)| \right).
+\]
+This is represented using \textbf{Bode plots}.  
+
+\textbf{Key Frequency Points:}
+\begin{itemize}
+    \item For $f \to 0$: $|H|_{dB} = 0, \ \angle H = 0$. The system copies the input.
+    \item For $f = f_p = \tfrac{1}{2 \pi RC}$:
+    $|H|_{dB} = -3, \ \angle H = -\tfrac{\pi}{4}.$
+    This is called the \textbf{cutoff frequency}.  
+    \item For $f \to +\infty$: $|H|_{dB} \to -\infty$, $\angle H = -\tfrac{\pi}{2}$.  The system cancels the input
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{RC_LPF_Log_Bode_Plot.png}
+    \caption{RC LPF Magnitude Bode Plot}
+    \label{fig:placeholder}
+\end{figure}
+
+\textbf{Impedance viewpoint:} the capacitor impedance is $Z_C(s) = \tfrac{1}{sC}$.
+\begin{itemize}
+    \item As $s \to 0$: $Z_C \to +\infty$ (open circuit) $\;\Rightarrow\; V_{out} \approx V_{in}$.  
+    \item As $s \to +\infty$: $Z_C \to 0$ (short circuit) $\;\Rightarrow\; V_{out} \approx 0$.  
+\end{itemize}
+
+\subsubsection{RC High-Pass Filter}
+
+Now consider the complementary case, with capacitor in series and resistor across the output.  
+
+\begin{figure}[H]
+    \centering
+    % Left side: text + equations
+    \begin{minipage}[c]{0.65\linewidth}
+        We have the following:
+        \[
+            V_{OUT}(s) = Z_R \cdot I(s) 
+            \quad \Rightarrow \quad
+            V_{OUT}(s) = Z_R \cdot \frac{V_{IN}(s)}{Z_R+Z_C(s)}.
+        \]
+
+        Thus, the transfer function is:
+        \[
+            H(s) = \frac{V_{OUT}(s)}{V_{IN}(s)} = \frac{Z_R}{Z_R + Z_C}
+            = \frac{R}{R + \tfrac{1}{sC}}
+            \quad \Rightarrow \quad
+            H(s) = \frac{sCR}{1 + sRC}.
+        \]
+        This is the transfer function of a \textbf{high-pass filter}.  
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.3\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{RC_HPF_LT.png}
+        \caption{RC HPF scheme}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{RC_HPF_Log_Bode_Plot.png}
+    \caption{RC HPF Magnitude Bode Plot}
+\end{figure}
+
+\clearpage
+
+
+\subsubsection{Canonical Bode Form}  
+The general transfer function is expressed as:
+\[
+    H(s) = K \cdot \frac{N(s)}{D(s)}= K \cdot \frac{\prod_{i=1}^{N} (1+s\tau_{z,i})}{\prod_{j=1}^{M} (1+s\tau_{p,j})}.
+\]
+
+\begin{itemize}
+    \item Each \textbf{zero} at $f_{z,i} = \tfrac{1}{2\pi \tau_{z,i}}$ increases the slope of $|H|$.  
+    \item Each \textbf{pole} at $f_{p,j} = \tfrac{1}{2\pi \tau_{p,j}}$ decreases the slope of $|H|$.  
+\end{itemize}
+
+The canonical Bode form of the simple CR filter:
+\[
+    H(s) = \frac{sRC}{1+sRC}.
+\]
+
+
+\subsection{Audio Signals}
+
+Here is an example of an audio signal path, from voltage source to application, with an optional branch for digital elaborations:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Audio_Signal_Path.png}
+    \caption{Audio signal path}
+\end{figure}
+
+% Example block diagram can be included here if available
+%\begin{figure}[h]
+%    \centering
+%    \includegraphics[width=\textwidth]{figures/audio_path.png}
+%    \caption{Example audio signal path.}
+%\end{figure}
+
+The \textbf{pre-amplification stage} provides initial voltage level control, bringing the input into the correct operating voltage range. This stage is necessary since audio sources are usually very sensitive to their load.
+
+We observe that 
+\[
+v_{IN} = v_s \frac{Z_{IN}}{Z_s+Z_{IN}}
+\quad \Rightarrow \quad
+\lim_{Z_{IN} \to \infty} v_{IN} = v_s
+\]
+To optimize power transfer, we want the \textbf{input impedance} $Z_{IN}$ to be as high as possible. This shows how the load influences the delivered signal.
+
+\subsubsection*{Gain Models}
+
+We consider the pre-amplifier as an LTI system. Depending on what $X,Y$ represent, we define different gains:
+\begin{itemize}
+    \item \textbf{Voltage Gain}: 
+    \[
+    G_V = \frac{V_{out}}{V_{in}}, 
+    \qquad G_{V,dB} = 20 \log_{10} \!\left(\frac{V_{out}}{V_{in}}\right).
+    \]
+    \item \textbf{Current Gain}: 
+    \[
+    G_I = \frac{I_{out}}{I_{in}}, 
+    \qquad G_{I,dB} = 20 \log_{10} \!\left(\frac{I_{out}}{I_{in}}\right).
+    \]
+    \item \textbf{Power Gain}: 
+    \[
+    G_P = \frac{P_{out}}{P_{in}}, 
+    \qquad G_{P,dB} = 10 \log_{10} \!\left(\frac{P_{out}}{P_{in}}\right).
+    \]
+\end{itemize}
+
+
+
+\textbf{Remarks:}
+\begin{itemize}
+    \item If $G=1$, we have a \textbf{buffer} (voltage or current).  
+    \item If $G<1$, we have \textbf{attenuation}, with attenuation factor $A = G^{-1}$ and $A_{dB} = -G_{dB}$.
+\end{itemize}
+
+\subsubsection{Frequency Response of the Preamp}
+
+Let's consider a voltage source input:
+\[
+V_{out} = g(V_{in}) = G_V(f) \cdot V_{in}.
+\]
+If $Z_{in} \to +\infty$, then
+\[
+\frac{V_{out}}{V_{in}} \approx 1.
+\]
+
+\begin{figure}[H]
+    \centering
+    % Left side: text + equations
+    \begin{minipage}[c]{0.25\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Basic_Pre_Amp.png}
+        \caption{Basic preamp model}
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.7\linewidth}
+        \centering
+    \includegraphics[width=\linewidth]{PreAmp_Freq_Resp.png}
+    \caption{Example of the frequency response of a preamp}
+    \end{minipage}
+\end{figure}
+
+\subsection{Dynamic Range and Distortion}
+
+As we saw above, this stage cannot generate power. To have $P_{out} > P_{in}$, we require a power supply. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4 \linewidth]{PreAmp_Power_Supply.png}
+    \caption{Preamp with power supply}
+\end{figure}
+
+The pre-amplification stage cannot go beyond $v_{out}^{\max}$.   When this level is reached, we have \textbf{saturation}. Let's introduce the concept of dynamic range:
+\begin{figure}[H]
+    \centering
+    % Left side: text + equations
+    \begin{minipage}[c]{0.6\linewidth}
+        \begin{itemize}
+            \item The \textbf{input dynamic range} is defined as:
+            \[
+            DR_{IN} = \frac{V_{in}^{\max}}{V_{in}^{\min}}.
+            \]
+            \begin{itemize}
+                \item Since $V_{in}^{\min}$ can often be $0$, we usually approximate:
+                \[
+                    DR_{IN} \approx V_{in}^{\max}.
+                \]
+            \end{itemize}
+
+            \item The \textbf{output dynamic range} is defined as:
+            \[
+            DR_{OUT} = \frac{V_{out}^{\max}}{V_{out}^{\min}}.
+            \]
+            \begin{itemize}
+                \item Again, since $V_{out}^{\min}$ can be $0$, we often write:
+                \[
+                    DR_{OUT} \approx V_{out}^{\max}.
+                \]
+            \end{itemize}
+        \end{itemize}
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.4\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Dynamic_Range.png}
+        \caption{Input Dynamic Range}
+    \end{minipage}
+\end{figure}
+
+The relationship between input and output dynamic ranges is:
+\[
+    DR_{OUT} = G \cdot DR_{IN}
+    \qquad \Longleftrightarrow \qquad
+    DR_{IN} = \frac{DR_{OUT}}{G}.
+\]
+Thus, knowing the gain $G$ and one of the dynamic ranges, the other can be computed:
+\[
+\begin{cases}
+    DR_{OUT} = 10 V, \; G=1 &\Rightarrow \; DR_{IN} = 10 V, \\[6pt]
+    DR_{OUT} = 10 V, \; G=10 &\Rightarrow \; DR_{IN} = 1 V, \\[6pt]
+    DR_{OUT} = 10 V, \; G=100 &\Rightarrow \; DR_{IN} = 100 mV. 
+\end{cases}
+\]
+Due to saturation, the relationship between input and output is no longer linear. We write:
+\[
+    v_{out} = g(v_{in}).
+\]
+Expanding into a power series:
+\[
+    v_{out} = \sum_{n=0}^{N} G_n \cdot v_{in}^{(n+1)}.
+\]
+This violates the \textbf{linearity hypothesis}: a single-frequency input does not necessarily produce only the same frequency at the output.  
+
+\textbf{Example: Harmonic Distortion}
+
+Let the input be:
+\[
+    v_{in}(t) = V_{in} \sin(\omega_{in} t).
+\]
+Expanding up to second order:
+\[
+    v_{out}(t) = g(v_{in}(t)) = G_0 V_{in} \sin(\omega_{in} t) + G_1 V_{in}^2 \sin^2(\omega_{in} t).
+\]
+Using trigonometric identities:
+\[
+    v_{out}(t) = \frac{G_1}{2} V_{in}^2 + G_0 V_{in} \sin(\omega_{in} t) 
+    - \frac{G_1}{2} V_{in}^2 \cos(2 \omega_{in} t).
+\]
+Alternatively:
+\[
+    v_{out}(t) = \frac{G_1}{2} V_{in}^2 + G_0 V_{in} \sin(\omega_{in} t) 
+    + \frac{G_1}{2} V_{in}^2 \sin\!\left(2 \omega_{in} t + \frac{\pi}{2}\right).
+\]
+\textbf{Interpretation:}
+\begin{itemize}
+    \item $\tfrac{G_1}{2} V_{in}^2$: DC component.  
+    \item $G_0 V_{in} \sin(\omega_{in} t)$: linear term (desired signal).  
+    \item $\tfrac{G_1}{2} V_{in}^2 \cos(2\omega_{in} t)$: \textbf{2nd harmonic} (distortion).  
+\end{itemize}
+
+Therefore, a nonlinear system creates harmonics from a single sinusoidal input.  
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Nonlinear_Freq_Example.png}
+    \caption{Illustration of a nonlinear system adding harmonics}
+\end{figure}
+
+We consider the output signal as a sum of harmonics (neglecting phases for simplicity):
+\[
+    v_{out}(t) = \sum_{i=1}^{N} v_{out,i} \cdot \sin(i \cdot \omega_{in} t) 
+    = v_{out,1} \sin(\omega_{in} t) + v_{out,2} \sin(2\omega_{in} t) + \dots + v_{out,N} \sin(N\omega_{in} t).
+\]
+The \textbf{distortion factor} for the $i$-th harmonic is defined as:
+\[
+    D_i = \frac{v_{out,i}}{v_{out,1}}.
+\]
+The \textbf{electrical power} of the $i$-th output component (for load $R_L$) is:
+\[
+    P_i = \frac{v_{0,i}^2}{2R_L}.
+\]
+Thus, the total mean power delivered to the load is:
+\[
+    \overline{P}_{out} = \frac{v_{0,1}^2 + v_{0,2}^2 + \dots + v_{0,N}^2}{2R_L}.
+\]
+Rewriting in terms of distortion factors:
+\[
+    \overline{P}_{out} = \frac{v_{0,1}^2}{2R_L} \left[ 1 + \frac{v_{0,2}^2}{v_{0,1}^2} + \dots + \frac{v_{0,N}^2}{v_{0,1}^2} \right]
+    \quad \Rightarrow \quad
+    \overline{P}_{out} = \overline{P}_0 \cdot \left( 1 + D_2^2 + \dots + D_N^2 \right), \ \ \overline{P}_0 = \frac{v_{0,1}^2}{2R_L}
+\]
+$\overline{P_0}$ is the fundamental component’s power.
+
+\begin{figure}[H]
+    \centering
+    % Left side: text + equations
+    \begin{minipage}[c]{0.6\linewidth}
+        The \textbf{Total Harmonic Distortion} (frequency-dependent) is defined as:
+        \[
+            D_{TOT} = \sqrt{D_2^2 + D_3^2 + \dots + D_N^2}.
+        \]
+        \textbf{Remarks:}
+        \begin{itemize}
+            \item THD is much lower in the linear operating region (small $v_{in}$).  
+            \item THD increases as nonlinearities (saturation effects) become stronger.  
+        \end{itemize}
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{THD_graph.png}
+        \caption{THD values illustration}
+    \end{minipage}
+\end{figure}
+
+Another type of nonlinearity is the interaction between multiple input signals.  
+In this case:
+\[
+    f(x_1(t) + x_2(t)) \neq f(x_1(t)) + f(x_2(t)).
+\]
+This leads to \textbf{intermodulation distortion (IMD)}, where new frequency components are generated from combinations of input frequencies.
+
+\textbf{Example: Intermodulation Distortion}
+
+Consider an input composed of two sinusoids:
+\[
+    v_{in}(t) = V_1 \sin(\omega_1 t) + V_2 \sin(\omega_2 t).
+\]
+The nonlinear output expansion (up to order 2) is:
+\[
+    v_{out}(t) = G_0 v_{in} + G_1 v_{in}^2
+    \quad \Rightarrow \quad
+    v_{out}(t) = G_0 \Big[ V_1 \sin(\omega_1 t) + V_2 \sin(\omega_2 t) \Big] 
+    + G_1 \Big[ V_1 \sin(\omega_1 t) + V_2 \sin(\omega_2 t) \Big]^2.
+\]
+Expanding:
+\[
+    v_{out}(t) = G_0 V_1 \sin(\omega_1 t) + G_0 V_2 \sin(\omega_2 t) 
+    + G_1 \Big[ V_1^2 \sin^2(\omega_1 t) + 2 V_1 V_2 \sin(\omega_1 t)\sin(\omega_2 t) + V_2^2 \sin^2(\omega_2 t) \Big].
+\]
+We can regroup the terms:
+\[
+    v_{out}(t) = 
+    \underbrace{G_0 V_1 \sin(\omega_1 t) + G_0 V_2 \sin(\omega_2 t)}_{\text{Linear terms}}
+    + \underbrace{G_1 \big[ V_1^2 \sin^2(\omega_1 t) + V_2^2 \sin^2(\omega_2 t) \big]}_{\text{THD terms}}
+    + \underbrace{2 G_1 V_1 V_2 \sin(\omega_1 t)\sin(\omega_2 t)}_{\text{IMD (order 2)}}.
+\]
+
+\begin{itemize}
+    \item \textbf{Linear terms:} preserve the input frequencies $\omega_1, \omega_2$.  
+    \item \textbf{THD terms:} generate harmonics at $2\omega_1, 2\omega_2$.  
+    \item \textbf{Intermodulation (IMD):} generates new components at $\omega_1 \pm \omega_2$.  
+\end{itemize}
+
+Higher-order intermodulation distortion (IMD) products exist, e.g., \textbf{IMD3} terms:
+\[
+    \{2\omega_1 - \omega_2, \; 2\omega_2 - \omega_1, \; 2\omega_1 + \omega_2, \; 2\omega_2 + \omega_1 \}.
+\]
+We define the \textbf{Intercept Power (IP)} to quantify when IMD becomes critical.  
+\begin{itemize}
+    \item IP corresponds to the theoretical input power level $P_{in}^m$ where the power of nonlinear distortion components (e.g., IMD products) would equal the power of the fundamental signal, assuming linear behavior.  
+    \item It is an \textbf{extrapolated} value (not directly measurable).  
+    \item It is used to characterize how much power a system can handle before nonlinearities cause significant distortion.  
+\end{itemize}
+
+ In typical audio paths, preamps work with very low voltages in the frequency range: $[20, \; 20 \cdot 10^3] \; \text{Hz}$.
+
+Final power amplification is usually reserved for specific frequency bands:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Audio_Path_Output.png}
+    \caption{Band-specific power amplification}
+\end{figure}
+
+
+\subsection{Total Harmonic Distortion (THD) of Amplifiers}
+
+One of the key parameters in assessing the quality of an audio amplifier is its \textbf{Total Harmonic Distortion (THD)}.  
+While linear analysis assumes that amplifiers perfectly reproduce the input waveform, in practice, any non-linearity in the transfer characteristic introduces harmonics of the input signal frequency. These harmonics are not present in the original signal and therefore represent \emph{distortion}.
+
+
+Consider an amplifier excited by a single-tone sinusoidal input at frequency $f_0$.  
+If the output spectrum contains the fundamental component at $f_0$ with RMS amplitude $V_1$, plus harmonics at $2f_0, 3f_0, \ldots$ with amplitudes $V_2, V_3, \ldots$, the \textbf{Total Harmonic Distortion} is defined as:
+\[
+\mathrm{THD} = \frac{\sqrt{V_2^2 + V_3^2 + V_4^2 + ...}}{V_1}
+\]
+Often, THD is expressed as a percentage:
+\[
+\mathrm{THD}[\%] = 100 \times \mathrm{THD}.
+\]
+This metric indicates the ratio of the energy contained in all harmonics relative to the fundamental.  
+A lower THD implies higher fidelity reproduction.
+
+Manufacturers and engineers typically present THD measurements as a function of:
+\begin{itemize}
+  \item \textbf{Frequency:} plotting $\mathrm{THD}(f)$ at a fixed output power.  
+  \item \textbf{Output power (or voltage):} plotting $\mathrm{THD}(P_{out})$ at a fixed frequency.
+\end{itemize}
+
+  
+\textbf{At low and mid frequencies}, a well-designed amplifier exhibits extremely low THD (often below $0.01\%$ for high-end devices).  
+As frequency increases, distortion tends to rise due to:
+\begin{itemize}
+  \item finite open-loop gain of the amplifier,
+  \item limited bandwidth of feedback networks,
+  \item slew-rate limitations of the active devices.
+\end{itemize}
+
+
+\textbf{At low output levels}, THD is typically small, since the amplifier operates in a nearly linear regime.  
+As output power increases, distortion grows due to 
+\begin{itemize}
+    \item device saturation
+    \item clipping
+    \item crossover effects
+\end{itemize}  
+A typical curve shows THD rising sharply as the amplifier approaches its maximum rated output power.
+
+Practical Examples:
+\begin{itemize}
+  \item \textbf{High-end amplifiers (e.g., Luxman 900u)} present THD values below $0.001\%$ over most of the audio band, remaining nearly flat until very high frequencies.  
+  This illustrates the capability of modern designs to keep distortion at levels far below human perceptibility.
+  \item \textbf{Mass-market designs} may exhibit THD rising to $0.1\%$ or higher near full power, which can already produce audible coloration, especially in demanding high-fidelity contexts.
+\end{itemize}
+
+\textbf{Didactic Considerations: }
+When reading THD specifications and graphs:
+\begin{enumerate}
+  \item Always check the measurement conditions (frequency, power level, load impedance).  
+  A THD of $0.005\%$ may only hold at $1\,\text{kHz}$ and moderate output levels.
+  \item Remember that \textbf{THD does not describe the \emph{nature} of distortion}, only its total amount.  
+  For instance, predominance of low-order harmonics (2nd, 3rd) is usually more tolerable than high-order components.
+  \item THD is often complemented by \textbf{THD+N} (Total Harmonic Distortion plus Noise), which includes broadband noise in addition to harmonic distortion.
+\end{enumerate}
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: text + equations
+    \begin{minipage}[c]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{THD_Graph_Freq.png}
+\caption{Example of THD vs. frequency for a high-quality audio amplifier.  
+Notice the nearly constant very low THD across most of the audio band, with a rise at higher frequencies due to limited open-loop gain and slew-rate.}
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{THD_Graph_Power.png}
+\caption{Example of THD vs. output power.  
+At low output levels, distortion remains negligible. As the amplifier approaches its maximum power, distortion rises sharply due to clipping and non-linearities.}
+    \end{minipage}
+\end{figure}
+
+
+\subsection{Audio Cables}
+
+Audio (coaxial) cables consist of: a \textbf{HOT pin} at the core (signal) and a \textbf{COLD pin} at the shield (ground).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{Coaxial_cable_Audio_Path.png}
+    \caption{Illustration of the coaxial cable}
+\end{figure}
+
+Cables are modeled using distributed elements, for example: $r = 80 \, m\Omega / m, \  c = 100 \, pF / m$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width= 0.6\linewidth]{Coaxial_cable_distributed_element.png}
+    \caption{Electric scheme of the coaxial cable (distributed elements)}
+\end{figure}
+
+For a cable of length $L = 10 \, m$:  
+\begin{align*}
+    R_c^{tot} & = rL = 80 \cdot 10^{-3} \cdot 10 = 800 \, m\Omega \ll R_s \\
+    C_c^{tot} & = c \cdot L = 100 \cdot 10^{-12} \cdot 10 = 1 \, nF
+\end{align*}
+Thus we can approximate $R_c^{tot} \approx 0$ in series with $R_s$. We can draw the equivalent scheme after such implications. 
+\begin{figure}[H]
+    \centering
+    % Left side: equations
+    \begin{minipage}[c]{0.65\linewidth}
+        The input-output relation becomes:
+        \[
+            \frac{v_m}{v_s} = \frac{Z_s}{Z_s + R_s}, 
+            \qquad Z_s = \frac{1}{sC_c}
+            \quad \Rightarrow \quad 
+            \frac{v_m}{v_s} = \frac{1}{ 1 + R_s/Z_s} 
+            = \frac{1}{1 + s R_s C_c}.
+        \]
+        This is a \textbf{low-pass filter} with cutoff frequency:
+\[
+    f_p = \frac{1}{2\pi R_s C_c} \approx 26.5 \, kHz.
+\]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.28\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{coaxial_cable_equiv_scheme.png}
+        \caption{Equivalent scheme of the coaxial cable}
+    \end{minipage}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Coaxial_Cable_Freq_Resp.PNG}
+    \caption{Magnitude of the frequency response of the coaxial cable}
+\end{figure}
+
+
+
+ \subsection{Summary}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Core Laws & Units]
+\begin{itemize}
+\item Basic units: $I, \ [A]=C/s \qquad V,[V]=J/C \qquad P=VI,[W]=J/s$.
+\item KCL (node): $\sum i_n=0 \qquad \text{KVL (loop) }\: \sum v_n=0$.
+\item Sensitivity: minimum detectable pressure (freq.-dependent).
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Passive/Active I–V Relations]
+\begin{itemize}
+\item Resistor: $v_R=Ri_R$ \quad Conductance: $G=1/R$.
+\item Inductor: $v_L=L\dfrac{di_L}{dt}$ \quad Capacitor: $v_C=\dfrac{1}{C}\int_0^t i_C(\tau)d\tau$.
+\item Sources: voltage source fixes $V_s$ (current depends on load); current source fixes $I_s$ (voltage depends on load).
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Dividers & Parallel]
+\begin{itemize}
+\item Voltage divider: $\displaystyle V_{R_1}=\frac{R_1}{R_1+R_2}V_{IN},\quad V_{R_2}=\frac{R_2}{R_1+R_2}V_{IN}$.
+\item Current divider: $\displaystyle I_{R_1}=I_{IN}\frac{R_2}{R_1+R_2},\quad I_{R_2}=I_{IN}\frac{R_1}{R_1+R_2}$.
+\item Parallel equivalent: $\displaystyle R_1 // R_2=\frac{R_1R_2}{R_1+R_2}$.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Laplace & Impedances]
+\begin{itemize}
+\item Laplace: $F(s)=\int_{-\infty}^{\infty} f(t)e^{-st}dt$.
+\item Generalized Ohm’s law (s-domain): $Z_R=R,; Z_L=sL,; Z_C=\dfrac{1}{sC}$.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: LTI & Transfer Functions]
+\begin{itemize}
+\item Linearity: $f(\alpha x_1+\beta x_2)=\alpha f(x_1)+\beta f(x_2)$; Time invariance: shift in $\Rightarrow$ shift out.
+\item Sinusoidal in $\Rightarrow$ sinusoidal out at same $\omega$ (gain and phase change).
+\item Transfer: $H(s)=\dfrac{Y(s)}{X(s)}$; frequency response $H(j\omega)$.
+\item Cascade: $H_{\mathrm{tot}}(s)=\prod_i H_i(s)$.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: RC Filters (Key Forms)]
+\begin{itemize}
+\item RC Low-pass: $\displaystyle H_{LP}(s)=\frac{1}{1+sRC}$, $\omega_c=1/RC$, $|H(j\omega)|=\frac{1}{\sqrt{1+(\omega RC)^2}}$, $\angle H=-\arctan(\omega RC)$.
+\item RC High-pass: $\displaystyle H_{HP}(s)=\frac{sRC}{1+sRC}$, $\omega_c = 1/RC$, $|H(j\omega)| = \frac{(\omega R C)^2}{\sqrt{(1 + (\omega R C )^2}}$, $\angle H = \arctan(\tfrac{1}{\omega RC})$.
+\item At $f_c=\dfrac{1}{2\pi RC}$: $|H|_{dB}=-3,$dB, $\angle H=\mp 45^\circ$ (LP/HP).
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Bode Essentials]
+\begin{itemize}
+\item Canonical form: $\displaystyle H(s)=K\frac{\prod_i(1+s\tau_{z,i})}{\prod_j(1+s\tau_{p,j})}$.
+\item Each real zero: $+20$ dB/dec; each real pole: $-20$ dB/dec (asymptotically).
+\item Magnitude (dB): $20\log_{10}|H|$; Phase adds algebraically across factors.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Audio Path & Impedance]
+\begin{itemize}
+\item Source/load split: $\displaystyle v_{IN}=v_s\frac{Z_{IN}}{Z_s+Z_{IN}}$; prefer $Z_{IN}\gg Z_s$ (buffering) to avoid loading.
+\item Preamps treated as LTI with frequency-dependent gain $G_V(f)$.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Gains & dB]
+\begin{itemize}
+\item Voltage/current gain: $G_V=\dfrac{V_{out}}{V_{in}}, \ G_I=\dfrac{I_{out}}{I_{in}}, \ G_{dB}=20\log_{10}G$.
+\item Power gain: $G_P=\dfrac{P_{out}}{P_{in}}$, $G_{P,dB}=10\log_{10}G_P$.
+\item Buffer: $G\simeq1$; Attenuation: $G<1$ ($A=1/G$, $A_{dB}=-G_{dB}$).
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Dynamic Range & Saturation]
+\begin{itemize}
+\item Dynamic ranges: $DR_{IN}=\dfrac{V_{in}^{\max}}{V_{in}^{\min}}\approx V_{in}^{\max}$, 
+$DR_{OUT}\approx V_{out}^{\max}$.
+\item Relation with gain: $DR_{OUT}=G\cdot DR_{IN} \ \Leftrightarrow \ DR_{IN}=\dfrac{DR_{OUT}}{G}$.
+\item Saturation $\Rightarrow$ nonlinearity; stay within linear region for low distortion.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Distortion, THD & IMD]
+\begin{itemize}
+\item Nonlinearity model: $v_{out}=g(v_{in})\approx \sum_{n}G_n \cdot v_{in}^{n+1}$.
+\item Harmonics (single-tone): $D_i=\dfrac{v_{out,i}}{v_{out,1}}$; $\displaystyle \mathrm{THD}=\sqrt{D_2^2+D_3^2+\cdots+ D_N^2}$.
+\item Intermodulation (two-tones): new terms at $\omega_1\pm\omega_2$ (IMD2), $2\omega_1\pm\omega_2$, $2\omega_2\pm\omega_1$ (IMD3), etc.
+\item Intercept Power (IP): extrapolated input level where IMD power meets fundamental (figure of merit).
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Audio Cables as LPF]
+\begin{itemize}
+\item Coax modeled with $r$ (series), $c$ (shunt); for short audio runs, $r\ll R_s$.
+\item Equivalent transfer: $\displaystyle \frac{v_{in}}{v_s}=\frac{1}{1+sR_s C_c}$ (low-pass).
+\item Cutoff: $\displaystyle f_p=\frac{1}{2\pi R_s C_c}$ (e.g., with $C_c$ from cable length/spec).
+\end{itemize}
+\end{tcolorbox}

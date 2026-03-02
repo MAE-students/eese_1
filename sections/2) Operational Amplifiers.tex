@@ -1,0 +1,1204 @@
+\section{Operational Amplifiers}
+
+We now introduce the \textbf{amplification stage} using single electronic blocks, namely Operational Amplifiers (OPAMPs).  
+An OPAMP outputs a voltage proportional to the difference between its two input terminals:
+\[
+    v_{out} = g(v^+ - v^-)
+\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{AOP_equiv_scheme.png}
+    \caption{Equivalent scheme of the OPAMP}
+\end{figure}
+
+\subsection{Unbalanced Mode}
+
+In the \textbf{unbalanced mode}, the $+$ input receives a single-ended input signal, while the $-$ input is connected to ground.  
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.3\linewidth]{OPAMP_Unbalanced_config.png}
+    \caption{Unbalanced configuration of the OPAMP}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    % Left side: text + derivation
+    \begin{minipage}[c]{0.7\linewidth}
+        To identify the input impedance (which should ideally be high), we apply a voltage test:  
+        \[
+            i_{test} = i_D + i_{CM}^+ 
+            = \frac{v^+ - v^-}{Z_D} + \frac{v^+}{Z_{CM}^+}, 
+            \quad v^+ = v_{test}, \quad v^- = 0.
+        \]
+
+        Thus,
+        \[
+            i_{test} = \frac{v_{test}}{Z_D} + \frac{v_{test}}{Z_{CM}^+}=v_{test} \cdot \left( \frac{1}{Z_D} + \frac{1}{Z_{CM}}\right)
+        \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.28\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{OPAMP_Unbalanced_Impedance_Eval.png}
+        \caption{Electric scheme of the configuration}
+    \end{minipage}
+\end{figure}
+
+The input impedance becomes:
+        \[
+    Z_{IN}^{UNB} = \frac{v_{test}}{i_{test}} = 
+    \frac{1}{\tfrac{1}{Z_D} + \tfrac{1}{Z_{CM}^+}}
+    \quad \Rightarrow \quad
+    Z_{IN}^{UNB}= \frac{Z_D \cdot Z_{CM}^+}{Z_D + Z_{CM}^+} = Z_D \, // \, Z_{CM}^+.
+    \]
+
+
+\clearpage 
+
+\subsection{Balanced Mode}
+
+In the \textbf{balanced mode}, both inputs receive voltages. This corresponds to a \textbf{differential amplifier}.  
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{OPAMP_Balanced_Config.png}
+    \caption{Balanced configuration of the OPAMP.}
+\end{figure}
+
+We define:
+\[
+    v_{DIFF} = v_1 - v_2, 
+    \qquad v_{CM} = \frac{v_1 + v_2}{2}.
+\]
+
+We can write in matrix form:
+\[
+    \begin{pmatrix} v_{DIFF} \\ v_{CM} \end{pmatrix}
+    =
+    \begin{pmatrix}
+        1 & -1 \\
+        1/2 & 1/2
+    \end{pmatrix}
+    \begin{pmatrix} v_1 \\ v_2 \end{pmatrix}.
+\]
+
+Inverting:
+\[
+    \begin{pmatrix} v_1 \\ v_2 \end{pmatrix}
+    =
+    \begin{pmatrix}
+        \tfrac{1}{2} & 1 \\
+        -\tfrac{1}{2} & 1
+    \end{pmatrix}
+    \begin{pmatrix} v_{DIFF} \\ v_{CM} \end{pmatrix}
+\]
+
+Thus:
+\[
+    v_1 = v_{CM} + \frac{v_{DIFF}}{2},
+    \qquad
+    v_2 = v_{CM} - \frac{v_{DIFF}}{2}.
+\]
+
+We can now express the OPAMP in terms of differential and common-mode voltage.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{OPAMP_Diff_Common_modes.png}
+    \caption{Representation of the OPAMP with the differential and common-mode voltages.}
+\end{figure}
+\begin{itemize}
+    \item \textbf{Pure differential mode:} $v_{CM} = 0$  
+    \[
+        v_1 = \frac{v_{DIFF}}{2}, 
+        \qquad v_2 = -\frac{v_{DIFF}}{2}.
+    \]
+    \item \textbf{Pure common-mode:} $v_{DIFF}=0$
+    \[
+        v_1 = v_{CM}, 
+        \qquad v_2 = v_{CM}
+    \]
+\end{itemize}
+Let's now compute the input impedance of these 2 modes.
+
+\subsubsection{Pure differential mode $v_{CM}=0$}
+\begin{figure}[H]
+    \centering
+    % Left side: text + derivation
+    \begin{minipage}[c]{0.6\linewidth}
+        We know:
+        \[
+            Z_{DIFF} = \frac{v_{DIFF}}{i_{DIFF}} \bigg|_{v_{CM}=0}.
+        \]
+        From the circuit:
+        \[
+            i_{DIFF} = i_D + i_{CM}^+ 
+            = \frac{v^+ - v^-}{Z_D} + \frac{v^+}{Z_{CM}^+}.
+        \]
+        Since:
+        \[
+            v^+ = \frac{v_{DIFF}}{2}, 
+            \qquad 
+            v^- = -\frac{v_{DIFF}}{2},
+        \]
+        we obtain:
+        \[
+            i_{DIFF} = \frac{v_{DIFF}}{Z_D} + \frac{v_{DIFF}}{2 Z_{CM}^+}.
+        \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{OPAMP_pure_differential_scheme.png}
+        \caption{Electric scheme of the pure differential mode}
+    \end{minipage}
+\end{figure}
+
+Thus:
+\[
+    Z_{DIFF} = \frac{v_{DIFF}}{i_{DIFF}}
+    = \frac{Z_D \cdot 2 Z_{CM}^+}{Z_D + 2 Z_{CM}^+}.
+\]
+\textbf{Remark:}  
+If $Z_{CM}^+ = Z_{CM}^-$, then from the common-mode formula we have:
+\[
+    2 Z_{CM}^+ = Z_{CM}.
+\]
+
+
+\subsubsection{Pure common-mode $v_{DIFF}=0$}
+\begin{figure}[H]
+    \centering
+    % Left side: text + derivation
+    \begin{minipage}[c]{0.6\linewidth}
+        We know:
+        \[
+           Z_{CM} = \frac{v_{CM}}{i_{CM}} \bigg|_{v_{DIFF}=0}
+        \]
+
+        From the circuit:
+        \[
+            i_{CM} = i_{CM}^+ + i_{CM}^- 
+            = \frac{v_{CM}}{Z_{CM}^+} + \frac{v_{CM}}{Z_{CM}^-}
+        \]
+        Thus, 
+        \[
+        i_{CM} = v_{CM} \left( \frac{1}{Z_{CM}^+} + \frac{1}{Z_{CM}^-} \right)= \frac{v_{CM}}{Z_{CM}}
+        \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{OPAMP_pure_common_mode_scheme.png}
+        \caption{Electric scheme of the pure common-mode}
+    \end{minipage}
+\end{figure}
+
+ Therefore:
+        \[
+            Z_{CM} = Z_{CM}^+ \, // \, Z_{CM}^- 
+            = \frac{Z_{CM}^+ \cdot Z_{CM}^-}{Z_{CM}^+ + Z_{CM}^-}.
+        \]
+
+\subsubsection{Differential and Common-Mode gains}
+
+\begin{figure}[H]
+    \centering
+    % Left side: text + equations
+    \begin{minipage}[c]{0.7\linewidth}
+        We can define individual gains for each input terminal:
+        \[
+            G^+ = \left.\frac{v_{out}}{v^+}\right|_{v^- = 0}, 
+            \qquad
+            G^- = \left.\frac{v_{out}}{v^-}\right|_{v^+ = 0}.
+        \]
+        Thus the output voltage can be expressed as:
+\[
+    v_{out} = g(v^+ - v^-) = |G^+| \cdot v^+ - |G^-| \cdot v^-.
+\]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.25\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{OPAMP_G_CM_G_DIFF.png}
+        \caption{OPAMP signal path}
+    \end{minipage}
+\end{figure}
+
+Recall:
+\[
+    v^+ = v_{CM} + \frac{v_{DIFF}}{2},
+    \qquad
+    v^- = v_{CM} - \frac{v_{DIFF}}{2}.
+\]
+
+Substituting:
+\[
+    v_{out} = |G^+| \cdot \left(v_{CM} + \frac{v_{DIFF}}{2}\right) - |G^-| \cdot \left(v_{CM} - \frac{v_{DIFF}}{2}\right)
+    \quad \Rightarrow \quad
+    v_{out} = (|G^+| - |G^-|) \cdot v_{CM} + \frac{|G^+| + |G^-|}{2} \cdot v_{DIFF}
+\]
+
+We now introduce the notions of common-mode and differential gains. 
+\begin{align*}
+     G_{CM} & = |G^+| - |G^-| \quad \text{(common-mode gain)},\\
+     G_{DIFF}&  = \frac{|G^+| + |G^-|}{2} \quad \text{(differential gain)}
+\end{align*}
+
+Therefore:
+\[
+    v_{out} = G_{CM} \cdot v_{CM} + G_{DIFF} \cdot v_{DIFF}.
+\]
+
+\subsection{Disturbances}
+
+In real scenarios, cables may capture external device interferences, i.e., \textbf{disturbances}.  
+
+\subsubsection{Unbalanced Configuration Disturbances}
+
+Consider an instantaneous disturbance filtered by the cable impedance $Z_C$ in an unbalanced configuration.  
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{OPAMP_Disturbances_Unbalanced.png}
+    \caption{Unbalanced OPAMP with disturbances filtered by the cable.}
+\end{figure}
+The output voltage is:
+\[
+    v_{out} = g\,(v_s + \alpha v_{DIST}).
+\]
+
+To study the contribution of $v_{DIST}$, we set $v_s = 0$.  
+The circuit becomes:
+
+\[
+    v^+ = v_{DIST} \cdot \frac{Z_{eq}}{Z_{eq} + Z_C}
+    \quad \Rightarrow \quad
+    v^+ = v_{DIST} \cdot \frac{R_s \, // \, Z_{in}^{unb}}{R_s \, // \, Z_{in}^{unb} + Z_C}.
+\]
+
+Thus the disturbance propagates to the $+$ input pin, combining both source and distribution contributions.   
+
+\subsubsection{Balanced Configuration}
+
+The \textbf{balanced configuration} is more robust and minimizes disturbances.   
+
+In a balanced audio cable, half of the source voltage appears at the $+$ pin (in phase) and the other half appears at the $-$ pin (in counter-phase).  
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{OPAMP_Disturbances_Balanced.png}
+    \caption{Balanced OPAMP with disturbances filtered by the cable.}
+\end{figure}
+
+
+
+Therefore:
+\[
+    v_{DIFF} = v^+ - v^- \approx 
+    \left(\frac{v_s}{2} + v_{DIST}\right) - \left(-\frac{v_s}{2} + v_{DIST}\right) = v_s,
+\]
+\[
+    v_{CM} = \frac{v^+ + v^-}{2} = v_{DIST}.
+\]
+
+From OPAMP equations:
+\[
+    v_{out} = G_{DIFF} \cdot v_{DIFF} + G_{CM} \cdot v_{CM}
+    \quad \Rightarrow \quad
+    v_{out} =  G_{DIFF} \cdot v_s + G_{CM} \cdot v_{DIST} = G_{DIFF} \cdot\left(v_s + \frac{G_{CM}}{G_{DIFF}} v_{DIST}\right).
+\]
+
+If $G_{CM} \ll G_{DIFF}$, i.e. $\dfrac{G_{CM}}{G_{DIFF}} \ll 1$,  
+the disturbance contribution $v_{DIST}$ can be effectively suppressed.  
+
+We define a quality factor as the Common-Mode Rejection Ratio 
+\[ 
+CMRR = \left| \frac{G_{DIFF}}{G_{CM}} \right|,
+\qquad 
+CMRR_{dB} = 20 \log_{10} \left( \left|  \frac{G_{DIFF}}{G_{CM}} \right| \right)
+\]
+We usually want $CMRR \to + \infty$ to completely kill the disturbances.
+Rather than looking for $G_{CM} \to 0$ , we aim for a very high $G_{DIFF}$ (and we use the OPAMP in differential mode).
+
+
+\subsection{Bandwidth and Frequency Response}
+\begin{figure}[H]
+    \centering
+    % Left side: text + equations
+    \begin{minipage}[c]{0.6\linewidth}
+        We can define individual gains for each input The OPAMP transfer function $A(s)$ typically has a single pole. Applying the Laplace transform to:
+        \[
+        v_{out} = G \cdot v_{in},
+        \]
+        we obtain:
+        \[
+            V_{out}(s) = A(s) \cdot V_{in}(s),
+            \qquad
+            A(s) = \frac{V_{out}(s)}{V_{in}(s)} = \frac{A_0}{1 + s \tau_0}.
+        \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{OPAMP_simple_scheme.png}
+        \caption{Simple scheme of the OPAMP.}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[c]{0.4\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{OPAMP_1st_Order_Freq_Rep.png}
+    \caption{Transfer function of the OPAMP with 1 pole.}
+    \end{minipage} \hfill
+    \begin{minipage}[c]{0.5\linewidth}
+    The \textbf{cutoff frequency} $f_0$ is defined such that:
+    \[
+    \textcolor{red}{|A(f_0)| = \frac{A_0}{\sqrt{2}}}
+    \]
+       Thus:
+\begin{align*}
+    & \frac{A_0}{|1 + j 2 \pi f_0 \tau_0|} = \frac{A_0}{\sqrt{2}}
+    \quad \Rightarrow \quad
+    |1 + j 2 \pi f_0 \tau_0| = \sqrt{2} \\
+    \Rightarrow \quad & 
+    \sqrt{1 + (2 \pi f_0 \tau_0)^2} = \sqrt{2} \\
+    \Rightarrow \quad & 
+    (2 \pi f_0 \tau_0)^2 = 1
+    \quad  \Rightarrow \quad
+    \textcolor{red}{f_0 = \frac{1}{2 \pi \tau_0}}
+\end{align*}
+    \end{minipage}
+\end{figure}
+
+
+The transfer function can therefore be rewritten as:
+\[
+    \textcolor{red}{A(2 \pi f) = \frac{V_{out}(s)}{V_{in}(s)} = \frac{A_0}{1 + j \tfrac{f}{f_0}}}
+\]
+For $f \gg f_0$, we approximate:
+\[
+    |A(2 \pi f)| \approx \frac{A_0}{f/f_0} = \frac{A_0 f_0}{f}.
+\]
+We define the \textbf{Gain Bandwidth Product (GBWP)} as:
+\[
+    \textcolor{red}{GBWP = A_0 f_0}
+\]
+We set $f_u$ such that:
+\[
+    \textcolor{red}{|A(f_u)| = 1}
+    \quad \Rightarrow \quad
+    \frac{|A_0|}{|1 + j \cdot f_u/f_0|} = 1
+    \quad \Rightarrow \quad
+    |A_0| = \sqrt{A_0^2}= \sqrt{1 + (f_u/f_0)^2}
+    \quad \Rightarrow \quad 
+    A_0^2-1 = \left(\frac{f_u}{f_0}\right)^2
+\]
+For large $A_0$, we approximate $A_0^2 - 1 \approx A_0^2$, giving:
+\[
+    A_0^2 = \left( \frac{f_u}{f_0}\right)^2 \quad \Rightarrow \quad \textcolor{red}{f_u = A_0 f_0 = GBWP}
+\]
+
+
+\subsection{Negative Feedback}
+
+To improve performance (stability and high constant gain across a wide frequency range), we use the differential amplifier in a feedback configuration.
+
+We introduce the following signals:
+\[
+    \varepsilon = S_{in}(s) - S_f(s), 
+    \qquad
+    S_f(s) = F(s) \cdot S_{out}(s)
+    \qquad
+    S_{out}(s) = \varepsilon H(s),
+\]
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[c]{0.4\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{OPAMP_Block_Diagram.png}
+    \caption{Block diagram of the OPAMP.}
+    \end{minipage} \hfill
+    \begin{minipage}[c]{0.5\linewidth}
+        \begin{itemize}
+        \item \textbf{Open-loop gain:}
+        \[
+            \textcolor{red}{G_{OL} = \frac{S_{out}}{\varepsilon} = H(s)}
+        \]
+        \item \textbf{Closed-loop gain:}
+        \[
+            \textcolor{red}{G_{CL} = \frac{S_{out}}{S_{in}}}
+        \]
+        \end{itemize}
+    \end{minipage}
+\end{figure}
+We have:
+\[
+    S_{out}(s) = \big[S_{in}(s) - S_f(s)\big] H(s) 
+    = \big[S_{in}(s) - F(s) S_{out}(s)\big] H(s)
+    \quad \Rightarrow \quad
+    S_{out}(s)\big[1 + F(s)H(s)\big] = S_{in}(s) H(s)
+\]
+Thus:
+\[
+    \frac{S_{out}(s)}{S_{in}(s)} = \frac{H(s)}{1 + F(s)H(s)}.
+\]
+Defining the \textbf{loop gain}:
+\[
+    \textcolor{red}{G_L = F(s)H(s)}
+\]
+We obtain the closed-loop gain: 
+\[
+    \textcolor{red}{G_{CL}(s) = \frac{H(s)}{1 + G_L(s)}}
+\]
+For voltage signals we set:
+\[
+    S_{in} = v_{in}, 
+    \qquad
+    S_{out} = v_{out}, 
+    \qquad
+    H(s) = A(s), 
+    \qquad
+    F(s) = F(s).
+\]
+Then:
+\[
+    G_{CL}(s) = \frac{v_{out}(s)}{v_{in}(s)} = \frac{A(s)}{1 + A(s)F(s)}.
+\]
+A reason why we use feedback is for stability: we compare the outputs with and without feedback when the transfer function slightly changes.
+\subsection{Feedback and Stability}
+
+\paragraph{Without feedback:}
+\[
+    A(s) = G = \frac{v_{out}}{v_{in}}, 
+    \qquad
+    \frac{dG}{dA} = 1.
+\]
+If the transfer function changes by 10\% ($\tfrac{dA}{A} = 0.1$), then the gain changes accordingly:
+\[
+    \frac{dG}{G} = 0.1.
+\]
+\paragraph{With feedback:}
+\[
+    G_{CL} =\frac{v_{out}}{v_{in}} = \frac{A(s)}{1 + A(s)F(s)}
+    \quad \Rightarrow \quad 
+    \frac{dG_{CL}}{dA} = \frac{1+A(s)F(s) - A(s)F(s)}{ \left[ 1 + A(s)F(s)\right]^2 }
+    \quad \Rightarrow \quad 
+    \frac{dG_{CL}}{dA} = \frac{1}{ \left[ 1 + A(s)F(s)\right]^2 }
+\]
+Moreover:
+\begin{align*}
+    & \frac{dG_{CL}}{G_{CL}} = \frac{1}{G_{CL}} \cdot \frac{dG_{CL}}{dA} \cdot dA 
+\quad \Rightarrow \quad
+\frac{dG_{CL}}{G_{CL}} = \frac{1+A(s)F(s)}{A(s)} \cdot  \frac{1}{ \left[ 1 + A(s)F(s)\right]^2} \cdot dA \\
+\Rightarrow \quad & \frac{dG_{CL}}{G_{CL}} = \frac{1}{ 1 + A(s)F(s)} \cdot \frac{dA}{A}
+\end{align*}
+
+Assuming that:
+\[
+    A(s) \cdot F(s) \gg 1,
+\]
+for example with $G_{LOOP} = AF \approx 100$, we have $1 + AF \approx 100$.  
+Therefore,
+\[
+    \text{if } \frac{dA}{A} = 0.1,
+\text{ then }\frac{dG_{CL}}{G_{CL}} = \frac{1}{1+AF} \cdot \frac{dA}{A}
+    = \frac{1}{100} \cdot 0.1 = 10^{-3}.
+\]
+The feedback configuration stabilizes the output even when there are variations in the transfer function.  
+
+\clearpage 
+
+Notes on Feedback Attenuation:
+\begin{itemize}
+    \item Feedback is usually an attenuation: $F(s) < 1$.  
+    \item Since we want $AF \gg 1$, this implies $A \gg 1$.  
+    \item The closed-loop gain depends primarily on the feedback factor $F$, not directly on $A$. Indeed, for $AF \gg 1$:
+    \[
+        G_{CL} = \frac{A}{1 + AF} \approx \frac{A}{AF} = \frac{1}{F}.
+    \] 
+    \item We have: $ S_{out} = A \cdot \varepsilon $. Since $S_{out}$ is finite and $A$ is large, we conclude: \( \varepsilon \approx 0 \).
+    \item A sufficient condition for loop gain to be effective is: \( G_L^{min} \geq 10 \).
+\end{itemize}
+
+
+\subsubsection{Attenuation Feedback Response}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.5\linewidth}
+        The advantage of using attenuation feedback is that we can achieve precise attenuation with resistors only.  
+
+        For an ideal OPAMP assumption:  
+        \[
+            Z_{in} \to +\infty, \quad Z_{out} = 0,
+            \quad i^+ = i^- = 0.
+        \]
+        We have:
+        \[
+        v^+ = v_{in}, \ \ v^- = v_{out} \frac{R_1}{R_1+R_2}
+        \]
+        Since $v_{out} = A(s) \left( v^+ - v^-\right)$, we obtain:
+        \[
+v_{out} = A(s)\left( v_{in} - v_{out} \cdot \frac{R_1}{R_1+R_2}\right)
+        \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Attenuation_FB_Response.png}
+        \caption{Scheme of the OPAMP for the attenuation feedback response}
+    \end{minipage}
+\end{figure}
+Rearranging the terms, we obtain:
+\[
+v_{out} \left( 1 + A(s)\frac{R_1}{R_1+R_2} \right) = A(s) v_{in}
+\quad \Rightarrow \quad 
+\frac{v_{out}}{v_{in}} = \frac{A(s)}{ 1 + A(s)\frac{R_1}{R_1+R_2}}
+\]
+The closed-loop gain is:
+        \[
+            G_{CL} = \frac{v_{out}}{v_{in}} = \frac{A(s)}{1 + A(s) \dfrac{R_1}{R_1 + R_2}}.
+        \]
+Assuming $G_L = A(s)\dfrac{R_1}{R_1 + R_2} \gg 1$, we obtain:
+        \[
+            G_{CL} \approx \frac{R_1 + R_2}{R_1} = 1 + \frac{R_2}{R_1} \geq 1.
+        \]
+Resistors can be matched very well, so the only source of variability is temperature dependence.  
+If we define the resistor temperature dependence as:
+\[
+    R(T) = R(T_0) \cdot \Big[ 1 + \alpha_T (T - T_0) \Big],
+\]
+where $\alpha_T$ is typically $10 \,\text{ppm}/K$, then:  
+\[
+    \frac{dT}{T} = 100\% \quad \Rightarrow \quad \frac{dR}{R} = 1\%.
+\]
+Rewriting the closed-loop gain as a function of temperature:
+\[
+    G_{CL} \approx \frac{R_1 + R_2}{R_1} 
+    = 1 + \frac{R_2(T)}{R_1(T)} 
+    = 1 + \frac{R_2(T_0)\Big[1 + \alpha_T (T - T_0)\Big]}{R_1(T_0)\Big[1 + \alpha_T (T - T_0)\Big]}
+    \quad \Rightarrow \quad 
+    G_{CL} \approx 1 + \frac{R_2(T_0)}{R_1(T_0)}
+\]
+which is a first-order approximation.  
+
+\subsection{Buffer Mode}
+
+\subsubsection{First configuration, $R_1 \to +\infty$}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.5\linewidth}
+        When $R_1 \to \infty$, the circuit becomes a \textbf{voltage buffer}.  
+        \[
+            G_{CL} \approx \frac{R_1 + R_2}{R_1} \to 1.
+        \]
+        With the ideal OPAMP assumption:
+        \[
+            Z_{in} \to \infty, \quad i^+ = i^- = 0,
+        \]
+        so:
+        \[
+            v^+ = v^- = v_{out} = v_{in}, \quad \varepsilon \approx 0.
+        \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.4\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{OPAMP_Buffer_Mode.png}
+        \caption{OPAMP in the buffer configuration with $R_1 \to + \infty.$}
+    \end{minipage}
+\end{figure}
+
+
+\textbf{A buffer is useful when connecting a source to a low-impedance load} such as a loudspeaker.  
+Since the OPAMP output impedance is very small, the output current can be large enough to drive the load effectively.  
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Loaded_Buffer.png}
+    \caption{Loaded buffer.}
+    \label{fig:placeholder}
+\end{figure}
+
+In this configuration:
+\[
+    G_v = \frac{v_{out}}{v_s} = 1, 
+    \qquad G_i = \frac{i_{out}}{i_s} \to +\infty.
+\]
+
+\clearpage
+
+
+\subsubsection{Second configuration, $R_2 \to 0$}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.5\linewidth}
+        By setting $R_2 = 0$, we also obtain a \textbf{voltage buffer}.  
+
+        With the ideal OPAMP assumptions:
+        \[
+            Z_{in} \to +\infty, \quad i^+ = i^- = 0 
+            \quad \Rightarrow \quad v^- = v^+ = v_{in}, \quad \varepsilon \approx 0,
+        \]
+        we observe:
+        \[
+            G_{CL} = \frac{v_{out}}{v_{in}} = 1 + \frac{R_2}{R_1} \approx 1.
+        \]
+        In both previous scenarios, we have $G_{LOOP} \gg 1$.  
+However, this condition will not hold if $R_2 \to +\infty$ or $R_1 \to 0$.  
+In those cases, the voltage buffer mode no longer applies.
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.4\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{OPAMP_Buffer_Mode_2nd_config.png}
+        \caption{OPAMP in the buffer configuration with $R_2 \to 0$}
+    \end{minipage}
+\end{figure}
+
+
+\paragraph{Case $R_2 \to +\infty$}  
+here we have :
+\[
+    \frac{v_{out}}{v_{in}} = 1 + \frac{R_2}{R_1} \to +\infty.
+\]
+Thus:
+\[
+    G_{CL} = \frac{A(s)}{1 + A(s)F(s)} = \frac{G_{OL}(s)}{1 + G_{LOOP}(s)} = G_{OL}(s),
+\]
+since the loop is not closed.  
+The feedback disappears.
+
+\paragraph{Case $R_1 \to 0$}  
+here we have :
+\[
+    G_{CL}(s) = \frac{A(s)}{1 + A(s)F(s)} = \frac{G_{OL}(s)}{1 + G_{LOOP}(s)} = G_{OL}(s) = A(s).
+\]
+Again, the feedback is cancelled out.  
+
+\subsection{Generalizing with impedances}
+
+We now generalize the configuration using impedances $Z_1$ and $Z_2$. 
+We recall that the non-inverting configuration corresponds to the case where the source signal is applied to the `+` pin. And the inverting configuration: corresponds to the case where the source signal is applied to the `-` pin.  
+
+\subsubsection*{Analysing the inverting configuration}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.4\linewidth}
+        We observe:
+        \[
+            i_1 = \frac{v_{in}}{Z_1}, 
+            \quad i_2 = \frac{v_{out}}{Z_2}.
+        \]
+        From the OPAMP ideal assumption $\varepsilon \approx 0$, we have:
+        \[
+            i^+ = i^- = 0, \quad i^- = i_1 + i_2 = \frac{v_{in}}{Z_1} + \frac{v_{out}}{Z_2}.
+        \]
+        Therefore: 
+        \[
+            \frac{v_{in}}{Z_1} + \frac{v_{out}}{Z_2} = 0 
+            \quad \Rightarrow
+            \frac{v_{out}}{v_{in}}= -\frac{Z_2}{Z_1}
+        \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.55\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{OPAMP_Invert_Config_Generalized.png}
+    \caption{OPAMP, inverting configuration.}
+    \end{minipage}
+\end{figure}
+
+
+\clearpage
+
+
+\subsubsection*{Analysing the non-inverting configuration}
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.6\linewidth}
+        From the OPAMP ideal assumption $\varepsilon \approx 0$, we have:
+        \[
+        v^+ =v_{in} =  v^- 
+        \]
+        We observe:
+        \[
+            v^- = v_{out} \frac{Z_1}{Z_1 + Z_2} = v_{in}.
+        \]
+        Therefore: 
+        \[
+            \frac{v_{out}}{v_{in}}= \frac{Z_1+Z_2}{Z_1}
+        \]
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.3\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{OPAMP_Non_Inverting_Config_Generealized.png}
+        \caption{OPAMP, non-inverting configuration.}
+    \end{minipage}
+\end{figure}
+
+\subsection{Frequency Response of Feedback OPAMP}
+
+The OPAMP frequency response is $A(s)$ in the open-loop configuration, and the feedback attenuation $F(s)$ is constant in frequency (if the branch is purely resistive).  
+
+Thus, we may describe $G_{CL}(s)$ from $G_{OL}(s)$ and $G_{LOOP}(s)$:  
+\[
+    G_{LOOP}(s) = A(s)\cdot F(s), 
+    \quad G_{LOOP}|_{dB} = A|_{dB} + F|_{dB}, 
+    \quad G_{OL}|_{dB} = A|_{dB}.
+\]
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.5\linewidth}
+        Considering that $G_{LOOP} \gg 1$, then:
+        \[
+            G_{CL} = \frac{A}{1 + AF} \approx \frac{1}{F}, 
+            \quad \Rightarrow \quad G_{CL}|_{dB} = -F|_{dB},
+        \]
+        which is constant. Rewriting, we obtain:
+        \begin{align*}
+            & G_{CL} = \frac{G_{OL}}{1 + G_{LOOP}} \approx \frac{G_{OL}}{G_{LOOP}} \\
+            \Rightarrow \quad & G_{CL}|_{dB} = G_{OL}|_{dB} - G_{LOOP}|_{dB} \\
+            \Rightarrow \quad &  \textcolor{red}{G_{LOOP}|_{dB} = G_{OL}|_{dB} - G_{CL}|_{dB} = A|_{dB} - F|_{dB}} 
+        \end{align*}
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.5\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Freq_Resp_FeedBack_OPAMP.png}
+        \caption{Transfer function of the feeback OPAMP.}
+    \end{minipage}
+\end{figure}
+
+The gain loop $G_{LOOP}$ has a single pole at $f_0$, like $A(s)$:
+\[
+    G_{LOOP}(s) = \frac{G_{LOOP}(0)}{1 + s\tau_0}.
+\]
+
+For $f \gg f_0$, we have:
+\[
+    G_{LOOP}(f) = G_{LOOP}(0) \cdot \frac{f_0}{f} 
+    = \frac{A_0}{G_{CL}} \cdot \frac{f_0}{f}
+\]
+Thus:
+\textcolor{red}{
+\[
+    G_{LOOP}(f) = \frac{GBWP}{G_{CL} \cdot f}, 
+    \quad \Rightarrow \quad G_{LOOP}(f) = \frac{GBWP_{LOOP}}{f}, 
+    \quad \text{with } GBWP_{LOOP} = \frac{GBWP}{G_{CL}}.
+\]}
+The working region is defined by the frequencies where $G_{LOOP} \gg 1$.  
+We set the condition:
+\[
+    G_{LOOP} \geq G_{LOOP}^{min} = 10.
+\]
+In such a case:
+\[
+    \frac{GBWP}{G_{CL} \cdot f} \geq 10 
+    \quad \Rightarrow \quad 
+    \textcolor{red}{f_{max} \leq \frac{GBWP}{10 \cdot G_{CL}} = \frac{GWBP_{LOOP}}{10}}
+\]
+The immediate consequence is that the \textbf{operating bandwidth is smaller}.
+
+For example, in the audio range, the original bandwidth can be computed as: $ BW_{audio} = [20,\, 20k] \,\text{Hz}$ and we obtain:
+\[
+\begin{cases}
+    G_{CL} = 1 &\Rightarrow \; GBWP = 20k \cdot 10 \cdot G_{CL} = 200 \,\text{kHz}, \\[6pt]
+    G_{CL} = 10 &\Rightarrow \; GBWP = 20k \cdot 10 \cdot G_{CL} = 2 \,\text{MHz}, \\[6pt]
+    G_{CL} = 100 &\Rightarrow \; GBWP = 20k \cdot 10 \cdot G_{CL} = 20 \,\text{MHz}.
+\end{cases}
+\]
+
+
+
+\subsection{Slew Rate}
+
+A limitation of the OPAMP is related to the maximum speed for the input signal at $t=0$.  
+
+Let us consider:  
+\[
+    v_{in,1} = V_{p1}\sin(\omega_1 t), 
+    \qquad v_{in,2} = V_{p2}\sin(\omega_2 t).
+\]
+Thus:
+\[
+    \frac{dv_{in,1}}{dt} = V_{p1}\omega_1 \cos(\omega_1 t), 
+    \qquad \frac{dv_{in,2}}{dt} = V_{p2}\omega_2 \cos(\omega_2 t).
+\]
+The slew rate increases with both frequency and voltage peak.  
+If we specify a maximum output voltage $V_{OUT}^{max}$, then:
+\[
+SR^{max}  = V_{peak} \cdot \omega \qquad [ V/\ s ]
+\]
+With $V_{peak} = V_{OUT}^{max}$, we have:
+\[
+SR^{max} = V_{OUT}^{max} \cdot \omega 
+\quad \Rightarrow \quad 
+\textcolor{red}{f^{max} = \frac{1}{2 \pi} \cdot\frac{SR^{max}}{V_{OUT}^{max}}}
+\] 
+        
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.45\linewidth}
+    We call $f^{max}$ the \textbf{Full-Power Bandwidth (FPBW)}, corresponding to the maximum frequency allowed for a given maximum output voltage. 
+        If the input voltage changes too fast, the output voltage saturates at its maximum slew rate.  
+This causes distortion since the output waveform no longer follows the input shape.
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.5\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Slew_Rate_Illustration.png}
+    \caption{Slew rate's impact on signal loss.}
+    \end{minipage}
+\end{figure}
+
+
+
+\subsection{Signal Level Control}
+
+We usually want to amplify the input signal $v_{in}$ to satisfy specific level ranges (e.g., IDR = 3V for an ADC).  
+
+Peak values are not suitable for describing audio signal amplitude, so we use the \textbf{Nominal Signal Level}.  
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Dynamic_Range_with_ADC.png}
+    \caption{Pre-amp being fed to an ADC.}
+    \label{fig:placeholder}
+\end{figure}
+
+We recall that the instantaneous power $P(t)$, average power $\overline{P}$, and RMS voltage $v_{RMS}$ are:
+\[
+    P(t) = V(t) I(t) = \frac{V^2(t)}{R},
+    \qquad
+    \overline{P} = \frac{1}{R}\left[\frac{1}{T}\int_0^T v^2(t)dt\right] 
+    = \frac{\overline{v^2}(t)}{R}, 
+    \qquad v_{RMS} = \sqrt{\frac{1}{T}\int_0^T v^2(t)dt}
+\]
+Note that $v_{RMS}$ is the constant voltage that would produce the same average power $\overline{P}$.  
+
+\begin{itemize}
+    \item RMS in dBV:
+    \[
+        dBV = 20 \cdot \log_{10}\left(\frac{V_{sig}}{1V}\right).
+    \]
+    Note:
+    \[
+        0 \, dBV \iff 1V_{RMS}, 
+        \qquad 20 \, dBV \iff 10V_{RMS}.
+    \]
+    \item RMS in dBu:
+    \[
+        dBu = 20 \cdot \log_{10}\left(\frac{V_{sig}}{0.7746V}\right),
+    \]
+    where $0.7746V$ corresponds to the reference voltage for $1mW$ over $600\Omega$. Indeed, we have that $\tfrac{0,7746^2}{600} \approx 10^{-3}$.
+\end{itemize}
+
+
+\subsection{Gain Control}
+
+The input-output nominal signal relation is:
+\[
+    V_{OUT}^{nom} = V_{IN}^{nom} \cdot G,
+    \qquad \frac{V_{OUT}^{nom}}{G} = S,
+\]
+where $S$ is the sensitivity in [dBu].
+
+
+
+\begin{figure}[H]
+    \centering
+    % Left side: explanation + equations
+    \begin{minipage}[c]{0.5\linewidth}
+    In \textbf{Gain control}, unlike signal level control, focuses on changing the gain of an amplifier.  
+    This is typically achieved using \textbf{potentiometers}.
+    
+    We can set a linear potentiometer $R_{1,3} = x \cdot \rho$, with:  
+    \[
+        R_{1,2}^{TOT} = R_{pot} = R_{1,3} + R_{2,3} 
+        = \frac{x}{L} R_{pot} + \frac{L - x}{L} R_{pot} = R_{pot}.
+    \]
+    In the case of a dual potentiometer, there are two resistive bars, both read at the same angle.  
+    \end{minipage}\hfill
+    % Right side: figure
+    \begin{minipage}[c]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Potentiometers.png}
+    \caption{Gain control in an OPAMP using a potentiometer.}
+    \end{minipage}
+\end{figure}
+
+\textbf{Signal Level Control vs Gain Control:}  
+\begin{itemize}
+    \item In \textbf{Signal Level Control}, only attenuation is obtained (e.g., using faders).  
+    \item In \textbf{Gain Control}, we actively change the amplifier’s gain.  
+\end{itemize}
+
+For audio applications, a logarithmic mapping of faders is often designed.   
+This aligns with the human hearing system’s perceptual scale (Mel scale).  
+
+
+\subsection{Notes from the slides}
+
+The \textbf{differential amplifier} is a fundamental building block in analog electronics.  
+\textbf{It amplifies the difference between two input signals while rejecting any voltage that is common to both inputs}.  
+This property is crucial in audio and electroacoustic applications, where noise and interference are often coupled equally on both input lines.
+
+If we denote the two inputs as $V^+$ and $V^-$, the ideal differential amplifier output is:
+\[
+V_{out} = A_d \cdot (V^+ - V^-), \quad \text{where $A_d$ is the \emph{differential gain}.}
+\]
+In practice, a small \emph{common-mode gain} $A_c$ is also present:
+\[
+V_{out} = A_d \cdot (V^+ - V^-) + A_c \cdot \frac{V^+ + V^-}{2}
+\]
+
+\clearpage
+
+The ability of the amplifier to suppress common-mode signals is quantified by the \textbf{Common-Mode Rejection Ratio (CMRR)}:
+\[
+\mathrm{CMRR} = \frac{A_d}{A_c}, 
+\qquad 
+\mathrm{CMRR}_{dB} = 20 \log_{10}\!\left(\frac{A_d}{A_c}\right)
+\]
+\paragraph{Why Differential Inputs?}
+\begin{itemize}
+  \item In professional audio, \textbf{balanced connections} (XLR or TRS) send the same signal with opposite polarity on two wires.  
+  Any interference picked up along the cable appears equally on both lines (common-mode) and is effectively rejected by the differential input stage.
+  \begin{itemize}
+      \item Because noise coupling is typically common-mode, differential amplifiers provide a significant improvement in signal-to-noise ratio compared to single-ended inputs.
+  \end{itemize}
+  \item High CMRR ensures that even in noisy environments (long cables, stage setups), the wanted signal is preserved while hum and electromagnetic interference are strongly attenuated.
+\end{itemize}
+
+ 
+Even high-quality operational amplifiers present finite CMRR values, often in the range of $80$--$120\,\text{dB}$.  
+For example, a typical professional differential input stage might have $\text{CMRR} \approx 88 \ \text{dB}$, which is slightly lower than the best op-amps (above $100\,\text{dB}$).  
+This reduction is due to imperfections in resistor matching and circuit asymmetries.
+
+Differential amplifiers are designed with:
+\begin{itemize}
+  \item \emph{High input impedance}, to avoid loading the source,
+  \item \emph{Low output impedance}, to properly drive the next stage and minimize signal loss.
+\end{itemize}
+
+Typical graphs or datasheets illustrate:
+\begin{itemize}
+  \item \textbf{CMRR vs. Frequency}: CMRR decreases at higher frequencies, since matching between components becomes less ideal.
+  \item \textbf{Input/Output Transfer Characteristics}: showing linear amplification of the difference signal and suppression of common-mode input.
+\end{itemize}
+
+\paragraph{Applications in Audio:}
+\begin{itemize}
+  \item Input stages of professional mixing consoles and preamplifiers.
+  \item Microphone preamps using XLR balanced connections, where rejecting electromagnetic interference is essential.
+  \item Active direct injection (DI) boxes that convert unbalanced instrument signals into balanced signals for long cable runs.
+\end{itemize}
+
+
+
+\paragraph{Gain and Signal Level Control:} in audio electronics, it is essential to distinguish between:
+\begin{itemize}
+  \item \textbf{Gain control:} modification of the \emph{gain} of an amplifier stage (changing its amplification factor).
+  \item \textbf{Signal level control:} adjustment of the signal amplitude at a certain point in the chain, without altering the intrinsic gain of the stage.
+\end{itemize}
+
+Although these concepts are related, they are not the same.  
+A potentiometer before or after an amplifier stage is not modifying the gain of the stage itself, but only the \emph{level} of the signal that reaches it.
+
+\paragraph{Quantization and Sensitivity: }
+Digital audio motivates extremely fine control of signal levels.  
+For a system with full-scale amplitude $V_\text{Full\,Scale}$ and $N$ quantization levels, the \textbf{Least Significant Bit (LSB)} corresponds to:
+\[
+V_{LSB} = \frac{V_\text{Full\,Scale}}{2^N}
+\]
+For example, with $N = 24$ bits and $V_\text{Full\,Scale} = 3\,\text{V}$:
+\[
+V_{LSB} = \frac{3\,\text{V}}{2^{24}} \approx 0.179\,\mu\text{V}.
+\]
+Another important specification is the \textbf{sensitivity} of an amplifier:
+\[
+S = \frac{V_\text{out}^{nom}}{G}
+\]
+where $G$ is the amplifier gain.  
+It indicates the input voltage required to drive the amplifier to nominal output.
+
+\paragraph{Potentiometers as Control Elements: }
+Potentiometers are the most common elements used for both gain and signal level control.  
+They are implemented in various mechanical forms:
+\begin{itemize}
+  \item \emph{Rotary potentiometers} (single or dual),
+  \item \emph{Slide potentiometers} (faders in mixing consoles),
+  \item \emph{Trimmers} for calibration and internal adjustments.
+\end{itemize}
+
+\paragraph{Logarithmic potentiometers: }  
+Human perception of loudness is logarithmic.  Therefore, audio potentiometers are designed with a logarithmic law of resistance vs. rotation angle:
+\[
+R_{12}(\theta) = R_P \times 10^{m \left( \tfrac{\theta}{\theta_{max}} - 1 \right)}
+\]
+with typical values $m=2,3$.  
+This ensures smooth perceived changes in volume as the user rotates the knob.
+
+\begin{figure}[H]
+    \centering
+\includegraphics[width=0.7\linewidth]{Logarithmic_Pot.png}
+    \caption{Normalized resistance vs. normalized rotation angle for logarithmic potentiometers. Linear scale graph on the left, log scale graph on the right.}
+\end{figure}
+
+\paragraph{Faders in Mixing Consoles: }
+Faders are specialized slide potentiometers used for \emph{signal level control} in mixing consoles.  
+They are usually calibrated in decibels:
+\begin{itemize}
+  \item $0\,\text{dB}$: nominal unity gain,
+  \item positive values (e.g., $+10\,\text{dB}$): boost,
+  \item negative values (e.g., $-30\,\text{dB}$): attenuation.
+\end{itemize}
+
+\textbf{Case Study: Marshall JCM 800}
+The Marshall JCM 800 guitar amplifier illustrates the distinction between gain and level control:
+\begin{itemize}
+  \item The \textbf{``Gain'' potentiometer} (preamp volume) is placed between the first and second stages.  
+  It controls the level of the signal driving later stages, and thus influences the amount of distortion produced.
+  \item The \textbf{``Volume'' potentiometer} (master volume) is located at the input of the output stage.  
+  It adjusts the overall loudness without changing the distortion characteristic.
+\end{itemize}
+
+Both potentiometers act as \emph{signal level controls}, not as true changes in stage gain.  
+However, their position in the circuit determines whether distortion is affected.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{Marshall_JCM_800.png}
+    \caption{Marshall JCM 800: placement of ``Gain'' and ``Volume'' potentiometers.  
+Although both are signal level controls, the ``Gain'' pot directly affects distortion, while the ``Volume'' pot only affects loudness.}
+\end{figure}
+
+\paragraph{Digital Potentiometers: }
+Modern systems often replace analog potentiometers with \textbf{digital potentiometers}, controlled by a microcontroller:
+\begin{itemize}
+  \item Internally, they consist of a resistor ladder and MOS switches.
+  \item An $N$-bit digital control word selects the tap, yielding $2^N$ discrete steps.
+  \item Advanced designs include zero-crossing detectors to minimize switching noise during level changes.
+\end{itemize}
+
+
+\textbf{Summary: }
+\begin{itemize}
+  \item \textbf{Gain control} changes the amplification factor of a stage, while \textbf{signal level control} changes the signal amplitude fed into a stage.
+  \item Potentiometers and faders are the primary tools for signal level control in both analog and digital domains.
+  \item Placement of the control element within the circuit determines whether it influences distortion (preamp gain) or only overall loudness (master volume).
+  \item Digital potentiometers extend these concepts with precise, programmable control, often used in modern audio equipment.
+\end{itemize}
+
+\subsection{Summary}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Operational Amplifier Fundamentals]
+\begin{itemize}
+\item OPAMP output: $v_{out} = g(v^+ - v^-)$, it amplifies the voltage difference between the inputs.
+\item Ideal characteristics: $Z_{in} \to \infty$, $i^+ = i^- = 0$, $Z_{out} \to 0$, $A_0 \to \infty$.
+\item Input modes:
+\begin{itemize}
+\item \textbf{Unbalanced:} one input grounded, $Z_{IN}^{UNB} = Z_D // Z_{CM}^+$.
+\item \textbf{Balanced:} common-mode impedance gives $Z_{CM} = Z_{CM}^+ \, // \, Z_{CM}^-
+        $ and differential impedance gives $Z_{DIFF} = Z_D // (2 Z_{CM}^+)$.
+        \textbf{Remark:}  
+If $Z_{CM}^+ = Z_{CM}^-$, then from the common-mode formula we have: $2 Z_{CM}^+ = Z_{CM} $. Both inputs active — enables differential amplification.
+\end{itemize}
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Differential & Common-Mode Behavior]
+\begin{itemize}
+\item Differential voltage: $v_{DIFF} = v_1 - v_2$, \quad Common-mode: $v_{CM} = \tfrac{v_1 + v_2}{2}$.
+\item Output: $v_{out} = G_{DIFF}v_{DIFF} + G_{CM}v_{CM}$.
+\item High-quality OPAMP $\Rightarrow G_{CM} \ll G_{DIFF}$.
+\item \textbf{CMRR:} $\displaystyle CMRR = \frac{G_{DIFF}}{G_{CM}},\quad CMRR_{dB} = 20\log_{10}\frac{G_{DIFF}}{G_{CM}}.$
+\item Large CMRR ensures excellent rejection of electromagnetic interference and cable noise.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Frequency Response & Bandwidth]
+\begin{itemize}
+\item First-order model: $\displaystyle A(s) = \frac{A_0}{1 + s\tau_0}$, with $f_0 = \frac{1}{2\pi\tau_0}$.
+\item High-frequency slope: $|A(f)| \propto \frac{1}{f}$.
+\item \textbf{Gain–Bandwidth Product (GBWP):} $GBWP = A_0 f_0 = f_u$.
+\item Increasing gain $\Rightarrow$ decreasing bandwidth, constant $GBWP$.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Negative Feedback Principles]
+\begin{itemize}
+\item Closed-loop gain: $\displaystyle G_{CL} = \frac{A(s)}{1 + A(s)F(s)}$.
+\item Loop gain: $G_L = A(s)F(s)$.
+\item For $G_L \gg 1$: $G_{CL} \approx \frac{1}{F}$ (gain defined by feedback network).
+\item Relative gain variation: $\displaystyle \frac{dG_{CL}}{G_{CL}} = \frac{1}{1+AF}\frac{dA}{A}$ → improved stability.
+\item Feedback reduces distortion, improves linearity, and stabilizes operating point.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Feedback Implementations & Buffers]
+\begin{itemize}
+\item \textbf{Attenuation feedback:} $\displaystyle G_{CL} = 1 + \frac{R_2}{R_1}$, stable and temperature-insensitive.
+\item \textbf{Buffer:} $G_{CL} \approx 1$, isolates source from load, high $Z_{in}$ and low $Z_{out}$.
+\item Open feedback loop ($R_1 \to 0$ or $R_2 \to \infty$) → system reverts to open-loop gain $A(s)$.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Generalized OPAMP Configurations]
+\begin{itemize}
+\item \textbf{Inverting:} $\displaystyle \frac{v_{out}}{v_{in}} = -\frac{Z_2}{Z_1}$.
+\item \textbf{Non-inverting:} $\displaystyle \frac{v_{out}}{v_{in}} = 1 + \frac{Z_2}{Z_1}$.
+\item Polarity and input node define inverting/non-inverting operation.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Frequency Response with Feedback]
+\begin{itemize}
+\item $G_{LOOP}(f) = \dfrac{GBWP}{G_{CL}f}$.
+\item Working range: $G_{LOOP}(f) \ge 10 \Rightarrow f_{max} \le \dfrac{GBWP}{10,G_{CL}}$.
+\item Increasing $G_{CL}$ narrows usable bandwidth → design trade-off between gain and speed.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Slew Rate & Full-Power Bandwidth]
+\begin{itemize}
+\item $\displaystyle SR^{max} = V_{OUT}^{max},\omega_{max}$.
+\item $\displaystyle f_{max} = \frac{1}{2\pi} SR^{max} / V_{OUT}^{max}$.
+\item Limits how fast the output can change; exceeding $SR$ causes distortion.
+\item Defines the \textbf{Full-Power Bandwidth (FPBW)} of the OPAMP.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Gain & Signal Level Control]
+\begin{itemize}
+\item \textbf{Gain control:} changes amplifier gain (e.g. via feedback or potentiometer ratio).
+\item \textbf{Signal level control:} adjusts amplitude without changing internal gain (e.g. fader).
+\item \textbf{Sensitivity:} $S = V_{out}^{nom}/G$ defines required input level.
+\item \textbf{Potentiometers:}
+\begin{itemize}
+\item Linear → constant resistance change.
+\item Logarithmic → perceptually uniform loudness adjustment.
+\end{itemize}
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10,colframe=black,title=Summary: Audio Applications]
+\begin{itemize}
+\item Differential inputs in preamps, mixers, and DI boxes reject common-mode interference.
+\item Typical CMRR in high-quality audio gear: $80$–$120,\text{dB}$.
+\item Log potentiometers and faders ensure intuitive loudness control.
+\item Gain-bandwidth and slew-rate limits define usable audio frequency range.
+\end{itemize}
+\end{tcolorbox}
